@@ -4,8 +4,8 @@
     Draws candidate pairs into ``eval/alignment_gold.csv`` with empty label columns. The file
     contains no aligner scores, so labelling is blind. Refuses to overwrite a labelled file.
 
-``python -m senselm.eval.alignment_gold evaluate --config configs/align.yaml``
-    Joins labels with ``align_pairs.parquet`` decisions and reports precision / recall.
+Evaluation (precision / recall of the full aligner, threshold tuning on the dev half) lives in
+``senselm.eval.alignment_eval``.
 
 Sampling design (documented in docs/DECISIONS.md D-014). Uniform sampling over pairs yields
 almost only negatives (a 40×60-sense verb contributes 2,400 pairs and ≤40 matches), which
@@ -27,7 +27,6 @@ Labels (see docs/GRANULARITY.md): ``same`` (paraphrases / same meaning), ``relat
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -60,8 +59,18 @@ def sample(cfg: dict[str, Any], *, force: bool = False) -> Path:
             raise FileExistsError(f"{out} already has labels; refusing to overwrite (use --force)")
     senses = pl.read_parquet(
         resolve(cfg["input"]),
-        columns=["source", "source_id", "lemma", "upos", "gloss", "gloss_path", "examples", "tags",
-                 "lexfile", "domain"],
+        columns=[
+            "source",
+            "source_id",
+            "lemma",
+            "upos",
+            "gloss",
+            "gloss_path",
+            "examples",
+            "tags",
+            "lexfile",
+            "domain",
+        ],
     )
     pairs = candidate_pairs(senses, cfg).with_row_index("i")
     n_pairs = pairs.height
@@ -84,9 +93,7 @@ def sample(cfg: dict[str, Any], *, force: bool = False) -> Path:
         pl.col("i").replace_strict(chosen, return_dtype=pl.String).alias("stratum")
     )
     samp = samp.join(sizes.select("group_key", "n_g"), on="group_key")
-    samp = samp.with_columns(
-        (n_u / n_pairs + n_g / (n_groups * pl.col("n_g"))).alias("pi")
-    )
+    samp = samp.with_columns((n_u / n_pairs + n_g / (n_groups * pl.col("n_g"))).alias("pi"))
     o = senses.filter(pl.col("source") == "oewn").select(
         pl.col("source_id").alias("oewn_id"),
         pl.col("upos").alias("oewn_upos"),
@@ -155,7 +162,9 @@ def prf(tp: float, fp: float, fn: float) -> dict[str, float]:
     return {"precision": p, "recall": r, "f1": f}
 
 
-def score(gold: pl.DataFrame, predicted_col: str, positive: tuple[str, ...], weighted: bool) -> dict[str, Any]:
+def score(
+    gold: pl.DataFrame, predicted_col: str, positive: tuple[str, ...], weighted: bool
+) -> dict[str, Any]:
     y = gold["label"].is_in(list(positive)).to_numpy()
     yhat = gold[predicted_col].to_numpy().astype(bool)
     w = (1.0 / gold["pi"].to_numpy()) if weighted else np.ones(gold.height)
@@ -178,45 +187,14 @@ def load_gold(path: Path) -> pl.DataFrame:
     )
 
 
-def evaluate(cfg: dict[str, Any]) -> dict[str, Any]:
-    """P/R of the configured decisions in align_pairs.parquet against the gold labels."""
-    gold = load_gold(resolve(cfg["gold"]["path"]))
-    pairs = pl.read_parquet(resolve(cfg["output"]))
-    pairs = pairs.with_columns((pl.col("oewn_id") + "|" + pl.col("wikt_id")).alias("pair_id"))
-    j = gold.join(pairs.select("pair_id", "cosine", "merge_fine", "merge_coarse"), on="pair_id", how="left")
-    missing = j.filter(pl.col("cosine").is_null()).height
-    j = j.drop_nulls("cosine")
-    res: dict[str, Any] = {"n_labelled": gold.height, "missing_pairs": missing,
-                           "label_counts": dict(gold["label"].value_counts().iter_rows()),
-                           "ambiguous": int(gold["ambiguous"].sum())}
-    for policy, positive in (("fine", ("same",)), ("coarse", ("same", "related"))):
-        col = f"merge_{policy}"
-        res[policy] = {
-            "sample": score(j, col, positive, weighted=False),
-            "weighted": score(j, col, positive, weighted=True),
-            "sample_unambiguous": score(j.filter(pl.col("ambiguous") == 0), col, positive, weighted=False),
-            "by_stratum": {
-                s: score(j.filter(pl.col("stratum") == s), col, positive, weighted=False)
-                for s in ("U", "G")
-            },
-        }
-    return res
-
-
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Alignment gold set: sample / evaluate")
-    ap.add_argument("command", choices=["sample", "evaluate"])
+    ap = argparse.ArgumentParser(description="Alignment gold set: blind sampling")
+    ap.add_argument("command", choices=["sample"])
     ap.add_argument("--config", required=True, type=Path)
     ap.add_argument("--force", action="store_true", help="overwrite an existing labelled file")
     args = ap.parse_args()
     setup_logging()
-    cfg = load_config(args.config)
-    if args.command == "sample":
-        sample(cfg, force=args.force)
-    else:
-        res = evaluate(cfg)
-        print(json.dumps(res, indent=2, default=float))
-        dump_json(res, resolve(cfg["gold"]["eval_output"]))
+    sample(load_config(args.config), force=args.force)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,18 @@
+# Phase-1 report statistics. Run (after both inventory builds):
+#   uv run python -m senselm.inventory.stats --config configs/stats.yaml
+stage: inventory.stats
+inventory: data/processed/inventory_v0_1.parquet
+inventory_coarse: data/processed/inventory_v0_1_coarse.parquet
+registry: data/processed/id_registry.parquet
+lemma_registry: data/processed/lemma_registry.parquet
+senses_norm: data/interim/senses_norm.parquet
+raw_wiktionary: data/interim/senses_raw_wiktionary.parquet
+raw_oewn: data/interim/senses_raw_oewn.parquet
+forms: data/interim/forms.parquet
+variants: data/interim/variants.parquet
+pairs: data/interim/align_pairs.parquet
+alignment_eval: eval/alignment_eval.json
+embedding_selection: eval/embedding_selection.json
+judge_estimate: data/interim/judge_estimate.json
+output_json: docs/phase1_stats.json
+output_md: docs/phase1_stats.md

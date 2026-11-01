@@ -1,0 +1,11 @@
+# Aligner precision/recall against the hand-labelled gold set. Run (after align):
+#   uv run python -m senselm.eval.alignment_eval --config configs/alignment_eval.yaml
+stage: eval.alignment
+senses: data/interim/senses_norm.parquet
+pairs: data/interim/align_pairs.parquet
+gold:
+  path: eval/alignment_gold.csv
+  dev_fraction: 0.5
+policies: [configs/inventory.yaml, configs/inventory_coarse.yaml]
+sweep: [0.50, 0.951, 0.01]     # numpy arange(start, stop, step) of auto_merge_threshold
+output: eval/alignment_eval.json

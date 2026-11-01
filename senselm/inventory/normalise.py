@@ -43,9 +43,11 @@ from senselm.ingest.schema import FORM_TYPE, SENSE_SCHEMA
 
 LOG = logging.getLogger("senselm.inventory.normalise")
 
-NORM_SCHEMA = SENSE_SCHEMA.append(pa.field("upos", pa.string())).append(
-    pa.field("lemma_src", pa.string())
-).append(pa.field("is_abbrev", pa.bool_()))
+NORM_SCHEMA = (
+    SENSE_SCHEMA.append(pa.field("upos", pa.string()))
+    .append(pa.field("lemma_src", pa.string()))
+    .append(pa.field("is_abbrev", pa.bool_()))
+)
 
 FORMS_SCHEMA = pa.schema(
     [
@@ -72,7 +74,9 @@ VARIANTS_SCHEMA = pa.schema(
     ]
 )
 
-DEDUPE_SCHEMA = pa.schema([("source", pa.string()), ("dropped_id", pa.string()), ("kept_id", pa.string())])
+DEDUPE_SCHEMA = pa.schema(
+    [("source", pa.string()), ("dropped_id", pa.string()), ("kept_id", pa.string())]
+)
 
 BOOKKEEPING_TAGS = {"form-of", "alt-of", "no-gloss"}
 
@@ -90,7 +94,9 @@ VARIANT_RE = re.compile(
     r"\s+of\s+(?P<target>[^;:()]{1,80}?)\s*(?:\.\s*)?(?::|$)",
     re.IGNORECASE,
 )
-_MISSPELLING_RE = re.compile(r"^\s*(?:common\s+)?misspelling\s+of\s+(?P<target>[^;:()]{1,80}?)\s*\.?\s*$", re.I)
+_MISSPELLING_RE = re.compile(
+    r"^\s*(?:common\s+)?misspelling\s+of\s+(?P<target>[^;:()]{1,80}?)\s*\.?\s*$", re.I
+)
 
 
 def nfc(s: str | None) -> str | None:
@@ -115,7 +121,9 @@ def variant_target(gloss: str | None) -> str | None:
     return target if 0 < len(target.split()) <= 6 else None
 
 
-def to_upos(source: str, pos: str, lemma: str, tags: Iterable[str], relations: str, cfg: dict[str, Any]) -> str | None:
+def to_upos(
+    source: str, pos: str, lemma: str, tags: Iterable[str], relations: str, cfg: dict[str, Any]
+) -> str | None:
     table = cfg["upos_map"][source]
     upos = table.get(pos)
     if upos is None:
@@ -131,7 +139,9 @@ def to_upos(source: str, pos: str, lemma: str, tags: Iterable[str], relations: s
     return upos
 
 
-def dedupe_key(source: str, lemma: str, upos: str, gloss: str, gloss_path: list[str], tags: list[str]) -> bytes:
+def dedupe_key(
+    source: str, lemma: str, upos: str, gloss: str, gloss_path: list[str], tags: list[str]
+) -> bytes:
     g = re.sub(r"[\s.;:]+$", "", gloss.casefold()).strip()
     blob = "\x1f".join([source, lemma, upos, g, "\x1e".join(gloss_path), ",".join(sorted(tags))])
     return hashlib.blake2b(blob.encode("utf-8"), digest_size=16).digest()
@@ -183,16 +193,29 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                             continue
                         if entry_form_variant_tags.intersection(ftags):
                             w_var.write(
-                                {"variant": form, "target": lemma, "upos": upos, "tags": ftags,
-                                 "gloss": None, "origin": "wikt_entry_form", "source": src,
-                                 "source_id": entry_key}
+                                {
+                                    "variant": form,
+                                    "target": lemma,
+                                    "upos": upos,
+                                    "tags": ftags,
+                                    "gloss": None,
+                                    "origin": "wikt_entry_form",
+                                    "source": src,
+                                    "source_id": entry_key,
+                                }
                             )
                             stats["variants:entry_form"] += 1
                         elif form != lemma:
                             w_forms.write(
-                                {"lemma": lemma, "upos": upos, "form": form, "tags": ftags,
-                                 "origin": "oewn_form" if src == "oewn" else "wikt_entry",
-                                 "source": src, "source_id": entry_key}
+                                {
+                                    "lemma": lemma,
+                                    "upos": upos,
+                                    "form": form,
+                                    "tags": ftags,
+                                    "origin": "oewn_form" if src == "oewn" else "wikt_entry",
+                                    "source": src,
+                                    "source_id": entry_key,
+                                }
                             )
                             stats[f"forms:{src}_entry"] += 1
 
@@ -204,9 +227,15 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                     targets = row["targets"] or []
                     for t in targets:
                         w_forms.write(
-                            {"lemma": normalise_lemma(t, char_map), "upos": upos, "form": lemma,
-                             "tags": tags, "origin": "wikt_form_of", "source": src,
-                             "source_id": row["source_id"]}
+                            {
+                                "lemma": normalise_lemma(t, char_map),
+                                "upos": upos,
+                                "form": lemma,
+                                "tags": tags,
+                                "origin": "wikt_form_of",
+                                "source": src,
+                                "source_id": row["source_id"],
+                            }
                         )
                     stats["route:form_of"] += 1
                     continue
@@ -216,18 +245,32 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                     if vt is not None or not is_abbrev:
                         target = vt or (row["targets"][0] if row["targets"] else None)
                         w_var.write(
-                            {"variant": lemma, "target": normalise_lemma(target, char_map) if target else None,
-                             "upos": upos, "tags": tags, "gloss": gloss, "origin": "wikt_alt_of",
-                             "source": src, "source_id": row["source_id"]}
+                            {
+                                "variant": lemma,
+                                "target": normalise_lemma(target, char_map) if target else None,
+                                "upos": upos,
+                                "tags": tags,
+                                "gloss": gloss,
+                                "origin": "wikt_alt_of",
+                                "source": src,
+                                "source_id": row["source_id"],
+                            }
                         )
                         stats["route:variant_alt_of"] += 1
                         continue
                     stats["route:abbrev_sense"] += 1
                 elif detect_untagged and src == "wiktionary" and vt is not None:
                     w_var.write(
-                        {"variant": lemma, "target": normalise_lemma(vt, char_map), "upos": upos,
-                         "tags": tags, "gloss": gloss, "origin": "wikt_untagged", "source": src,
-                         "source_id": row["source_id"]}
+                        {
+                            "variant": lemma,
+                            "target": normalise_lemma(vt, char_map),
+                            "upos": upos,
+                            "tags": tags,
+                            "gloss": gloss,
+                            "origin": "wikt_untagged",
+                            "source": src,
+                            "source_id": row["source_id"],
+                        }
                     )
                     stats["route:variant_untagged"] += 1
                     continue
@@ -237,7 +280,9 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                     key = dedupe_key(src, lemma, upos, gloss or "", gloss_path, tags)
                     kept = seen_keys.get(key)
                     if kept is not None:
-                        w_dup.write({"source": src, "dropped_id": row["source_id"], "kept_id": kept})
+                        w_dup.write(
+                            {"source": src, "dropped_id": row["source_id"], "kept_id": kept}
+                        )
                         stats[f"drop:exact_duplicate:{src}"] += 1
                         continue
                     seen_keys[key] = row["source_id"]

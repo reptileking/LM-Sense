@@ -13,7 +13,7 @@ pos_classes: {NOUN: N, PROPN: N, VERB: V, ADJ: A, ADV: R}
 case_insensitive_fallback: true
 
 embedding:
-  model: BAAI/bge-base-en-v1.5      # chosen by benchmark + gold dev split (D-016)
+  model: BAAI/bge-base-en-v1.5      # chosen on the gold pairs: eval/embedding_selection.md (D-016)
   revision: a5beb1e3e68b9ab74eb54cfd186867f64f240e1a   # HF commit, pinned for reproducibility
   pooling: cls                      # bge: CLS token; e5/gte: mean
   normalize: true
@@ -21,21 +21,20 @@ embedding:
   max_length: 128
   batch_size: auto
   threads: auto
-  dtype: float32                    # float32 | bfloat16 (AMX); see D-016 for the comparison
+  dtype: bfloat16                   # CPU autocast (AMX): same gold AUC as float32, 2.6x faster (D-016)
   cache_dir: data/interim/embeddings
   write_every: 20000                # texts per cache shard (resumable)
   text:
     include_lemma: false
-    include_example: true
+    include_example: false          # examples lowered gold AUC (0.920 -> 0.902), see D-016
     max_example_chars: 200
-    prefer_example_types: [example] # use a usage example before a (long, archaic) quotation
-    include_parent: false           # prepend Wiktionary parent gloss (subsenses)
+    prefer_example_types: [example] # (when examples are enabled) usage example before quotation
+    include_parent: true            # prepend Wiktionary parent gloss for subsenses (0.920 -> 0.924)
 
-# Decision bands on cosine similarity. >= high: auto-merge; <= low: separate; between: LLM
-# judge if enabled, otherwise kept separate and counted.
-thresholds:
-  fine:   {high: 0.80, low: 0.70}
-  coarse: {high: 0.72, low: 0.65}
+# Pairs sent to the LLM judge (when enabled): low < cosine < high. Set to the fine policy's
+# separate/auto-merge thresholds (configs/inventory.yaml). Merge thresholds live in the
+# granularity policy configs, not here.
+judge_band: {low: 0.60, high: 0.68}
 
 llm_judge:
   enabled: false                    # no project API key configured -> dry-run estimate only
@@ -59,7 +58,6 @@ llm_judge:
 
 gold:
   path: eval/alignment_gold.csv
-  eval_output: eval/alignment_eval.json
   seed: 20261101
   n_uniform: 150
   n_group: 150

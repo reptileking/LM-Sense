@@ -1,0 +1,31 @@
+# Canonical sense inventory v0.1 - FINE granularity (the default policy) + permanent IDs. Run:
+#   uv run python -m senselm.inventory.build --config configs/inventory.yaml
+# Policy rules: docs/GRANULARITY.md. Threshold tuned on the gold dev split: eval/alignment_eval.md
+stage: inventory.build
+build_id: v0.1
+inputs:
+  senses: data/interim/senses_norm.parquet
+  pairs: data/interim/align_pairs.parquet
+  dedupe_map: data/interim/dedupe_map.parquet
+outputs:
+  inventory: data/processed/inventory_v0_1.parquet
+  registry: data/processed/id_registry.parquet
+  lemma_registry: data/processed/lemma_registry.parquet
+  history_dir: data/processed/registry_history
+  registry_commit_dir: registry          # git-tracked copy of the registry (D-025)
+  stats: data/processed/inventory_v0_1.stats.json
+assign_ids: true
+policy:
+  name: fine
+  subsenses: keep              # every Wiktionary subsense is its own unit
+  auto_merge_threshold: 0.68   # cosine >= -> merge (paraphrase)
+  separate_threshold: 0.60     # cosine <= -> separate; between: LLM verdict if any, else separate
+  judge_accept: [same]
+  matching: one_to_one         # greedy one-to-one: both sources' distinctions survive
+ids:
+  layout: {lemma_bits: 22, sense_bits: 10, reserved_lemma_slots: 4096}
+ordering:
+  rare_tags: [obsolete, archaic, rare, dated, historical, nonce-word, uncommon]
+licences:
+  oewn: CC-BY-4.0
+  wiktionary: CC-BY-SA-4.0+GFDL

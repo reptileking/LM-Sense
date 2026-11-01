@@ -20,7 +20,9 @@ DEFAULT_POS_CLASSES = {"NOUN": "N", "PROPN": "N", "VERB": "V", "ADJ": "A", "ADV"
 
 
 def with_pos_class(df: pl.DataFrame | pl.LazyFrame, classes: dict[str, str]) -> Any:
-    return df.with_columns(pl.col("upos").replace_strict(classes, default=pl.col("upos")).alias("pcls"))
+    return df.with_columns(
+        pl.col("upos").replace_strict(classes, default=pl.col("upos")).alias("pcls")
+    )
 
 
 def candidate_pairs(senses: pl.DataFrame, cfg: dict[str, Any]) -> pl.DataFrame:
@@ -37,7 +39,9 @@ def candidate_pairs(senses: pl.DataFrame, cfg: dict[str, Any]) -> pl.DataFrame:
     w = s.filter(pl.col("source") == "wiktionary").select(
         pl.col("source_id").alias("wikt_id"), pl.col("lemma").alias("wikt_lemma"), "pcls"
     )
-    exact = o.join(w.with_columns(pl.col("wikt_lemma").alias("lemma")), on=["lemma", "pcls"], how="inner")
+    exact = o.join(
+        w.with_columns(pl.col("wikt_lemma").alias("lemma")), on=["lemma", "pcls"], how="inner"
+    )
     exact = exact.with_columns(pl.lit(False).alias("case_fallback"))
     parts = [exact]
     if cfg.get("case_insensitive_fallback", True):

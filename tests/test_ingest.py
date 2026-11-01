@@ -13,7 +13,9 @@ from senselm.ingest.schema import REQUIRED_COLUMNS
 
 def test_classify() -> None:
     assert wiktionary.classify({"glosses": ["x"]}) == "sense"
-    assert wiktionary.classify({"glosses": ["plural of x"], "form_of": [{"word": "x"}]}) == "form_of"
+    assert (
+        wiktionary.classify({"glosses": ["plural of x"], "form_of": [{"word": "x"}]}) == "form_of"
+    )
     assert wiktionary.classify({"glosses": ["Alt of x"], "tags": ["alt-of"]}) == "alt_of"
     assert wiktionary.classify({"tags": ["no-gloss"]}) == "no_gloss"
     assert wiktionary.classify({"glosses": []}) == "no_gloss"
@@ -21,7 +23,10 @@ def test_classify() -> None:
 
 def test_most_specific_topic_prefers_rarest() -> None:
     freq = Counter({"sciences": 100, "mathematics": 20, "category-theory": 2})
-    assert wiktionary.most_specific_topic(["category-theory", "mathematics", "sciences"], freq) == "category-theory"
+    assert (
+        wiktionary.most_specific_topic(["category-theory", "mathematics", "sciences"], freq)
+        == "category-theory"
+    )
     assert wiktionary.most_specific_topic([], freq) is None
 
 
@@ -38,8 +43,15 @@ def test_disambiguate_id_is_content_stable() -> None:
 
 def test_wiktionary_ingest(tmp_path: Path, wikt_dump: Path) -> None:
     out = tmp_path / "senses_raw_wiktionary.parquet"
-    cfg = {"stage": "t", "input": str(wikt_dump), "output": str(out), "lang_code": "en",
-           "source_version": "test-1", "batch_rows": 2, "drop_form_tags": ["table-tags"]}
+    cfg = {
+        "stage": "t",
+        "input": str(wikt_dump),
+        "output": str(out),
+        "lang_code": "en",
+        "source_version": "test-1",
+        "batch_rows": 2,
+        "drop_form_tags": ["table-tags"],
+    }
     stats = wiktionary.run(cfg)
     df = pl.read_parquet(out)
     assert set(REQUIRED_COLUMNS) <= set(df.columns)
@@ -62,7 +74,9 @@ def test_wiktionary_ingest(tmp_path: Path, wikt_dump: Path) -> None:
     assert kinds["en-because-en-conj-IIII"] == "no_gloss"
     nasa = df.filter(pl.col("lemma") == "NASA").row(0, named=True)
     assert nasa["targets"] == ["National Aeronautics and Space Administration"]
-    assert json.loads(nasa["relations"])["alt_of"] == ["National Aeronautics and Space Administration"]
+    assert json.loads(nasa["relations"])["alt_of"] == [
+        "National Aeronautics and Space Administration"
+    ]
     prov = read_provenance(out)
     assert prov and prov["source_versions"] == {"wiktionary": "test-1"}
     assert prov["inputs"][0]["sha256"]
@@ -72,8 +86,16 @@ def test_wiktionary_ingest_is_deterministic(tmp_path: Path, wikt_dump: Path) -> 
     outs = []
     for i in range(2):
         out = tmp_path / f"o{i}.parquet"
-        wiktionary.run({"stage": "t", "input": str(wikt_dump), "output": str(out), "lang_code": "en",
-                        "source_version": "v", "batch_rows": 3})
+        wiktionary.run(
+            {
+                "stage": "t",
+                "input": str(wikt_dump),
+                "output": str(out),
+                "lang_code": "en",
+                "source_version": "v",
+                "batch_rows": 3,
+            }
+        )
         outs.append(pl.read_parquet(out))
     assert outs[0].equals(outs[1])
 
@@ -81,8 +103,16 @@ def test_wiktionary_ingest_is_deterministic(tmp_path: Path, wikt_dump: Path) -> 
 def test_oewn_ingest(tmp_path: Path, oewn_files: tuple[Path, Path]) -> None:
     plus, base = oewn_files
     out = tmp_path / "senses_raw_oewn.parquet"
-    oewn.run({"stage": "t", "input": str(plus), "base_input": str(base), "output": str(out),
-              "source_version": "oewn-test", "batch_rows": 2})
+    oewn.run(
+        {
+            "stage": "t",
+            "input": str(plus),
+            "base_input": str(base),
+            "output": str(out),
+            "source_version": "oewn-test",
+            "batch_rows": 2,
+        }
+    )
     df = pl.read_parquet(out)
     assert df.height == 5
     bank = df.filter(pl.col("lemma") == "bank").sort("sense_rank")

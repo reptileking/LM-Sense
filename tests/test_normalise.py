@@ -49,19 +49,34 @@ def test_to_upos() -> None:
     assert to_upos("wiktionary", "romanization", "x", [], "{}", CFG) is None
     assert to_upos("oewn", "s", "big", [], "{}", CFG) == "ADJ"
     assert to_upos("oewn", "n", "Paris", ["oewn:namenet"], "{}", CFG) == "PROPN"
-    assert to_upos("oewn", "n", "Paris", [], '{"synset_relations": {"instance_hypernym": ["x"]}}', CFG) == "PROPN"
+    assert (
+        to_upos("oewn", "n", "Paris", [], '{"synset_relations": {"instance_hypernym": ["x"]}}', CFG)
+        == "PROPN"
+    )
     assert to_upos("oewn", "n", "bank", [], "{}", CFG) == "NOUN"
 
 
-def test_normalise_end_to_end(tmp_path: Path, wikt_dump: Path, oewn_files: tuple[Path, Path]) -> None:
+def test_normalise_end_to_end(
+    tmp_path: Path, wikt_dump: Path, oewn_files: tuple[Path, Path]
+) -> None:
     w = tmp_path / "w.parquet"
     o = tmp_path / "o.parquet"
     raw = tmp_path / "raw.parquet"
-    wiktionary.run({"stage": "t", "input": str(wikt_dump), "output": str(w), "lang_code": "en",
-                    "source_version": "v", "drop_form_tags": ["table-tags"]})
+    wiktionary.run(
+        {
+            "stage": "t",
+            "input": str(wikt_dump),
+            "output": str(w),
+            "lang_code": "en",
+            "source_version": "v",
+            "drop_form_tags": ["table-tags"],
+        }
+    )
     oewn.run({"stage": "t", "input": str(oewn_files[0]), "output": str(o), "source_version": "v"})
     combine.run({"stage": "t", "inputs": [str(w), str(o)], "output": str(raw)})
-    outs = {k: str(tmp_path / f"{k}.parquet") for k in ("senses", "forms", "variants", "dedupe_map")}
+    outs = {
+        k: str(tmp_path / f"{k}.parquet") for k in ("senses", "forms", "variants", "dedupe_map")
+    }
     cfg = {**CFG, "input": str(raw), "outputs": outs}
     stats = normalise.run(cfg)
     senses = pl.read_parquet(outs["senses"])

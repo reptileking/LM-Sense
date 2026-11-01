@@ -15,6 +15,7 @@ same config and inputs produces identical data and identical embedded metadata.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import datetime as _dt
 import hashlib
 import json
@@ -133,10 +134,8 @@ def git_revision() -> dict[str, Any]:
 def package_versions() -> dict[str, str]:
     out = {"python": platform.python_version()}
     for name in _TRACKED_PACKAGES:
-        try:
+        with contextlib.suppress(importlib_metadata.PackageNotFoundError):
             out[name] = importlib_metadata.version(name)
-        except importlib_metadata.PackageNotFoundError:
-            pass
     return out
 
 
@@ -195,7 +194,9 @@ class Provenance:
                 rec["output"]["sha256"] = sha256_file(out_path)
         if stats:
             rec["stats"] = dict(stats)
-        side.write_text(json.dumps(rec, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")
+        side.write_text(
+            json.dumps(rec, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8"
+        )
         return side
 
 
@@ -295,7 +296,10 @@ class BatchWriter:
         self.tmp.replace(self.path)
         self.prov.write_sidecar(self.path, stats=stats)
         LOG.info(
-            "wrote %s (%d rows, %.1f MB)", _rel(self.path), self.rows, self.path.stat().st_size / 1e6
+            "wrote %s (%d rows, %.1f MB)",
+            _rel(self.path),
+            self.rows,
+            self.path.stat().st_size / 1e6,
         )
         return self.path
 

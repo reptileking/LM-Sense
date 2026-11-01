@@ -1,0 +1,682 @@
+{
+  "dev": 147,
+  "n_gold": 300,
+  "test": 153,
+  "variants": [
+    {
+      "coarse": {
+        "auc_all": 0.9045,
+        "dev": {
+          "f1": 0.866,
+          "precision": 0.845,
+          "recall": 0.887,
+          "threshold": 0.637
+        },
+        "test": {
+          "f1": 0.821,
+          "precision": 0.784,
+          "recall": 0.863,
+          "threshold": 0.637
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.8734,
+        "dev": {
+          "f1": 0.789,
+          "precision": 0.69,
+          "recall": 0.921,
+          "threshold": 0.637
+        },
+        "test": {
+          "f1": 0.766,
+          "precision": 0.67,
+          "recall": 0.894,
+          "threshold": 0.637
+        }
+      },
+      "model": "BAAI/bge-small-en-v1.5",
+      "name": "bge-small/gloss+ex",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 305.7
+    },
+    {
+      "coarse": {
+        "auc_all": 0.935,
+        "dev": {
+          "f1": 0.895,
+          "precision": 0.837,
+          "recall": 0.963,
+          "threshold": 0.591
+        },
+        "test": {
+          "f1": 0.874,
+          "precision": 0.809,
+          "recall": 0.95,
+          "threshold": 0.591
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.9202,
+        "dev": {
+          "f1": 0.83,
+          "precision": 0.778,
+          "recall": 0.889,
+          "threshold": 0.676
+        },
+        "test": {
+          "f1": 0.841,
+          "precision": 0.806,
+          "recall": 0.879,
+          "threshold": 0.676
+        }
+      },
+      "model": "BAAI/bge-base-en-v1.5",
+      "name": "bge-base/gloss",
+      "text": {
+        "include_example": false,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 93.7
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9358,
+        "dev": {
+          "f1": 0.903,
+          "precision": 0.832,
+          "recall": 0.988,
+          "threshold": 0.561
+        },
+        "test": {
+          "f1": 0.818,
+          "precision": 0.733,
+          "recall": 0.925,
+          "threshold": 0.561
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.9023,
+        "dev": {
+          "f1": 0.821,
+          "precision": 0.775,
+          "recall": 0.873,
+          "threshold": 0.649
+        },
+        "test": {
+          "f1": 0.82,
+          "precision": 0.781,
+          "recall": 0.864,
+          "threshold": 0.649
+        }
+      },
+      "model": "BAAI/bge-base-en-v1.5",
+      "name": "bge-base/gloss+ex",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 93.7
+    },
+    {
+      "coarse": {
+        "auc_all": 0.898,
+        "dev": {
+          "f1": 0.88,
+          "precision": 0.811,
+          "recall": 0.963,
+          "threshold": 0.717
+        },
+        "test": {
+          "f1": 0.811,
+          "precision": 0.714,
+          "recall": 0.938,
+          "threshold": 0.717
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.8559,
+        "dev": {
+          "f1": 0.772,
+          "precision": 0.642,
+          "recall": 0.968,
+          "threshold": 0.717
+        },
+        "test": {
+          "f1": 0.737,
+          "precision": 0.6,
+          "recall": 0.955,
+          "threshold": 0.717
+        }
+      },
+      "model": "BAAI/bge-base-en-v1.5",
+      "name": "bge-base/lemma+gloss+ex",
+      "text": {
+        "include_example": true,
+        "include_lemma": true,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 93.7
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9322,
+        "dev": {
+          "f1": 0.903,
+          "precision": 0.832,
+          "recall": 0.988,
+          "threshold": 0.561
+        },
+        "test": {
+          "f1": 0.818,
+          "precision": 0.733,
+          "recall": 0.925,
+          "threshold": 0.561
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.9008,
+        "dev": {
+          "f1": 0.824,
+          "precision": 0.767,
+          "recall": 0.889,
+          "threshold": 0.649
+        },
+        "test": {
+          "f1": 0.814,
+          "precision": 0.77,
+          "recall": 0.864,
+          "threshold": 0.649
+        }
+      },
+      "model": "BAAI/bge-base-en-v1.5",
+      "name": "bge-base/parent+gloss+ex",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": true,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 93.7
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9357,
+        "dev": {
+          "f1": 0.903,
+          "precision": 0.832,
+          "recall": 0.988,
+          "threshold": 0.562
+        },
+        "test": {
+          "f1": 0.818,
+          "precision": 0.733,
+          "recall": 0.925,
+          "threshold": 0.562
+        }
+      },
+      "dtype": "bfloat16",
+      "fine": {
+        "auc_all": 0.9023,
+        "dev": {
+          "f1": 0.821,
+          "precision": 0.775,
+          "recall": 0.873,
+          "threshold": 0.649
+        },
+        "test": {
+          "f1": 0.814,
+          "precision": 0.77,
+          "recall": 0.864,
+          "threshold": 0.649
+        }
+      },
+      "model": "BAAI/bge-base-en-v1.5",
+      "name": "bge-base/gloss+ex/bf16",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 246.5
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9406,
+        "dev": {
+          "f1": 0.9,
+          "precision": 0.9,
+          "recall": 0.9,
+          "threshold": 0.628
+        },
+        "test": {
+          "f1": 0.854,
+          "precision": 0.87,
+          "recall": 0.838,
+          "threshold": 0.628
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.9099,
+        "dev": {
+          "f1": 0.827,
+          "precision": 0.786,
+          "recall": 0.873,
+          "threshold": 0.646
+        },
+        "test": {
+          "f1": 0.806,
+          "precision": 0.794,
+          "recall": 0.818,
+          "threshold": 0.646
+        }
+      },
+      "model": "BAAI/bge-large-en-v1.5",
+      "name": "bge-large/gloss+ex",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 25.8
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9404,
+        "dev": {
+          "f1": 0.901,
+          "precision": 0.958,
+          "recall": 0.85,
+          "threshold": 0.646
+        },
+        "test": {
+          "f1": 0.838,
+          "precision": 0.912,
+          "recall": 0.775,
+          "threshold": 0.646
+        }
+      },
+      "dtype": "bfloat16",
+      "fine": {
+        "auc_all": 0.9099,
+        "dev": {
+          "f1": 0.821,
+          "precision": 0.775,
+          "recall": 0.873,
+          "threshold": 0.646
+        },
+        "test": {
+          "f1": 0.806,
+          "precision": 0.794,
+          "recall": 0.818,
+          "threshold": 0.646
+        }
+      },
+      "model": "BAAI/bge-large-en-v1.5",
+      "name": "bge-large/gloss+ex/bf16",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 87.8
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9295,
+        "dev": {
+          "f1": 0.867,
+          "precision": 0.806,
+          "recall": 0.938,
+          "threshold": 0.793
+        },
+        "test": {
+          "f1": 0.86,
+          "precision": 0.778,
+          "recall": 0.963,
+          "threshold": 0.793
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.8938,
+        "dev": {
+          "f1": 0.779,
+          "precision": 0.726,
+          "recall": 0.841,
+          "threshold": 0.817
+        },
+        "test": {
+          "f1": 0.797,
+          "precision": 0.764,
+          "recall": 0.833,
+          "threshold": 0.817
+        }
+      },
+      "model": "intfloat/e5-large-v2",
+      "name": "e5-large-v2/gloss+ex",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 25.2
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9333,
+        "dev": {
+          "f1": 0.907,
+          "precision": 0.848,
+          "recall": 0.975,
+          "threshold": 0.338
+        },
+        "test": {
+          "f1": 0.854,
+          "precision": 0.776,
+          "recall": 0.95,
+          "threshold": 0.338
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.9147,
+        "dev": {
+          "f1": 0.805,
+          "precision": 0.681,
+          "recall": 0.984,
+          "threshold": 0.341
+        },
+        "test": {
+          "f1": 0.78,
+          "precision": 0.653,
+          "recall": 0.97,
+          "threshold": 0.341
+        }
+      },
+      "model": "sentence-transformers/all-mpnet-base-v2",
+      "name": "mpnet-base/gloss+ex",
+      "text": {
+        "include_example": true,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 91.6
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9352,
+        "dev": {
+          "f1": 0.895,
+          "precision": 0.837,
+          "recall": 0.963,
+          "threshold": 0.588
+        },
+        "test": {
+          "f1": 0.869,
+          "precision": 0.8,
+          "recall": 0.95,
+          "threshold": 0.588
+        }
+      },
+      "dtype": "bfloat16",
+      "fine": {
+        "auc_all": 0.9203,
+        "dev": {
+          "f1": 0.824,
+          "precision": 0.767,
+          "recall": 0.889,
+          "threshold": 0.676
+        },
+        "test": {
+          "f1": 0.841,
+          "precision": 0.806,
+          "recall": 0.879,
+          "threshold": 0.676
+        }
+      },
+      "model": "BAAI/bge-base-en-v1.5",
+      "name": "bge-base/gloss/bf16",
+      "text": {
+        "include_example": false,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 246.5
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9369,
+        "dev": {
+          "f1": 0.886,
+          "precision": 0.812,
+          "recall": 0.975,
+          "threshold": 0.574
+        },
+        "test": {
+          "f1": 0.833,
+          "precision": 0.75,
+          "recall": 0.938,
+          "threshold": 0.574
+        }
+      },
+      "dtype": "bfloat16",
+      "fine": {
+        "auc_all": 0.9279,
+        "dev": {
+          "f1": 0.825,
+          "precision": 0.738,
+          "recall": 0.937,
+          "threshold": 0.645
+        },
+        "test": {
+          "f1": 0.841,
+          "precision": 0.772,
+          "recall": 0.924,
+          "threshold": 0.645
+        }
+      },
+      "model": "BAAI/bge-large-en-v1.5",
+      "name": "bge-large/gloss/bf16",
+      "text": {
+        "include_example": false,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 87.8
+    },
+    {
+      "coarse": {
+        "auc_all": 0.928,
+        "dev": {
+          "f1": 0.877,
+          "precision": 0.866,
+          "recall": 0.887,
+          "threshold": 0.817
+        },
+        "test": {
+          "f1": 0.873,
+          "precision": 0.885,
+          "recall": 0.863,
+          "threshold": 0.817
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.9241,
+        "dev": {
+          "f1": 0.8,
+          "precision": 0.69,
+          "recall": 0.952,
+          "threshold": 0.809
+        },
+        "test": {
+          "f1": 0.859,
+          "precision": 0.771,
+          "recall": 0.97,
+          "threshold": 0.809
+        }
+      },
+      "model": "intfloat/e5-large-v2",
+      "name": "e5-large-v2/gloss",
+      "text": {
+        "include_example": false,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 25.2
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9185,
+        "dev": {
+          "f1": 0.882,
+          "precision": 0.833,
+          "recall": 0.938,
+          "threshold": 0.342
+        },
+        "test": {
+          "f1": 0.847,
+          "precision": 0.8,
+          "recall": 0.9,
+          "threshold": 0.342
+        }
+      },
+      "dtype": "float32",
+      "fine": {
+        "auc_all": 0.9183,
+        "dev": {
+          "f1": 0.811,
+          "precision": 0.706,
+          "recall": 0.952,
+          "threshold": 0.354
+        },
+        "test": {
+          "f1": 0.818,
+          "precision": 0.716,
+          "recall": 0.955,
+          "threshold": 0.354
+        }
+      },
+      "model": "sentence-transformers/all-mpnet-base-v2",
+      "name": "mpnet-base/gloss",
+      "text": {
+        "include_example": false,
+        "include_lemma": false,
+        "include_parent": false,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 91.6
+    },
+    {
+      "coarse": {
+        "auc_all": 0.9351,
+        "dev": {
+          "f1": 0.887,
+          "precision": 0.887,
+          "recall": 0.887,
+          "threshold": 0.657
+        },
+        "test": {
+          "f1": 0.846,
+          "precision": 0.868,
+          "recall": 0.825,
+          "threshold": 0.657
+        }
+      },
+      "dtype": "bfloat16",
+      "fine": {
+        "auc_all": 0.924,
+        "dev": {
+          "f1": 0.826,
+          "precision": 0.76,
+          "recall": 0.905,
+          "threshold": 0.676
+        },
+        "test": {
+          "f1": 0.847,
+          "precision": 0.817,
+          "recall": 0.879,
+          "threshold": 0.676
+        }
+      },
+      "model": "BAAI/bge-base-en-v1.5",
+      "name": "bge-base/parent+gloss/bf16",
+      "text": {
+        "include_example": false,
+        "include_lemma": false,
+        "include_parent": true,
+        "max_example_chars": 200,
+        "prefer_example_types": [
+          "example"
+        ]
+      },
+      "texts_per_s": 246.5
+    }
+  ]
+}

@@ -98,7 +98,9 @@ def read_synsets(path: Path) -> tuple[dict[str, SynsetInfo], dict[str, str]]:
             ili=elem.get("ili") or None,
             members=(elem.get("members") or "").split(),
             definitions=[d.text.strip() for d in elem.iterfind("Definition") if d.text],
-            examples=[e.text.strip() for e in elem.iterfind("Example") if e.text and e.text.strip()],
+            examples=[
+                e.text.strip() for e in elem.iterfind("Example") if e.text and e.text.strip()
+            ],
             relations=dict(rels),
         )
     return synsets, entry_lemma
@@ -108,7 +110,9 @@ def read_sense_ids(path: Path) -> set[str]:
     return {e.get("id") for e in iterparse(path, ("Sense",))}
 
 
-def synset_name(sid: str, synsets: dict[str, SynsetInfo], entry_lemma: dict[str, str]) -> str | None:
+def synset_name(
+    sid: str, synsets: dict[str, SynsetInfo], entry_lemma: dict[str, str]
+) -> str | None:
     info = synsets.get(sid)
     if not info or not info.members:
         return None
@@ -149,7 +153,9 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                     if rt == "other" and r.get(DC_TYPE):
                         rt = f"other:{r.get(DC_TYPE)}"
                     sense_rels[rt].append(r.get("target"))
-                tags = sorted({f"usage:{sense_label(t)}" for t in sense_rels.get("exemplifies", [])})
+                tags = sorted(
+                    {f"usage:{sense_label(t)}" for t in sense_rels.get("exemplifies", [])}
+                )
                 regions = [
                     synset_name(t, synsets, entry_lemma)
                     for t in info.relations.get("domain_region", [])

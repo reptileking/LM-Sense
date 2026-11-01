@@ -1,0 +1,24 @@
+# Same inventory under the COARSE granularity policy (counts only; no IDs issued). Run:
+#   uv run python -m senselm.inventory.build --config configs/inventory_coarse.yaml
+stage: inventory.build
+build_id: v0.1-coarse
+inputs:
+  senses: data/interim/senses_norm.parquet
+  pairs: data/interim/align_pairs.parquet
+  dedupe_map: data/interim/dedupe_map.parquet
+outputs:
+  inventory: data/processed/inventory_v0_1_coarse.parquet
+  stats: data/processed/inventory_v0_1_coarse.stats.json
+assign_ids: false
+policy:
+  name: coarse
+  subsenses: collapse          # Wiktionary subsenses fold into their top-level sense
+  auto_merge_threshold: 0.60
+  separate_threshold: 0.52
+  judge_accept: [same, related]
+  matching: many_to_one        # each Wiktionary unit joins its best WordNet sense
+ordering:
+  rare_tags: [obsolete, archaic, rare, dated, historical, nonce-word, uncommon]
+licences:
+  oewn: CC-BY-4.0
+  wiktionary: CC-BY-SA-4.0+GFDL

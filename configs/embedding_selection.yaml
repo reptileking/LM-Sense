@@ -1,0 +1,60 @@
+# Embedding model / text-template selection on the hand-labelled gold pairs. Run:
+#   uv run python -m senselm.eval.embedding_selection --config configs/embedding_selection.yaml
+stage: eval.embedding_selection
+input: data/interim/senses_norm.parquet
+output: eval/embedding_selection.json
+gold:
+  path: eval/alignment_gold.csv
+  dev_fraction: 0.5
+embedding_defaults:
+  model: BAAI/bge-base-en-v1.5
+  pooling: cls
+  normalize: true
+  prefix: ""
+  max_length: 128
+  batch_size: 64
+  threads: auto
+  dtype: float32
+  cache_dir: data/interim/embeddings
+text_defaults:
+  include_lemma: false
+  include_example: true
+  max_example_chars: 200
+  prefer_example_types: [example]
+  include_parent: false
+variants:
+  - name: bge-small/gloss+ex
+    embedding: {model: BAAI/bge-small-en-v1.5}
+  - name: bge-base/gloss
+    text: {include_example: false}
+  - name: bge-base/gloss+ex
+  - name: bge-base/lemma+gloss+ex
+    text: {include_lemma: true}
+  - name: bge-base/parent+gloss+ex
+    text: {include_parent: true}
+  - name: bge-base/gloss+ex/bf16
+    embedding: {dtype: bfloat16}
+  - name: bge-large/gloss+ex
+    embedding: {model: BAAI/bge-large-en-v1.5}
+  - name: bge-large/gloss+ex/bf16
+    embedding: {model: BAAI/bge-large-en-v1.5, dtype: bfloat16}
+  - name: e5-large-v2/gloss+ex
+    embedding: {model: intfloat/e5-large-v2, pooling: mean, prefix: "query: "}
+  - name: mpnet-base/gloss+ex
+    embedding: {model: sentence-transformers/all-mpnet-base-v2, pooling: mean}
+  # round 2: gloss-only for the stronger models (gloss-only won for bge-base in round 1)
+  - name: bge-base/gloss/bf16
+    embedding: {dtype: bfloat16}
+    text: {include_example: false}
+  - name: bge-large/gloss/bf16
+    embedding: {model: BAAI/bge-large-en-v1.5, dtype: bfloat16}
+    text: {include_example: false}
+  - name: e5-large-v2/gloss
+    embedding: {model: intfloat/e5-large-v2, pooling: mean, prefix: "query: "}
+    text: {include_example: false}
+  - name: mpnet-base/gloss
+    embedding: {model: sentence-transformers/all-mpnet-base-v2, pooling: mean}
+    text: {include_example: false}
+  - name: bge-base/parent+gloss/bf16
+    embedding: {dtype: bfloat16}
+    text: {include_example: false, include_parent: true}

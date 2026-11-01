@@ -8,54 +8,125 @@ import pytest
 
 WIKT_ENTRIES = [
     {
-        "word": "bank", "pos": "noun", "lang": "English", "lang_code": "en", "etymology_number": "1",
-        "forms": [{"form": "banks", "tags": ["plural"]}, {"form": "banck", "tags": ["alternative", "obsolete"]},
-                  {"form": "no-table-tags", "tags": ["table-tags"]}],
+        "word": "bank",
+        "pos": "noun",
+        "lang": "English",
+        "lang_code": "en",
+        "etymology_number": "1",
+        "forms": [
+            {"form": "banks", "tags": ["plural"]},
+            {"form": "banck", "tags": ["alternative", "obsolete"]},
+            {"form": "no-table-tags", "tags": ["table-tags"]},
+        ],
         "senses": [
-            {"id": "en-bank-en-noun-AAAA", "glosses": ["An institution where one can place and borrow money."],
-             "topics": ["business", "finance"], "tags": ["countable"],
-             "examples": [{"text": "I went to the bank.", "type": "example"},
-                          {"text": "A long quotation.", "type": "quotation", "ref": "1900"}]},
-            {"id": "en-bank-en-noun-AAAA", "glosses": ["An institution where one can place and borrow money.",
-                                                        "A branch office of such an institution."]},
+            {
+                "id": "en-bank-en-noun-AAAA",
+                "glosses": ["An institution where one can place and borrow money."],
+                "topics": ["business", "finance"],
+                "tags": ["countable"],
+                "examples": [
+                    {"text": "I went to the bank.", "type": "example"},
+                    {"text": "A long quotation.", "type": "quotation", "ref": "1900"},
+                ],
+            },
+            {
+                "id": "en-bank-en-noun-AAAA",
+                "glosses": [
+                    "An institution where one can place and borrow money.",
+                    "A branch office of such an institution.",
+                ],
+            },
         ],
     },
     {
-        "word": "bank", "pos": "noun", "lang": "English", "lang_code": "en", "etymology_number": 2,
-        "senses": [{"id": "en-bank-en-noun-BBBB", "glosses": ["The edge of a river."],
-                    "topics": ["geography", "natural-sciences", "sciences"]}],
+        "word": "bank",
+        "pos": "noun",
+        "lang": "English",
+        "lang_code": "en",
+        "etymology_number": 2,
+        "senses": [
+            {
+                "id": "en-bank-en-noun-BBBB",
+                "glosses": ["The edge of a river."],
+                "topics": ["geography", "natural-sciences", "sciences"],
+            }
+        ],
     },
     {
-        "word": "banks", "pos": "noun", "lang": "English", "lang_code": "en",
-        "senses": [{"id": "en-banks-en-noun-CCCC", "glosses": ["plural of bank"], "tags": ["form-of", "plural"],
-                    "form_of": [{"word": "bank"}]}],
+        "word": "banks",
+        "pos": "noun",
+        "lang": "English",
+        "lang_code": "en",
+        "senses": [
+            {
+                "id": "en-banks-en-noun-CCCC",
+                "glosses": ["plural of bank"],
+                "tags": ["form-of", "plural"],
+                "form_of": [{"word": "bank"}],
+            }
+        ],
     },
     {
-        "word": "NASA", "pos": "name", "lang": "English", "lang_code": "en",
-        "senses": [{"id": "en-NASA-en-name-DDDD", "glosses": ["Acronym of National Aeronautics and Space Administration."],
-                    "tags": ["abbreviation", "acronym", "alt-of"],
-                    "alt_of": [{"word": "National Aeronautics and Space Administration"}]}],
+        "word": "NASA",
+        "pos": "name",
+        "lang": "English",
+        "lang_code": "en",
+        "senses": [
+            {
+                "id": "en-NASA-en-name-DDDD",
+                "glosses": ["Acronym of National Aeronautics and Space Administration."],
+                "tags": ["abbreviation", "acronym", "alt-of"],
+                "alt_of": [{"word": "National Aeronautics and Space Administration"}],
+            }
+        ],
     },
     {
-        "word": "colour", "pos": "noun", "lang": "English", "lang_code": "en",
-        "senses": [{"id": "en-colour-en-noun-EEEE", "glosses": ["Alternative spelling of color."],
-                    "tags": ["alt-of", "alternative"], "alt_of": [{"word": "color"}]}],
+        "word": "colour",
+        "pos": "noun",
+        "lang": "English",
+        "lang_code": "en",
+        "senses": [
+            {
+                "id": "en-colour-en-noun-EEEE",
+                "glosses": ["Alternative spelling of color."],
+                "tags": ["alt-of", "alternative"],
+                "alt_of": [{"word": "color"}],
+            }
+        ],
     },
     {
-        "word": "gaol", "pos": "noun", "lang": "English", "lang_code": "en",
-        "senses": [{"id": "en-gaol-en-noun-FFFF", "glosses": ["Dated spelling of jail."], "tags": ["UK"]}],
+        "word": "gaol",
+        "pos": "noun",
+        "lang": "English",
+        "lang_code": "en",
+        "senses": [
+            {"id": "en-gaol-en-noun-FFFF", "glosses": ["Dated spelling of jail."], "tags": ["UK"]}
+        ],
     },
     {
-        "word": "and", "pos": "conj", "lang": "English", "lang_code": "en",
+        "word": "and",
+        "pos": "conj",
+        "lang": "English",
+        "lang_code": "en",
         "senses": [{"id": "en-and-en-conj-GGGG", "glosses": ["As well as."]}],
     },
     {
-        "word": "because", "pos": "conj", "lang": "English", "lang_code": "en",
-        "senses": [{"id": "en-because-en-conj-HHHH", "glosses": ["By or for the cause that."]},
-                   {"id": "en-because-en-conj-IIII", "tags": ["no-gloss"]}],
+        "word": "because",
+        "pos": "conj",
+        "lang": "English",
+        "lang_code": "en",
+        "senses": [
+            {"id": "en-because-en-conj-HHHH", "glosses": ["By or for the cause that."]},
+            {"id": "en-because-en-conj-IIII", "tags": ["no-gloss"]},
+        ],
     },
-    {"word": "Hund", "pos": "noun", "lang": "German", "lang_code": "de",
-     "senses": [{"id": "x", "glosses": ["dog"]}]},
+    {
+        "word": "Hund",
+        "pos": "noun",
+        "lang": "German",
+        "lang_code": "de",
+        "senses": [{"id": "x", "glosses": ["dog"]}],
+    },
 ]
 
 OEWN_XML = """<?xml version="1.0" encoding="UTF-8"?>

@@ -48,7 +48,15 @@ def _cpu_model() -> str:
 
 
 def _cpu_flags() -> list[str]:
-    interesting = {"avx2", "avx512f", "avx512_bf16", "amx_bf16", "amx_int8", "avx512_vnni", "avx_vnni"}
+    interesting = {
+        "avx2",
+        "avx512f",
+        "avx512_bf16",
+        "amx_bf16",
+        "amx_int8",
+        "avx512_vnni",
+        "avx_vnni",
+    }
     try:
         for line in Path("/proc/cpuinfo").read_text().splitlines():
             if line.startswith("flags"):
@@ -66,7 +74,9 @@ def _gpus() -> list[dict[str, Any]]:
         if torch.cuda.is_available():
             for i in range(torch.cuda.device_count()):
                 p = torch.cuda.get_device_properties(i)
-                gpus.append({"index": i, "name": p.name, "memory_gb": round(p.total_memory / 1e9, 1)})
+                gpus.append(
+                    {"index": i, "name": p.name, "memory_gb": round(p.total_memory / 1e9, 1)}
+                )
             return gpus
     except Exception:  # torch missing or broken CUDA install: fall back to nvidia-smi
         pass
