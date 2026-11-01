@@ -89,7 +89,7 @@ synset has an `instance_hypernym` (OEWN has no proper-noun category of its own).
 
 **D-014 Exact duplicates.** Senses of one source with identical lemma, UPOS, gloss path, gloss and
 tags are data artefacts (99 in Wiktionary): the first is kept, the rest are recorded in
-`dedupe_map.parquet` and attached to the kept sense's canonical sense as members.
+`dedupe_map.parquet` and listed as members of the kept sense's canonical sense.
 
 ## Alignment
 
@@ -172,6 +172,39 @@ new id). The build refuses to write a registry that fails `check_append_only`; t
 registry is copied to `registry_history/` first. Lemma ids follow the same rules.
 
 **D-025 Registry durability.** `data/` is git-ignored (multi-GB), but a permanent-ID registry
-must survive this container. The registry and lemma registry are therefore also committed
-under `registry/` (small, zstd Parquet) on every build that changes them; see Gate-1 decision on
-long-term storage.
+must survive this ephemeral container. The full registry (79 MB, with glosses and member lists)
+stays in `data/processed/`; every ID-issuing build also writes a slim **ledger** to the
+git-tracked `registry/` directory (25.5 MB + 7.1 MB lemma registry, zstd level 19): no glosses,
+and `members` replaced by `other_members` (members minus the anchor, empty for 92% of senses), which
+loses nothing needed for ID continuity (`ids.to_ledger` / `ids.from_ledger` round-trip). When
+`data/processed/` is missing, the build continues from the ledger.
+`tests/test_ids.py::test_committed_registry_is_append_only` compares the working-tree ledger
+with the one committed at HEAD, so a rebuild that changes any existing ID fails before it can be
+committed, on any machine. Long-term storage (git history grows ~30 MB per registry version) is
+a Gate-1 decision.
+
+**D-026 Threshold selection.** `auto_merge_threshold` is chosen on the dev half of the gold set
+under the *full* policy (matching included), maximising `tune_metric`: F0.5 for the fine policy
+(a false merge destroys a distinction irreversibly; a false split only leaves a near-duplicate
+token), F1 for coarse. Result: fine 0.69, coarse 0.59 (`eval/alignment_eval.md`). With one-to-one
+matching the optimum is far below the pairwise one (0.676 for F1), because matching removes most
+false positives. `separate_threshold` (bottom of the judge band) = 0.55: below it only 2 of 83 gold
+pairs are `same`.
+
+**D-027 Judge workload reduction.** Only band pairs whose verdict can change the fine policy's
+outcome are sent to the judge: both senses still unmatched after auto-merge, and the pair is the
+top-1 band candidate of one of its senses (`llm_judge.relevant_only`, `top_k`). This reduces the
+band from 244,284 pairs to 56,580 requests.
+
+**D-028 Lineage absorption (fine policy).** Error analysis of the gold set showed 11 of 29 missed
+merges were blocked by one-to-one matching: a Wiktionary parent sense took the WordNet match and
+its paraphrasing subsense was left as a near-duplicate token. Rule F5 (docs/GRANULARITY.md) lets
+a matched WordNet sense also absorb eligible ancestors and a *unique* eligible descendant;
+several eligible children are never absorbed, so siblings never merge (a first version absorbed
+all descendants and a unit test caught it merging siblings). Effect on the gold set: recall
+0.775 → 0.791 (HT-weighted 0.774 → 0.795), precision 0.893 → 0.895; 1,092 extra merges in the
+full inventory.
+
+**D-029 Fresh v0.1 registry.** The ID registry was regenerated from scratch by the final
+Phase-1 build (development builds before the first commit were never released). From the first
+commit of `registry/` onwards, IDs are permanent and protected by the append-only checks.

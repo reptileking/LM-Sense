@@ -13,8 +13,9 @@ assign_ids: false
 policy:
   name: coarse
   subsenses: collapse          # Wiktionary subsenses fold into their top-level sense
-  auto_merge_threshold: 0.60
-  separate_threshold: 0.52
+  auto_merge_threshold: 0.59   # F1-optimal on the gold dev half (positives: same + related)
+  separate_threshold: 0.50
+  tune_metric: f1
   judge_accept: [same, related]
   matching: many_to_one        # each Wiktionary unit joins its best WordNet sense
 ordering:

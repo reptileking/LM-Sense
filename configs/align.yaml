@@ -34,7 +34,7 @@ embedding:
 # Pairs sent to the LLM judge (when enabled): low < cosine < high. Set to the fine policy's
 # separate/auto-merge thresholds (configs/inventory.yaml). Merge thresholds live in the
 # granularity policy configs, not here.
-judge_band: {low: 0.60, high: 0.68}
+judge_band: {low: 0.55, high: 0.69}
 
 llm_judge:
   enabled: false                    # no project API key configured -> dry-run estimate only
@@ -46,6 +46,9 @@ llm_judge:
   expected_output_tokens: 400       # for the expected-cost estimate only
   use_batches: true                 # Message Batches API: 50% price
   chunk_requests: 2000              # submit in chunks; cap checked before every chunk
+  relevant_only: true               # only band pairs whose verdict can change a fine-policy merge
+  top_k: 1                          # ... among each unmatched sense's best k band candidates
+  policy_config: configs/inventory.yaml
   max_spend_gbp: 50                 # HARD cap per run (worst case incl. max_tokens)
   usd_per_gbp: 1.20                 # conservative FX assumption (fewer $ per £ = stricter cap)
   # USD per million tokens (standard rates; batch_discount applied when use_batches)

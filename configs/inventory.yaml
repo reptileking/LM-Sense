@@ -18,10 +18,13 @@ assign_ids: true
 policy:
   name: fine
   subsenses: keep              # every Wiktionary subsense is its own unit
-  auto_merge_threshold: 0.68   # cosine >= -> merge (paraphrase)
-  separate_threshold: 0.60     # cosine <= -> separate; between: LLM verdict if any, else separate
+  auto_merge_threshold: 0.69   # cosine >= -> merge (paraphrase); F0.5-optimal on the gold dev half
+  separate_threshold: 0.55     # cosine <= -> separate (2 of 83 gold pairs below are 'same');
+                               # between the two: LLM verdict if any, else kept separate
+  tune_metric: f0.5            # precision-weighted: false merges are irreversible (D-026)
   judge_accept: [same]
   matching: one_to_one         # greedy one-to-one: both sources' distinctions survive
+  absorb_lineage: true         # ...plus a matched sense's paraphrasing ancestors / unique child (D-028)
 ids:
   layout: {lemma_bits: 22, sense_bits: 10, reserved_lemma_slots: 4096}
 ordering:

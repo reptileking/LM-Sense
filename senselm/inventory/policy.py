@@ -83,8 +83,37 @@ def wiktionary_units(wikt: pl.DataFrame, mode: str) -> dict[str, str]:
     return unit_of
 
 
-def select_edges(edges: pl.DataFrame, matching: str) -> list[tuple[str, str]]:
-    """edges: group_key, oewn_id, unit, score (already filtered to eligible)."""
+def lineage_keys(wikt: pl.DataFrame) -> dict[str, tuple[str, tuple[str, ...]]]:
+    """Wiktionary sense -> (entry_key, gloss path incl. own gloss): ancestry inside an entry."""
+    return {
+        sid: (entry, tuple([*(path or []), gloss or ""]))
+        for sid, entry, gloss, path in wikt.select(
+            "source_id", "entry_key", "gloss", "gloss_path"
+        ).iter_rows()
+    }
+
+
+def is_lineal(a: tuple[str, tuple[str, ...]], b: tuple[str, tuple[str, ...]]) -> bool:
+    """True if one sense is an ancestor of the other in the same Wiktionary entry."""
+    if a[0] != b[0] or a[1] == b[1]:
+        return False
+    short, long_ = (a[1], b[1]) if len(a[1]) < len(b[1]) else (b[1], a[1])
+    return long_[: len(short)] == short
+
+
+def select_edges(
+    edges: pl.DataFrame,
+    matching: str,
+    lineage: dict[str, tuple[str, tuple[str, ...]]] | None = None,
+) -> list[tuple[str, str]]:
+    """edges: group_key, oewn_id, unit, score (already filtered to eligible).
+
+    With ``lineage`` (one_to_one only), a WordNet sense matched to a Wiktionary sense also
+    absorbs that sense's still-unmatched eligible *ancestors* (same entry) and its eligible
+    descendant if there is exactly one: a parent and a subsense that both paraphrase one
+    WordNet sense paraphrase each other. Several eligible children are distinct finer senses
+    (Wiktionary separated them), so none is absorbed - absorbing them would merge siblings.
+    """
     chosen: list[tuple[str, str]] = []
     if matching == "components":
         return list(zip(edges["oewn_id"].to_list(), edges["unit"].to_list(), strict=True))
@@ -106,6 +135,31 @@ def select_edges(edges: pl.DataFrame, matching: str) -> list[tuple[str, str]]:
         used_o.add(o)
         used_u.add(u)
         chosen.append((o, u))
+    if lineage:
+        by_o: dict[str, list[str]] = {}
+        for o, u in srt.select("oewn_id", "unit").iter_rows():
+            by_o.setdefault(o, []).append(u)
+        extra: list[tuple[str, str]] = []
+        for o, u in chosen:
+            if u not in lineage:
+                continue
+            free = [x for x in by_o.get(o, []) if x not in used_u and x in lineage and x != u]
+            ancestors = [
+                x
+                for x in free
+                if is_lineal(lineage[x], lineage[u]) and len(lineage[x][1]) < len(lineage[u][1])
+            ]
+            descendants = [
+                x
+                for x in free
+                if is_lineal(lineage[x], lineage[u]) and len(lineage[x][1]) > len(lineage[u][1])
+            ]
+            # several eligible children = distinct finer senses: absorb none of them
+            take = ancestors + (descendants if len(descendants) == 1 else [])
+            for x in take:
+                used_u.add(x)
+                extra.append((o, x))
+        chosen.extend(extra)
     return chosen
 
 
@@ -138,7 +192,12 @@ def assign_clusters(
         .group_by("group_key", "oewn_id", "unit")
         .agg(pl.col("cosine").max().alias("score"))
     )
-    chosen = select_edges(edges, policy["matching"])
+    lineage = (
+        lineage_keys(wikt)
+        if policy.get("absorb_lineage") and policy.get("subsenses", "keep") == "keep"
+        else None
+    )
+    chosen = select_edges(edges, policy["matching"], lineage)
 
     uf = UnionFind()
     for sid in senses["source_id"].to_list():

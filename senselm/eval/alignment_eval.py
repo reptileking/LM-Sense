@@ -4,8 +4,10 @@
 
 For each policy config (fine, coarse):
 
-* sweep ``auto_merge_threshold`` on the *dev* half of the gold pairs and pick the F1-optimal
-  value (ties -> the higher threshold, i.e. precision);
+* sweep ``auto_merge_threshold`` on the *dev* half of the gold pairs and pick the value that
+  maximises the policy's ``tune_metric`` (``f0.5`` for the fine policy: a false merge destroys a
+  distinction irreversibly, a false split only duplicates a token; ``f1`` for coarse); ties go
+  to the higher threshold, i.e. precision;
 * report precision / recall / F1 on the *test* half at that threshold, and on all labelled
   pairs at the threshold actually configured in the policy file (the numbers quoted in the
   phase report), both as plain sample estimates and Horvitz-Thompson-weighted estimates for
@@ -35,6 +37,13 @@ from senselm.inventory.policy import assign_clusters, pair_merged
 
 LOG = logging.getLogger("senselm.eval.alignment_eval")
 POSITIVE = {"fine": ("same",), "coarse": ("same", "related")}
+
+
+def fbeta(p: float, r: float, beta: float) -> float:
+    if np.isnan(p) or np.isnan(r) or p + r == 0:
+        return float("nan")
+    b2 = beta * beta
+    return (1 + b2) * p * r / (b2 * p + r)
 
 
 def gold_frame(cfg: dict[str, Any]) -> pl.DataFrame:
@@ -111,7 +120,11 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
             sweep.append(
                 {"threshold": float(t), **{k: s[k] for k in ("precision", "recall", "f1")}}
             )
-        best = max(sweep, key=lambda r: (np.nan_to_num(r["f1"]), r["threshold"]))
+        metric = policy.get("tune_metric", "f1")
+        for r in sweep:
+            r["f0.5"] = fbeta(r["precision"], r["recall"], 0.5)
+        best = max(sweep, key=lambda r: (np.nan_to_num(r[metric]), r["threshold"]))
+        best = {**best, "metric": metric}
         test = gold.filter(pl.col("split") == "test")
         m_test = merged_for(
             test, senses, pairs, {**policy, "auto_merge_threshold": best["threshold"]}
@@ -162,7 +175,7 @@ def to_markdown(res: dict[str, Any]) -> str:
     lines = [
         f"Gold: {res['n_gold']} pairs {res['label_counts']}, {res['ambiguous']} flagged ambiguous.",
         "",
-        "| policy | configured threshold | all gold P/R/F1 (sample) | all gold P/R/F1 (HT-weighted) | test half P/R/F1 | unambiguous P/R/F1 | stratum U | stratum G | dev-optimal threshold |",
+        "| policy | configured threshold | all gold P/R/F1 (sample) | all gold P/R/F1 (HT-weighted) | test half P/R/F1 | unambiguous P/R/F1 | stratum U | stratum G | dev-optimal threshold (metric) |",
         "|---|---|---|---|---|---|---|---|---|",
     ]
     for name, r in res["policies"].items():
@@ -170,7 +183,7 @@ def to_markdown(res: dict[str, Any]) -> str:
         lines.append(
             f"| {name} | {r['configured_threshold']:.2f} | {_fmt(c['all_sample'])} | {_fmt(c['all_weighted'])} | "
             f"{_fmt(c['test_sample'])} | {_fmt(c['unambiguous_sample'])} | {_fmt(c['stratum_U'])} | "
-            f"{_fmt(c['stratum_G'])} | {r['dev_best']['threshold']:.2f} |"
+            f"{_fmt(c['stratum_G'])} | {r['dev_best']['threshold']:.2f} ({r['dev_best']['metric']}) |"
         )
     return "\n".join(lines) + "\n"
 

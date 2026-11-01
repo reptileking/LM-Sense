@@ -87,6 +87,16 @@ def compute(cfg: dict[str, Any]) -> dict[str, Any]:
     )
 
     both = fine.filter(pl.col("has_oewn") & pl.col("has_wiktionary")).height
+    wikt_merged = int(
+        fine.filter(pl.col("has_oewn") & pl.col("has_wiktionary"))
+        .select(
+            pl.col("members")
+            .list.eval(pl.element().struct.field("source") == "wiktionary")
+            .list.sum()
+        )
+        .sum()
+        .item()
+    )
     out["fine"] = {
         "canonical_senses": fine.height,
         "lemmas": fine["lemma"].n_unique(),
@@ -130,7 +140,11 @@ def compute(cfg: dict[str, Any]) -> dict[str, Any]:
         "wikt_senses_with_candidates": pairs["wikt_id"].n_unique(),
         "oewn_senses_merged": both,
         "pct_oewn_senses_merged": round(100 * both / out["input_senses"]["oewn"], 2),
-        "pct_wikt_senses_merged": round(100 * both / out["input_senses"]["wiktionary"], 2),
+        "pct_oewn_senses_with_candidates_merged": round(
+            100 * both / pairs["oewn_id"].n_unique(), 2
+        ),
+        "wikt_senses_merged": wikt_merged,
+        "pct_wikt_senses_merged": round(100 * wikt_merged / out["input_senses"]["wiktionary"], 2),
     }
     out["per_lemma"] = per_lemma(fine)
     out["upos"] = dict(fine.group_by("upos").len().sort("len", descending=True).iter_rows())

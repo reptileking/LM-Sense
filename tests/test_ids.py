@@ -2,12 +2,17 @@
 
 ``test_ids_never_change_between_builds`` is the project's guard that existing IDs never
 change: it simulates a sequence of builds with additions, removals, merges, splits and
-reorderings and checks every registry against its predecessor. ``test_registry_history``
-applies the same check to the real registry snapshots under data/processed when they exist.
+reorderings and checks every registry against its predecessor. Two tests apply the same
+check to the real registry: ``test_committed_registry_is_append_only`` compares the git-tracked
+``registry/id_registry.parquet`` in the working tree with the version committed at HEAD (so a
+rebuild that changes any existing id fails before it can be committed, on any machine), and
+``test_registry_history`` walks the local snapshots under data/processed.
 """
 
 from __future__ import annotations
 
+import io
+import subprocess
 from pathlib import Path
 
 import polars as pl
@@ -171,3 +176,19 @@ def test_registry_history() -> None:
     for older, newer in zip(chain, chain[1:], strict=False):
         problems = check_append_only(pl.read_parquet(older), pl.read_parquet(newer))
         assert problems == [], f"{older.name} -> {newer.name}: {problems}"
+
+
+def test_committed_registry_is_append_only() -> None:
+    """Working-tree registry/ must extend the registry committed at HEAD (cross-machine guard)."""
+    rel = "registry/id_registry.parquet"
+    current = REPO / rel
+    try:
+        blob = subprocess.run(
+            ["git", "show", f"HEAD:{rel}"], cwd=REPO, capture_output=True, check=True
+        ).stdout
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pytest.skip("no registry committed at HEAD yet")
+    if not current.exists():
+        pytest.fail(f"{rel} is committed at HEAD but missing from the working tree")
+    problems = check_append_only(pl.read_parquet(io.BytesIO(blob)), pl.read_parquet(current))
+    assert problems == [], problems

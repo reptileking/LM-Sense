@@ -226,6 +226,7 @@ def write_table(
     *,
     row_group_size: int = 128_000,
     stats: Mapping[str, Any] | None = None,
+    compression_level: int | None = None,
 ) -> Path:
     """Write a whole table with provenance metadata (+ sidecar)."""
     path = resolve(path)
@@ -234,7 +235,13 @@ def write_table(
     md.update(prov.parquet_metadata())
     table = table.replace_schema_metadata(md)
     tmp = path.with_name(path.name + ".tmp")
-    pq.write_table(table, tmp, row_group_size=row_group_size, compression="zstd")
+    pq.write_table(
+        table,
+        tmp,
+        row_group_size=row_group_size,
+        compression="zstd",
+        compression_level=compression_level,
+    )
     tmp.replace(path)
     prov.write_sidecar(path, stats=stats)
     LOG.info("wrote %s (%d rows, %.1f MB)", _rel(path), table.num_rows, path.stat().st_size / 1e6)

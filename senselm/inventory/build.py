@@ -19,14 +19,13 @@
 from __future__ import annotations
 
 import logging
-import shutil
 from typing import Any
 
 import polars as pl
 
 from senselm.common import Provenance, dump_json, load_config, resolve, stage_args, write_table
 from senselm.inventory.align import is_header
-from senselm.inventory.ids import Layout, assign_ids, check_append_only
+from senselm.inventory.ids import Layout, assign_ids, check_append_only, from_ledger, to_ledger
 from senselm.inventory.policy import assign_clusters
 
 LOG = logging.getLogger("senselm.inventory.build")
@@ -158,6 +157,20 @@ def canonical_senses(
         pl.col("line_no").filter(pl.col("source") == "wiktionary").min().alias("wikt_line"),
         pl.col("source_version").unique().sort().alias("source_versions"),
     )
+    # exact duplicates removed in normalise (dedupe_map) are members too: they matter for ID
+    # continuity if a later dump changes which duplicate comes first
+    extra = (
+        clusters.join(senses.select("source_id"), on="source_id", how="anti")
+        .sort("source_id")
+        .group_by("cluster")
+        .agg(pl.struct("source", "source_id").alias("extra_members"))
+    )
+    agg = agg.join(extra, on="cluster", how="left", maintain_order="left").with_columns(
+        pl.when(pl.col("extra_members").is_not_null())
+        .then(pl.concat_list("members", "extra_members"))
+        .otherwise(pl.col("members"))
+        .alias("members")
+    ).drop("extra_members")
     agg = agg.with_columns(
         pl.coalesce("_w_lemma", "_any_lemma").alias("lemma"),
         pl.coalesce("_w_upos", "_any_upos").alias("upos"),
@@ -238,6 +251,14 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
         prev_lem = pl.read_parquet(lem_path) if lem_path.exists() else None
         if prev is not None:
             prov.add_input(reg_path)
+        elif outs.get("registry_commit_dir"):
+            # data/ was lost (fresh machine): continue from the committed ledger (D-025)
+            ledger = resolve(outs["registry_commit_dir"]) / "id_registry.parquet"
+            lemmas = resolve(outs["registry_commit_dir"]) / "lemma_registry.parquet"
+            if ledger.exists() and lemmas.exists():
+                LOG.warning("no %s: continuing from committed ledger %s", reg_path, ledger)
+                prev, prev_lem = from_ledger(pl.read_parquet(ledger)), pl.read_parquet(lemmas)
+                prov.add_input(ledger)
         reg, lem, istats = assign_ids(
             inv.select(
                 "canonical_key",
@@ -270,21 +291,28 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
             hist.mkdir(parents=True, exist_ok=True)
             seq = len(list(hist.glob("id_registry.*.parquet")))  # name order = chronological order
             prev_build = prev["created_in"].max()
-            shutil.copy2(reg_path, hist / f"id_registry.{seq:04d}.{prev_build}.parquet")
+            prev.write_parquet(hist / f"id_registry.{seq:04d}.{prev_build}.parquet", compression="zstd")
         reg_prov = Provenance(
             stage="inventory.build.registry", config=cfg, extra={"layout": layout.to_dict()}
         )
         reg_prov.source_versions = prov.source_versions
         write_table(reg.to_arrow(), reg_path, reg_prov, stats=istats)
         write_table(lem.to_arrow(), lem_path, reg_prov)
-        if outs.get("registry_commit_dir"):  # durable, git-tracked copy (D-025)
+        if outs.get("registry_commit_dir"):  # durable, git-tracked ledger (D-025)
             commit_dir = resolve(outs["registry_commit_dir"])
-            commit_dir.mkdir(parents=True, exist_ok=True)
-            for src in (reg_path, lem_path):
-                shutil.copy2(src, commit_dir / src.name)
-                shutil.copy2(
-                    src.with_name(src.name + ".meta.json"), commit_dir / (src.name + ".meta.json")
-                )
+            write_table(
+                to_ledger(reg).to_arrow(),
+                commit_dir / "id_registry.parquet",
+                reg_prov,
+                stats=istats,
+                compression_level=19,
+            )
+            write_table(
+                lem.to_arrow(),
+                commit_dir / "lemma_registry.parquet",
+                reg_prov,
+                compression_level=19,
+            )
     inv = inv.drop("tier", "rank_key", "pos_dominance", "wikt_line")
     prov.extra["layout"] = cfg.get("ids", {}).get("layout")
     write_table(inv.to_arrow(), outs["inventory"], prov, stats=stats)

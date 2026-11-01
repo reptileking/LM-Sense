@@ -41,6 +41,12 @@ counts (the coarse build issues no IDs; see "IDs and policy changes" below).
 * **F4 — one-to-one.** A sense merges with at most one sense of the other source (greedy,
   highest similarity first). Where one source is finer, its extra senses survive as separate
   canonical senses instead of being swallowed by the coarser source's sense.
+* **F5 — lineage absorption.** Exception to F4 inside one Wiktionary entry: when a WordNet
+  sense is matched to a Wiktionary sense, it also absorbs that sense's unmatched *ancestors*
+  and its *unique* unmatched descendant whose own similarity to the WordNet sense passes F3.
+  A parent and a subsense that both paraphrase one WordNet sense paraphrase each other. If
+  several children qualify, none is absorbed: siblings are distinct finer senses and are never
+  merged with each other.
 
 ## Coarse policy (counts only)
 
@@ -62,14 +68,20 @@ senses into one.
 | knob | fine | coarse | effect |
 |---|---|---|---|
 | `subsenses` | `keep` | `collapse` | Wiktionary subsense handling |
-| `auto_merge_threshold` | 0.68 | 0.60 | cosine at/above which a cross-source pair merges |
-| `separate_threshold` | 0.60 | 0.52 | cosine at/below which a pair never merges; between the two, only an LLM verdict merges |
+| `auto_merge_threshold` | 0.69 | 0.59 | cosine at/above which a cross-source pair merges |
+| `separate_threshold` | 0.55 | 0.50 | cosine at/below which a pair never merges; between the two, only an LLM verdict merges |
+| `tune_metric` | F0.5 | F1 | metric maximised on the gold dev half when choosing `auto_merge_threshold` |
 | `judge_accept` | `[same]` | `[same, related]` | judge verdicts that allow a merge in the band |
 | `matching` | `one_to_one` | `many_to_one` | see F4 / C3 |
+| `absorb_lineage` | `true` | n/a (subsenses collapse) | see F5 |
 
 The thresholds are tuned on the dev half of the gold set (`eval/alignment_eval.md`) and the
-precision/recall at the configured values are reported in docs/phase1_report.md. A **finer**
-inventory than "fine" is obtained by raising `auto_merge_threshold` (at 1.0 nothing merges:
+precision/recall at the configured values are reported in docs/phase1_report.md. The fine
+policy is tuned for F0.5 (precision counts double) because it issues the permanent IDs and a
+false merge destroys a distinction irreversibly, whereas a false split only leaves a
+near-duplicate token. Below cosine 0.55 only 2 of 83 gold pairs are `same`; at ≥ 0.80, 48 of 49.
+
+A **finer** inventory than "fine" is obtained by raising `auto_merge_threshold` (at 1.0 nothing merges:
 the upper bound is the number of source senses); a **coarser** one by lowering the coarse
 threshold or switching to `components`.
 

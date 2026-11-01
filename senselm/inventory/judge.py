@@ -7,7 +7,9 @@ Spending money requires all three: ``llm_judge.enabled: true``, ``llm_judge.dry_
 and ``--execute``. Every run first prints a cost estimate.
 
 * Pairs judged: candidate pairs with ``judge_band.low < cosine < judge_band.high`` that are
-  not already in the verdict cache (``llm_judge.cache_path``).
+  not already in the verdict cache (``llm_judge.cache_path``); with ``relevant_only`` (default)
+  only those whose verdict can change the fine policy's outcome (both senses not yet merged,
+  pair among the top-k candidates of one of its senses).
 * Requests go through the Message Batches API (50% price) in chunks of
   ``chunk_requests``. Before each chunk the **hard cap** ``max_spend_gbp`` is checked
   against: actual spend so far + the chunk's *worst case* (every request using
@@ -35,6 +37,7 @@ from typing import Any
 import polars as pl
 
 from senselm.common import dump_json, load_config, resolve, setup_logging
+from senselm.inventory.policy import assign_clusters
 
 LOG = logging.getLogger("senselm.inventory.judge")
 
@@ -139,11 +142,57 @@ def estimate(messages: list[str], jcfg: dict[str, Any], client: Any | None = Non
     )
 
 
+def decision_relevant(pairs: pl.DataFrame, cfg: dict[str, Any]) -> pl.DataFrame:
+    """Band pairs whose verdict can change the fine policy's outcome.
+
+    Under one-to-one matching a verdict is ignored when either sense is already merged by an
+    auto-merge edge, and only an endpoint's best remaining candidates can win the greedy match.
+    Keeps band pairs with both endpoints unmatched that rank within ``top_k`` (by cosine) for
+    their OEWN sense or for their Wiktionary sense.
+    """
+    jcfg = cfg["llm_judge"]
+    policy = load_config(resolve(jcfg["policy_config"]))["policy"]
+    senses = pl.read_parquet(
+        resolve(cfg["input"]),
+        columns=[
+            "source",
+            "source_id",
+            "entry_key",
+            "gloss",
+            "gloss_path",
+            "line_no",
+            "sense_rank",
+        ],
+    )
+    clusters, _ = assign_clusters(senses, pairs, {**policy, "judge_accept": []})
+    src = clusters.join(senses.select("source_id", "source"), on="source_id", how="left")
+    mixed = (
+        src.group_by("cluster").agg(pl.col("source").n_unique().alias("n")).filter(pl.col("n") > 1)
+    )
+    matched = set(src.join(mixed, on="cluster")["source_id"].to_list())
+    band = cfg["judge_band"]
+    k = int(jcfg.get("top_k", 1))
+    sel = pairs.filter(
+        (pl.col("cosine") > band["low"])
+        & (pl.col("cosine") < band["high"])
+        & ~pl.col("oewn_id").is_in(list(matched))
+        & ~pl.col("wikt_id").is_in(list(matched))
+    )
+    sel = sel.with_columns(
+        pl.col("cosine").rank("ordinal", descending=True).over("oewn_id").alias("r_o"),
+        pl.col("cosine").rank("ordinal", descending=True).over("wikt_id").alias("r_w"),
+    )
+    return sel.filter((pl.col("r_o") <= k) | (pl.col("r_w") <= k)).drop("r_o", "r_w")
+
+
 def band_requests(cfg: dict[str, Any]) -> pl.DataFrame:
-    """Pairs in the judge band (minus cached verdicts), with the text of both senses."""
+    """Pairs to judge (minus cached verdicts), with the text of both senses."""
     band = cfg["judge_band"]
     pairs = pl.read_parquet(resolve(cfg["output"]))
-    sel = pairs.filter((pl.col("cosine") > band["low"]) & (pl.col("cosine") < band["high"]))
+    if cfg["llm_judge"].get("relevant_only", True):
+        sel = decision_relevant(pairs.sort("group_key", "oewn_id", "wikt_id"), cfg)
+    else:
+        sel = pairs.filter((pl.col("cosine") > band["low"]) & (pl.col("cosine") < band["high"]))
     cache = resolve(cfg["llm_judge"]["cache_path"])
     if cache.exists():
         sel = sel.join(

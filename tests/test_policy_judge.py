@@ -68,6 +68,30 @@ def test_one_to_one_keeps_finer_distinctions() -> None:
     assert st["merge_edges"] == 2 and st["clusters"] == 4
 
 
+def test_lineage_absorption_merges_paraphrasing_parent_and_child_only() -> None:
+    # w1 and w2 are sibling subsenses of w0. o1 matches the parent w0 best.
+    def with_o1(scores: list[float]) -> pl.DataFrame:
+        return PAIRS.with_columns(
+            pl.when(pl.col("oewn_id") == "o1")
+            .then(pl.Series(scores * 2))
+            .otherwise(pl.col("cosine"))
+            .alias("cosine")
+        )
+
+    one_child = with_o1([0.90, 0.85, 0.40, 0.30])  # only w1 also paraphrases o1
+    assert clusters_of(assign_clusters(SENSES, one_child, policy())[0])["w1"] == "w1"
+    c = clusters_of(assign_clusters(SENSES, one_child, policy(absorb_lineage=True))[0])
+    assert c["w0"] == c["w1"] == c["o1"]  # unique paraphrasing child absorbed
+
+    two_children = with_o1([0.90, 0.85, 0.82, 0.30])  # both siblings eligible
+    c = clusters_of(assign_clusters(SENSES, two_children, policy(absorb_lineage=True))[0])
+    assert c["w0"] == c["o1"] and c["w1"] == "w1" and c["w2"] == "w2"  # siblings never merged
+
+    child_first = with_o1([0.80, 0.95, 0.40, 0.30])  # o1 matches the subsense w1 best
+    c = clusters_of(assign_clusters(SENSES, child_first, policy(absorb_lineage=True))[0])
+    assert c["w1"] == c["w0"] == c["o1"]  # eligible ancestor absorbed
+
+
 def test_judge_band_requires_verdict() -> None:
     p = PAIRS.with_columns(
         pl.when(pl.col("wikt_id") == "w2")

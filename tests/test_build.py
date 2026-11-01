@@ -146,3 +146,20 @@ def test_rebuild_is_deterministic_and_append_only(pipeline: dict[str, Any]) -> N
     assert list(
         (pipeline["tmp"] / "hist").glob("id_registry.*.parquet")
     )  # previous version snapshotted
+
+
+def test_rebuild_from_committed_ledger_after_data_loss(pipeline: dict[str, Any]) -> None:
+    """Fresh machine: data/processed is gone, only the git-tracked ledger remains."""
+    p, icfg = pipeline["paths"], pipeline["icfg"]
+    ledger_dir = pipeline["tmp"] / "registry"
+    cfg = {**icfg, "outputs": {**icfg["outputs"], "registry_commit_dir": str(ledger_dir)}}
+    build.run(cfg)
+    reg1 = pl.read_parquet(p["reg"])
+    assert (ledger_dir / "id_registry.parquet").exists()
+    assert "gloss" not in pl.read_parquet(ledger_dir / "id_registry.parquet").columns
+    Path(p["reg"]).unlink()
+    Path(p["lem"]).unlink()
+    build.run(cfg)
+    reg2 = pl.read_parquet(p["reg"])
+    assert check_append_only(reg1, reg2) == []
+    assert reg1.select("token_id", "canonical_key").equals(reg2.select("token_id", "canonical_key"))

@@ -299,3 +299,22 @@ def check_append_only(old: pl.DataFrame, new: pl.DataFrame) -> list[str]:
             f"{revived.height} deprecated ids were revived, e.g. {revived['token_id'][:5].to_list()}"
         )
     return problems
+
+
+def to_ledger(reg: pl.DataFrame) -> pl.DataFrame:
+    """Slim, git-committable form of the registry: no glosses, and ``members`` replaced by
+    ``other_members`` (members minus the anchor; empty for most senses)."""
+    return reg.with_columns(
+        pl.col("members")
+        .list.set_difference(pl.concat_list("canonical_key"))
+        .list.sort()
+        .alias("other_members")
+    ).drop("gloss", "members")
+
+
+def from_ledger(ledger: pl.DataFrame) -> pl.DataFrame:
+    """Inverse of :func:`to_ledger` (glosses come back as null)."""
+    return ledger.with_columns(
+        pl.concat_list("canonical_key", "other_members").list.unique().list.sort().alias("members"),
+        pl.lit(None, dtype=pl.String).alias("gloss"),
+    ).select(list(REGISTRY_SCHEMA))
