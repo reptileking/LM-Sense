@@ -1,0 +1,4429 @@
+{
+  "build": "v1.0",
+  "embedding": {
+    "bytes_per_param": 2,
+    "domain_rows": 926,
+    "lemma_rows": 2147154,
+    "sense_index_rows": 1024,
+    "table": [
+      {
+        "d": 512,
+        "memory_GB": 2.62,
+        "params": 1309881856,
+        "params_M": 1309.9,
+        "scheme": "naive V x d",
+        "vs_naive": 1.0
+      },
+      {
+        "d": 512,
+        "memory_GB": 2.2,
+        "params": 1100341248,
+        "params_M": 1100.3,
+        "scheme": "E_lemma + E_sense_index + E_domain",
+        "vs_naive": 0.84
+      },
+      {
+        "d": 512,
+        "memory_GB": 2.53,
+        "params": 1263584960,
+        "params_M": 1263.6,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=64)",
+        "vs_naive": 0.965
+      },
+      {
+        "d": 512,
+        "memory_GB": 0.33,
+        "params": 163768000,
+        "params_M": 163.8,
+        "scheme": "low-rank V x r + r x d (r=64)",
+        "vs_naive": 0.125
+      },
+      {
+        "d": 512,
+        "memory_GB": 2.85,
+        "params": 1427352960,
+        "params_M": 1427.4,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=128)",
+        "vs_naive": 1.09
+      },
+      {
+        "d": 512,
+        "memory_GB": 0.66,
+        "params": 327536000,
+        "params_M": 327.5,
+        "scheme": "low-rank V x r + r x d (r=128)",
+        "vs_naive": 0.25
+      },
+      {
+        "d": 512,
+        "memory_GB": 3.51,
+        "params": 1754888960,
+        "params_M": 1754.9,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=256)",
+        "vs_naive": 1.34
+      },
+      {
+        "d": 512,
+        "memory_GB": 1.31,
+        "params": 655072000,
+        "params_M": 655.1,
+        "scheme": "low-rank V x r + r x d (r=256)",
+        "vs_naive": 0.5
+      },
+      {
+        "d": 512,
+        "memory_GB": 0.42,
+        "params": 208568000,
+        "params_M": 208.6,
+        "scheme": "dense top 100k senses + low-rank tail (r=64)",
+        "vs_naive": 0.159
+      },
+      {
+        "d": 512,
+        "memory_GB": 0.55,
+        "params": 275768000,
+        "params_M": 275.8,
+        "scheme": "dense top 250k senses + low-rank tail (r=64)",
+        "vs_naive": 0.211
+      },
+      {
+        "d": 768,
+        "memory_GB": 3.93,
+        "params": 1964822784,
+        "params_M": 1964.8,
+        "scheme": "naive V x d",
+        "vs_naive": 1.0
+      },
+      {
+        "d": 768,
+        "memory_GB": 3.3,
+        "params": 1650511872,
+        "params_M": 1650.5,
+        "scheme": "E_lemma + E_sense_index + E_domain",
+        "vs_naive": 0.84
+      },
+      {
+        "d": 768,
+        "memory_GB": 3.63,
+        "params": 1813509824,
+        "params_M": 1813.5,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=64)",
+        "vs_naive": 0.923
+      },
+      {
+        "d": 768,
+        "memory_GB": 0.33,
+        "params": 163784384,
+        "params_M": 163.8,
+        "scheme": "low-rank V x r + r x d (r=64)",
+        "vs_naive": 0.083
+      },
+      {
+        "d": 768,
+        "memory_GB": 3.95,
+        "params": 1977294208,
+        "params_M": 1977.3,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=128)",
+        "vs_naive": 1.006
+      },
+      {
+        "d": 768,
+        "memory_GB": 0.66,
+        "params": 327568768,
+        "params_M": 327.6,
+        "scheme": "low-rank V x r + r x d (r=128)",
+        "vs_naive": 0.167
+      },
+      {
+        "d": 768,
+        "memory_GB": 4.61,
+        "params": 2304862976,
+        "params_M": 2304.9,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=256)",
+        "vs_naive": 1.173
+      },
+      {
+        "d": 768,
+        "memory_GB": 1.31,
+        "params": 655137536,
+        "params_M": 655.1,
+        "scheme": "low-rank V x r + r x d (r=256)",
+        "vs_naive": 0.333
+      },
+      {
+        "d": 768,
+        "memory_GB": 0.47,
+        "params": 234184384,
+        "params_M": 234.2,
+        "scheme": "dense top 100k senses + low-rank tail (r=64)",
+        "vs_naive": 0.119
+      },
+      {
+        "d": 768,
+        "memory_GB": 0.68,
+        "params": 339784384,
+        "params_M": 339.8,
+        "scheme": "dense top 250k senses + low-rank tail (r=64)",
+        "vs_naive": 0.173
+      },
+      {
+        "d": 1024,
+        "memory_GB": 5.24,
+        "params": 2619763712,
+        "params_M": 2619.8,
+        "scheme": "naive V x d",
+        "vs_naive": 1.0
+      },
+      {
+        "d": 1024,
+        "memory_GB": 4.4,
+        "params": 2200682496,
+        "params_M": 2200.7,
+        "scheme": "E_lemma + E_sense_index + E_domain",
+        "vs_naive": 0.84
+      },
+      {
+        "d": 1024,
+        "memory_GB": 4.73,
+        "params": 2363434688,
+        "params_M": 2363.4,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=64)",
+        "vs_naive": 0.902
+      },
+      {
+        "d": 1024,
+        "memory_GB": 0.33,
+        "params": 163800768,
+        "params_M": 163.8,
+        "scheme": "low-rank V x r + r x d (r=64)",
+        "vs_naive": 0.063
+      },
+      {
+        "d": 1024,
+        "memory_GB": 5.05,
+        "params": 2527235456,
+        "params_M": 2527.2,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=128)",
+        "vs_naive": 0.965
+      },
+      {
+        "d": 1024,
+        "memory_GB": 0.66,
+        "params": 327601536,
+        "params_M": 327.6,
+        "scheme": "low-rank V x r + r x d (r=128)",
+        "vs_naive": 0.125
+      },
+      {
+        "d": 1024,
+        "memory_GB": 5.71,
+        "params": 2854836992,
+        "params_M": 2854.8,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=256)",
+        "vs_naive": 1.09
+      },
+      {
+        "d": 1024,
+        "memory_GB": 1.31,
+        "params": 655203072,
+        "params_M": 655.2,
+        "scheme": "low-rank V x r + r x d (r=256)",
+        "vs_naive": 0.25
+      },
+      {
+        "d": 1024,
+        "memory_GB": 0.52,
+        "params": 259800768,
+        "params_M": 259.8,
+        "scheme": "dense top 100k senses + low-rank tail (r=64)",
+        "vs_naive": 0.099
+      },
+      {
+        "d": 1024,
+        "memory_GB": 0.81,
+        "params": 403800768,
+        "params_M": 403.8,
+        "scheme": "dense top 250k senses + low-rank tail (r=64)",
+        "vs_naive": 0.154
+      },
+      {
+        "d": 2048,
+        "memory_GB": 10.48,
+        "params": 5239527424,
+        "params_M": 5239.5,
+        "scheme": "naive V x d",
+        "vs_naive": 1.0
+      },
+      {
+        "d": 2048,
+        "memory_GB": 8.8,
+        "params": 4401364992,
+        "params_M": 4401.4,
+        "scheme": "E_lemma + E_sense_index + E_domain",
+        "vs_naive": 0.84
+      },
+      {
+        "d": 2048,
+        "memory_GB": 9.13,
+        "params": 4563134144,
+        "params_M": 4563.1,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=64)",
+        "vs_naive": 0.871
+      },
+      {
+        "d": 2048,
+        "memory_GB": 0.33,
+        "params": 163866304,
+        "params_M": 163.9,
+        "scheme": "low-rank V x r + r x d (r=64)",
+        "vs_naive": 0.031
+      },
+      {
+        "d": 2048,
+        "memory_GB": 9.45,
+        "params": 4727000448,
+        "params_M": 4727.0,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=128)",
+        "vs_naive": 0.902
+      },
+      {
+        "d": 2048,
+        "memory_GB": 0.66,
+        "params": 327732608,
+        "params_M": 327.7,
+        "scheme": "low-rank V x r + r x d (r=128)",
+        "vs_naive": 0.063
+      },
+      {
+        "d": 2048,
+        "memory_GB": 10.11,
+        "params": 5054733056,
+        "params_M": 5054.7,
+        "scheme": "E_lemma + E_domain + low-rank sense residual (r=256)",
+        "vs_naive": 0.965
+      },
+      {
+        "d": 2048,
+        "memory_GB": 1.31,
+        "params": 655465216,
+        "params_M": 655.5,
+        "scheme": "low-rank V x r + r x d (r=256)",
+        "vs_naive": 0.125
+      },
+      {
+        "d": 2048,
+        "memory_GB": 0.72,
+        "params": 362266304,
+        "params_M": 362.3,
+        "scheme": "dense top 100k senses + low-rank tail (r=64)",
+        "vs_naive": 0.069
+      },
+      {
+        "d": 2048,
+        "memory_GB": 1.32,
+        "params": 659866304,
+        "params_M": 659.9,
+        "scheme": "dense top 250k senses + low-rank tail (r=64)",
+        "vs_naive": 0.126
+      }
+    ],
+    "vocab_rows": 2558363
+  },
+  "id_space": {
+    "inventory_token_ids_active": 2557970,
+    "layout": {
+      "lemma_bits": 22,
+      "reserved_lemma_slots": 4096,
+      "sense_bits": 10,
+      "structural_base": 4290772992
+    },
+    "lemma_ids_active": 2147145,
+    "lemma_ids_issued": 2147145,
+    "lemma_slot_utilisation_pct": 51.242,
+    "lemma_slots_lexical": 4190207,
+    "lemmas_over_half_capacity": 0,
+    "lexical_id_space": 4290771968,
+    "max_sense_index": 177,
+    "sense_index_capacity": 1024,
+    "structural": {
+      "active": 393,
+      "by_category": {
+        "byte": 258,
+        "case": 4,
+        "digit": 10,
+        "morph": 32,
+        "prag": 8,
+        "punct": 56,
+        "space": 7,
+        "special": 12,
+        "variant": 6
+      },
+      "first_id": "0xFFC00000",
+      "slots_reserved": 4096,
+      "slots_used": 9
+    },
+    "token_id_utilisation_pct": 0.0596,
+    "token_ids_by_build": {
+      "v0.1": 1236563,
+      "v1.0": 1321407
+    },
+    "token_ids_by_status": {
+      "active": 2557970
+    },
+    "token_ids_issued": 2557970,
+    "top_sense_index": [
+      {
+        "lemma": "draw",
+        "max_sense_index": 177
+      },
+      {
+        "lemma": "Ivanivka",
+        "max_sense_index": 156
+      },
+      {
+        "lemma": "break",
+        "max_sense_index": 154
+      },
+      {
+        "lemma": "run",
+        "max_sense_index": 136
+      },
+      {
+        "lemma": "cut",
+        "max_sense_index": 123
+      },
+      {
+        "lemma": "Midway",
+        "max_sense_index": 118
+      },
+      {
+        "lemma": "set",
+        "max_sense_index": 115
+      },
+      {
+        "lemma": "take",
+        "max_sense_index": 108
+      },
+      {
+        "lemma": "Mykolaivka",
+        "max_sense_index": 107
+      },
+      {
+        "lemma": "drop",
+        "max_sense_index": 105
+      }
+    ]
+  },
+  "ledger_files": [
+    {
+      "bytes": 16918874,
+      "file": "id_registry-00000.parquet"
+    },
+    {
+      "bytes": 17288789,
+      "file": "id_registry-00001.parquet"
+    },
+    {
+      "bytes": 13993068,
+      "file": "id_registry-00002.parquet"
+    },
+    {
+      "bytes": 19715487,
+      "file": "lemma_registry.parquet"
+    },
+    {
+      "bytes": 25712,
+      "file": "structural_registry.parquet"
+    }
+  ],
+  "storage": [
+    {
+      "artefact": "raw downloads (data/raw)",
+      "bytes": 2478763715,
+      "files": 8
+    },
+    {
+      "artefact": "interim tables (data/interim, excl. embedding cache)",
+      "bytes": 2008891845,
+      "files": 26
+    },
+    {
+      "artefact": "embedding cache",
+      "bytes": 728616424,
+      "files": 1
+    },
+    {
+      "artefact": "inventory v1.0",
+      "bytes": 253890067,
+      "files": 1
+    },
+    {
+      "artefact": "ID registry (local, with glosses)",
+      "bytes": 158706492,
+      "files": 2
+    },
+    {
+      "artefact": "committed ledger (registry/)",
+      "bytes": 67941930,
+      "files": 5
+    },
+    {
+      "artefact": "structural registry",
+      "bytes": 25713,
+      "files": 1
+    }
+  ],
+  "total_vocabulary": 2558363,
+  "vocabulary": {
+    "by_domain": [
+      {
+        "domain": "(general)",
+        "senses": 991053
+      },
+      {
+        "domain": "taxonomy",
+        "senses": 963912
+      },
+      {
+        "domain": "chemistry",
+        "senses": 302829
+      },
+      {
+        "domain": "molecular-biology",
+        "senses": 37563
+      },
+      {
+        "domain": "medicine",
+        "senses": 22310
+      },
+      {
+        "domain": "organic-chemistry",
+        "senses": 15755
+      },
+      {
+        "domain": "pharmacology",
+        "senses": 11980
+      },
+      {
+        "domain": "biology",
+        "senses": 11210
+      },
+      {
+        "domain": "anatomy",
+        "senses": 8749
+      },
+      {
+        "domain": "zoology",
+        "senses": 7423
+      },
+      {
+        "domain": "biochemistry",
+        "senses": 7314
+      },
+      {
+        "domain": "computing",
+        "senses": 6977
+      },
+      {
+        "domain": "law",
+        "senses": 6425
+      },
+      {
+        "domain": "botany",
+        "senses": 5850
+      },
+      {
+        "domain": "music",
+        "senses": 5659
+      },
+      {
+        "domain": "mineralogy",
+        "senses": 5511
+      },
+      {
+        "domain": "mathematics",
+        "senses": 5277
+      },
+      {
+        "domain": "physics",
+        "senses": 5212
+      },
+      {
+        "domain": "pathology",
+        "senses": 4451
+      },
+      {
+        "domain": "military",
+        "senses": 4363
+      },
+      {
+        "domain": "politics",
+        "senses": 3809
+      },
+      {
+        "domain": "nautical",
+        "senses": 3803
+      },
+      {
+        "domain": "geology",
+        "senses": 3087
+      },
+      {
+        "domain": "astronomy",
+        "senses": 2955
+      },
+      {
+        "domain": "linguistics",
+        "senses": 2906
+      },
+      {
+        "domain": "genetics",
+        "senses": 2323
+      },
+      {
+        "domain": "grammar",
+        "senses": 2174
+      },
+      {
+        "domain": "psychology",
+        "senses": 2140
+      },
+      {
+        "domain": "finance",
+        "senses": 2038
+      },
+      {
+        "domain": "sports",
+        "senses": 1930
+      },
+      {
+        "domain": "surgery",
+        "senses": 1815
+      },
+      {
+        "domain": "mythology",
+        "senses": 1807
+      },
+      {
+        "domain": "inorganic-chemistry",
+        "senses": 1785
+      },
+      {
+        "domain": "Christianity",
+        "senses": 1698
+      },
+      {
+        "domain": "lifestyle",
+        "senses": 1692
+      },
+      {
+        "domain": "aviation",
+        "senses": 1679
+      },
+      {
+        "domain": "video-games",
+        "senses": 1640
+      },
+      {
+        "domain": "philosophy",
+        "senses": 1519
+      },
+      {
+        "domain": "architecture",
+        "senses": 1471
+      },
+      {
+        "domain": "programming",
+        "senses": 1421
+      },
+      {
+        "domain": "geometry",
+        "senses": 1402
+      },
+      {
+        "domain": "rail-transport",
+        "senses": 1314
+      },
+      {
+        "domain": "economics",
+        "senses": 1280
+      },
+      {
+        "domain": "cooking",
+        "senses": 1220
+      },
+      {
+        "domain": "education",
+        "senses": 1193
+      },
+      {
+        "domain": "baseball",
+        "senses": 1081
+      },
+      {
+        "domain": "business",
+        "senses": 1074
+      },
+      {
+        "domain": "electronics",
+        "senses": 1045
+      },
+      {
+        "domain": "science-fiction",
+        "senses": 1032
+      },
+      {
+        "domain": "cricket",
+        "senses": 1004
+      },
+      {
+        "domain": "automotive",
+        "senses": 984
+      },
+      {
+        "domain": "social-sciences",
+        "senses": 938
+      },
+      {
+        "domain": "immunology",
+        "senses": 923
+      },
+      {
+        "domain": "art",
+        "senses": 907
+      },
+      {
+        "domain": "health-care",
+        "senses": 868
+      },
+      {
+        "domain": "heraldry",
+        "senses": 853
+      },
+      {
+        "domain": "soccer",
+        "senses": 828
+      },
+      {
+        "domain": "statistics",
+        "senses": 815
+      },
+      {
+        "domain": "religion",
+        "senses": 806
+      },
+      {
+        "domain": "physiology",
+        "senses": 801
+      },
+      {
+        "domain": "entomology",
+        "senses": 784
+      },
+      {
+        "domain": "mining",
+        "senses": 772
+      },
+      {
+        "domain": "software",
+        "senses": 753
+      },
+      {
+        "domain": "logic",
+        "senses": 740
+      },
+      {
+        "domain": "cytology",
+        "senses": 715
+      },
+      {
+        "domain": "geography",
+        "senses": 715
+      },
+      {
+        "domain": "film",
+        "senses": 677
+      },
+      {
+        "domain": "Islam",
+        "senses": 673
+      },
+      {
+        "domain": "sexual activity",
+        "senses": 663
+      },
+      {
+        "domain": "engineering",
+        "senses": 648
+      },
+      {
+        "domain": "photography",
+        "senses": 639
+      },
+      {
+        "domain": "ecology",
+        "senses": 631
+      },
+      {
+        "domain": "meteorology",
+        "senses": 629
+      },
+      {
+        "domain": "biblical",
+        "senses": 621
+      },
+      {
+        "domain": "mycology",
+        "senses": 588
+      },
+      {
+        "domain": "phonetics",
+        "senses": 585
+      },
+      {
+        "domain": "printing",
+        "senses": 579
+      },
+      {
+        "domain": "paleontology",
+        "senses": 554
+      },
+      {
+        "domain": "agriculture",
+        "senses": 544
+      },
+      {
+        "domain": "theology",
+        "senses": 534
+      },
+      {
+        "domain": "typography",
+        "senses": 519
+      },
+      {
+        "domain": "computer",
+        "senses": 518
+      },
+      {
+        "domain": "sociology",
+        "senses": 517
+      },
+      {
+        "domain": "chess",
+        "senses": 515
+      },
+      {
+        "domain": "telecommunications",
+        "senses": 513
+      },
+      {
+        "domain": "computer-graphics",
+        "senses": 513
+      },
+      {
+        "domain": "poker",
+        "senses": 509
+      },
+      {
+        "domain": "card-games",
+        "senses": 509
+      },
+      {
+        "domain": "dentistry",
+        "senses": 494
+      },
+      {
+        "domain": "law-enforcement",
+        "senses": 492
+      },
+      {
+        "domain": "fantasy",
+        "senses": 464
+      },
+      {
+        "domain": "psychiatry",
+        "senses": 448
+      },
+      {
+        "domain": "algebra",
+        "senses": 444
+      },
+      {
+        "domain": "archaeology",
+        "senses": 440
+      },
+      {
+        "domain": "history",
+        "senses": 425
+      },
+      {
+        "domain": "technology",
+        "senses": 423
+      },
+      {
+        "domain": "firearms",
+        "senses": 422
+      },
+      {
+        "domain": "theater",
+        "senses": 420
+      },
+      {
+        "domain": "television",
+        "senses": 419
+      },
+      {
+        "domain": "terrorism",
+        "senses": 407
+      },
+      {
+        "domain": "marketing",
+        "senses": 404
+      },
+      {
+        "domain": "American-football",
+        "senses": 403
+      },
+      {
+        "domain": "Buddhism",
+        "senses": 384
+      },
+      {
+        "domain": "sciences",
+        "senses": 379
+      },
+      {
+        "domain": "construction",
+        "senses": 379
+      },
+      {
+        "domain": "anthropology",
+        "senses": 376
+      },
+      {
+        "domain": "fishing",
+        "senses": 362
+      },
+      {
+        "domain": "graph-theory",
+        "senses": 360
+      },
+      {
+        "domain": "science",
+        "senses": 342
+      },
+      {
+        "domain": "fiction",
+        "senses": 340
+      },
+      {
+        "domain": "golf",
+        "senses": 340
+      },
+      {
+        "domain": "poetry",
+        "senses": 337
+      },
+      {
+        "domain": "networking",
+        "senses": 335
+      },
+      {
+        "domain": "literature",
+        "senses": 332
+      },
+      {
+        "domain": "basketball",
+        "senses": 330
+      },
+      {
+        "domain": "accounting",
+        "senses": 322
+      },
+      {
+        "domain": "motor-racing",
+        "senses": 312
+      },
+      {
+        "domain": "graphical-user-interface",
+        "senses": 311
+      },
+      {
+        "domain": "banking",
+        "senses": 311
+      },
+      {
+        "domain": "astrology",
+        "senses": 309
+      },
+      {
+        "domain": "phonology",
+        "senses": 308
+      },
+      {
+        "domain": "information-science",
+        "senses": 305
+      },
+      {
+        "domain": "cycling",
+        "senses": 301
+      },
+      {
+        "domain": "BDSM",
+        "senses": 301
+      },
+      {
+        "domain": "journalism",
+        "senses": 293
+      },
+      {
+        "domain": "publishing",
+        "senses": 291
+      },
+      {
+        "domain": "gaming",
+        "senses": 289
+      },
+      {
+        "domain": "databases",
+        "senses": 288
+      },
+      {
+        "domain": "neuroanatomy",
+        "senses": 286
+      },
+      {
+        "domain": "ornithology",
+        "senses": 276
+      },
+      {
+        "domain": "heading",
+        "senses": 271
+      },
+      {
+        "domain": "topology",
+        "senses": 271
+      },
+      {
+        "domain": "gambling",
+        "senses": 262
+      },
+      {
+        "domain": "Roman-Catholicism",
+        "senses": 257
+      },
+      {
+        "domain": "sumo",
+        "senses": 253
+      },
+      {
+        "domain": "ice-hockey",
+        "senses": 250
+      },
+      {
+        "domain": "optics",
+        "senses": 248
+      },
+      {
+        "domain": "neurology",
+        "senses": 248
+      },
+      {
+        "domain": "climbing",
+        "senses": 248
+      },
+      {
+        "domain": "computing-theory",
+        "senses": 241
+      },
+      {
+        "domain": "broadcasting",
+        "senses": 240
+      },
+      {
+        "domain": "cryptography",
+        "senses": 240
+      },
+      {
+        "domain": "horticulture",
+        "senses": 237
+      },
+      {
+        "domain": "transport",
+        "senses": 233
+      },
+      {
+        "domain": "computer science",
+        "senses": 232
+      },
+      {
+        "domain": "games",
+        "senses": 229
+      },
+      {
+        "domain": "rugby",
+        "senses": 225
+      },
+      {
+        "domain": "radio",
+        "senses": 222
+      },
+      {
+        "domain": "electricity",
+        "senses": 222
+      },
+      {
+        "domain": "folklore",
+        "senses": 221
+      },
+      {
+        "domain": "government",
+        "senses": 220
+      },
+      {
+        "domain": "clothing",
+        "senses": 216
+      },
+      {
+        "domain": "computer-hardware",
+        "senses": 216
+      },
+      {
+        "domain": "textiles",
+        "senses": 215
+      },
+      {
+        "domain": "metallurgy",
+        "senses": 212
+      },
+      {
+        "domain": "travel",
+        "senses": 210
+      },
+      {
+        "domain": "philately",
+        "senses": 204
+      },
+      {
+        "domain": "ichthyology",
+        "senses": 203
+      },
+      {
+        "domain": "virology",
+        "senses": 200
+      },
+      {
+        "domain": "fashion",
+        "senses": 198
+      },
+      {
+        "domain": "category-theory",
+        "senses": 194
+      },
+      {
+        "domain": "mathematical-analysis",
+        "senses": 194
+      },
+      {
+        "domain": "lexicography",
+        "senses": 193
+      },
+      {
+        "domain": "ophthalmology",
+        "senses": 193
+      },
+      {
+        "domain": "crystallography",
+        "senses": 192
+      },
+      {
+        "domain": "dance",
+        "senses": 191
+      },
+      {
+        "domain": "tennis",
+        "senses": 183
+      },
+      {
+        "domain": "metrology",
+        "senses": 182
+      },
+      {
+        "domain": "horse-racing",
+        "senses": 181
+      },
+      {
+        "domain": "dermatology",
+        "senses": 180
+      },
+      {
+        "domain": "bodybuilding",
+        "senses": 178
+      },
+      {
+        "domain": "set-theory",
+        "senses": 177
+      },
+      {
+        "domain": "prosody",
+        "senses": 175
+      },
+      {
+        "domain": "weaponry",
+        "senses": 175
+      },
+      {
+        "domain": "number-theory",
+        "senses": 174
+      },
+      {
+        "domain": "road",
+        "senses": 173
+      },
+      {
+        "domain": "bridge",
+        "senses": 170
+      },
+      {
+        "domain": "mechanical",
+        "senses": 164
+      },
+      {
+        "domain": "management",
+        "senses": 164
+      },
+      {
+        "domain": "linear-algebra",
+        "senses": 164
+      },
+      {
+        "domain": "Catholicism",
+        "senses": 162
+      },
+      {
+        "domain": "arithmetic",
+        "senses": 162
+      },
+      {
+        "domain": "electrical",
+        "senses": 161
+      },
+      {
+        "domain": "oncology",
+        "senses": 160
+      },
+      {
+        "domain": "manufacturing",
+        "senses": 158
+      },
+      {
+        "domain": "boxing",
+        "senses": 155
+      },
+      {
+        "domain": "surfing",
+        "senses": 154
+      },
+      {
+        "domain": "fencing",
+        "senses": 153
+      },
+      {
+        "domain": "insurance",
+        "senses": 153
+      },
+      {
+        "domain": "mechanics",
+        "senses": 152
+      },
+      {
+        "domain": "skiing",
+        "senses": 151
+      },
+      {
+        "domain": "cardiology",
+        "senses": 149
+      },
+      {
+        "domain": "rocketry",
+        "senses": 149
+      },
+      {
+        "domain": "advertising",
+        "senses": 146
+      },
+      {
+        "domain": "numismatics",
+        "senses": 144
+      },
+      {
+        "domain": "astrophysics",
+        "senses": 143
+      },
+      {
+        "domain": "veterinary",
+        "senses": 143
+      },
+      {
+        "domain": "zootomy",
+        "senses": 141
+      },
+      {
+        "domain": "microbiology",
+        "senses": 140
+      },
+      {
+        "domain": "semantics",
+        "senses": 140
+      },
+      {
+        "domain": "firefighting",
+        "senses": 137
+      },
+      {
+        "domain": "naval",
+        "senses": 136
+      },
+      {
+        "domain": "gymnastics",
+        "senses": 135
+      },
+      {
+        "domain": "malacology",
+        "senses": 135
+      },
+      {
+        "domain": "humanities",
+        "senses": 131
+      },
+      {
+        "domain": "sewing",
+        "senses": 130
+      },
+      {
+        "domain": "Roman Catholic",
+        "senses": 128
+      },
+      {
+        "domain": "knitting",
+        "senses": 127
+      },
+      {
+        "domain": "cartography",
+        "senses": 126
+      },
+      {
+        "domain": "aeronautics",
+        "senses": 126
+      },
+      {
+        "domain": "cosmology",
+        "senses": 125
+      },
+      {
+        "domain": "property",
+        "senses": 123
+      },
+      {
+        "domain": "athletics",
+        "senses": 121
+      },
+      {
+        "domain": "ethics",
+        "senses": 120
+      },
+      {
+        "domain": "criminology",
+        "senses": 119
+      },
+      {
+        "domain": "signal-processing",
+        "senses": 117
+      },
+      {
+        "domain": "Judaism",
+        "senses": 116
+      },
+      {
+        "domain": "ecclesiastical",
+        "senses": 116
+      },
+      {
+        "domain": "espionage",
+        "senses": 115
+      },
+      {
+        "domain": "healthcare",
+        "senses": 115
+      },
+      {
+        "domain": "communication",
+        "senses": 115
+      },
+      {
+        "domain": "sexuality",
+        "senses": 115
+      },
+      {
+        "domain": "taxation",
+        "senses": 115
+      },
+      {
+        "domain": "oenology",
+        "senses": 114
+      },
+      {
+        "domain": "telephony",
+        "senses": 113
+      },
+      {
+        "domain": "sex",
+        "senses": 112
+      },
+      {
+        "domain": "underwater-diving",
+        "senses": 112
+      },
+      {
+        "domain": "cryptocurrencies",
+        "senses": 111
+      },
+      {
+        "domain": "hunting",
+        "senses": 110
+      },
+      {
+        "domain": "computer-languages",
+        "senses": 109
+      },
+      {
+        "domain": "alchemy",
+        "senses": 108
+      },
+      {
+        "domain": "professional-wrestling",
+        "senses": 108
+      },
+      {
+        "domain": "carpentry",
+        "senses": 107
+      },
+      {
+        "domain": "psychoanalysis",
+        "senses": 107
+      },
+      {
+        "domain": "sport",
+        "senses": 105
+      },
+      {
+        "domain": "commerce",
+        "senses": 104
+      },
+      {
+        "domain": "metalworking",
+        "senses": 101
+      },
+      {
+        "domain": "manner",
+        "senses": 101
+      },
+      {
+        "domain": "pornography",
+        "senses": 99
+      },
+      {
+        "domain": "oceanography",
+        "senses": 98
+      },
+      {
+        "domain": "paganism",
+        "senses": 98
+      },
+      {
+        "domain": "real-estate",
+        "senses": 98
+      },
+      {
+        "domain": "parapsychology",
+        "senses": 97
+      },
+      {
+        "domain": "martial-arts",
+        "senses": 97
+      },
+      {
+        "domain": "equestrianism",
+        "senses": 96
+      },
+      {
+        "domain": "curling",
+        "senses": 95
+      },
+      {
+        "domain": "forestry",
+        "senses": 95
+      },
+      {
+        "domain": "retail",
+        "senses": 94
+      },
+      {
+        "domain": "translation-studies",
+        "senses": 93
+      },
+      {
+        "domain": "thermodynamics",
+        "senses": 93
+      },
+      {
+        "domain": "algebraic-geometry",
+        "senses": 92
+      },
+      {
+        "domain": "hematology",
+        "senses": 91
+      },
+      {
+        "domain": "cinematography",
+        "senses": 91
+      },
+      {
+        "domain": "falconry",
+        "senses": 91
+      },
+      {
+        "domain": "cellular-automata",
+        "senses": 91
+      },
+      {
+        "domain": "hydrology",
+        "senses": 91
+      },
+      {
+        "domain": "embryology",
+        "senses": 90
+      },
+      {
+        "domain": "wrestling",
+        "senses": 89
+      },
+      {
+        "domain": "LGBT",
+        "senses": 89
+      },
+      {
+        "domain": "skateboarding",
+        "senses": 89
+      },
+      {
+        "domain": "narratology",
+        "senses": 89
+      },
+      {
+        "domain": "calculus",
+        "senses": 89
+      },
+      {
+        "domain": "toxicology",
+        "senses": 88
+      },
+      {
+        "domain": "weaving",
+        "senses": 88
+      },
+      {
+        "domain": "group-theory",
+        "senses": 85
+      },
+      {
+        "domain": "Greek mythology",
+        "senses": 85
+      },
+      {
+        "domain": "masonry",
+        "senses": 84
+      },
+      {
+        "domain": "roofing",
+        "senses": 84
+      },
+      {
+        "domain": "epidemiology",
+        "senses": 84
+      },
+      {
+        "domain": "weightlifting",
+        "senses": 83
+      },
+      {
+        "domain": "billiards",
+        "senses": 82
+      },
+      {
+        "domain": "furniture",
+        "senses": 82
+      },
+      {
+        "domain": "media",
+        "senses": 81
+      },
+      {
+        "domain": "technical",
+        "senses": 80
+      },
+      {
+        "domain": "birdwatching",
+        "senses": 79
+      },
+      {
+        "domain": "stock-ticker-symbol",
+        "senses": 79
+      },
+      {
+        "domain": "surveying",
+        "senses": 79
+      },
+      {
+        "domain": "rowing",
+        "senses": 78
+      },
+      {
+        "domain": "probability-theory",
+        "senses": 77
+      },
+      {
+        "domain": "political-science",
+        "senses": 75
+      },
+      {
+        "domain": "trading",
+        "senses": 75
+      },
+      {
+        "domain": "snooker",
+        "senses": 74
+      },
+      {
+        "domain": "snowboarding",
+        "senses": 74
+      },
+      {
+        "domain": "design",
+        "senses": 74
+      },
+      {
+        "domain": "orthography",
+        "senses": 73
+      },
+      {
+        "domain": "geopolitics",
+        "senses": 73
+      },
+      {
+        "domain": "writing",
+        "senses": 73
+      },
+      {
+        "domain": "trigonometry",
+        "senses": 71
+      },
+      {
+        "domain": "lichenology",
+        "senses": 71
+      },
+      {
+        "domain": "football",
+        "senses": 71
+      },
+      {
+        "domain": "neuroscience",
+        "senses": 71
+      },
+      {
+        "domain": "shipbuilding",
+        "senses": 69
+      },
+      {
+        "domain": "food",
+        "senses": 69
+      },
+      {
+        "domain": "New Testament",
+        "senses": 68
+      },
+      {
+        "domain": "woodworking",
+        "senses": 68
+      },
+      {
+        "domain": "copyright",
+        "senses": 67
+      },
+      {
+        "domain": "bowling",
+        "senses": 67
+      },
+      {
+        "domain": "ceramics",
+        "senses": 67
+      },
+      {
+        "domain": "emergency-medicine",
+        "senses": 67
+      },
+      {
+        "domain": "cosmetics",
+        "senses": 67
+      },
+      {
+        "domain": "bacteriology",
+        "senses": 65
+      },
+      {
+        "domain": "obstetrics",
+        "senses": 65
+      },
+      {
+        "domain": "body waste",
+        "senses": 64
+      },
+      {
+        "domain": "game-theory",
+        "senses": 64
+      },
+      {
+        "domain": "mahjong",
+        "senses": 63
+      },
+      {
+        "domain": "comics",
+        "senses": 63
+      },
+      {
+        "domain": "seduction-community",
+        "senses": 62
+      },
+      {
+        "domain": "stock-market",
+        "senses": 61
+      },
+      {
+        "domain": "drugs",
+        "senses": 61
+      },
+      {
+        "domain": "archery",
+        "senses": 61
+      },
+      {
+        "domain": "phytopathology",
+        "senses": 60
+      },
+      {
+        "domain": "petrology",
+        "senses": 60
+      },
+      {
+        "domain": "sociolinguistics",
+        "senses": 59
+      },
+      {
+        "domain": "computational",
+        "senses": 59
+      },
+      {
+        "domain": "glassblowing",
+        "senses": 58
+      },
+      {
+        "domain": "drama",
+        "senses": 58
+      },
+      {
+        "domain": "manga",
+        "senses": 57
+      },
+      {
+        "domain": "communism",
+        "senses": 57
+      },
+      {
+        "domain": "sailing",
+        "senses": 57
+      },
+      {
+        "domain": "acting",
+        "senses": 56
+      },
+      {
+        "domain": "climatology",
+        "senses": 56
+      },
+      {
+        "domain": "pool",
+        "senses": 56
+      },
+      {
+        "domain": "planetology",
+        "senses": 56
+      },
+      {
+        "domain": "demoscene",
+        "senses": 55
+      },
+      {
+        "domain": "feminism",
+        "senses": 55
+      },
+      {
+        "domain": "palynology",
+        "senses": 55
+      },
+      {
+        "domain": "baking",
+        "senses": 54
+      },
+      {
+        "domain": "alternative-medicine",
+        "senses": 53
+      },
+      {
+        "domain": "exercise",
+        "senses": 53
+      },
+      {
+        "domain": "brewing",
+        "senses": 53
+      },
+      {
+        "domain": "mobile-telephony",
+        "senses": 52
+      },
+      {
+        "domain": "railways",
+        "senses": 52
+      },
+      {
+        "domain": "sexology",
+        "senses": 51
+      },
+      {
+        "domain": "Egyptology",
+        "senses": 50
+      },
+      {
+        "domain": "bingo",
+        "senses": 50
+      },
+      {
+        "domain": "animal",
+        "senses": 50
+      },
+      {
+        "domain": "civil-engineering",
+        "senses": 49
+      },
+      {
+        "domain": "authorship",
+        "senses": 49
+      },
+      {
+        "domain": "fluid-dynamics",
+        "senses": 49
+      },
+      {
+        "domain": "entertainment",
+        "senses": 49
+      },
+      {
+        "domain": "dice",
+        "senses": 48
+      },
+      {
+        "domain": "volcanology",
+        "senses": 47
+      },
+      {
+        "domain": "jewelry",
+        "senses": 47
+      },
+      {
+        "domain": "endocrinology",
+        "senses": 47
+      },
+      {
+        "domain": "plant",
+        "senses": 47
+      },
+      {
+        "domain": "Scientology",
+        "senses": 47
+      },
+      {
+        "domain": "juggling",
+        "senses": 47
+      },
+      {
+        "domain": "geomorphology",
+        "senses": 46
+      },
+      {
+        "domain": "shipping",
+        "senses": 46
+      },
+      {
+        "domain": "seismology",
+        "senses": 46
+      },
+      {
+        "domain": "ufology",
+        "senses": 46
+      },
+      {
+        "domain": "crime",
+        "senses": 45
+      },
+      {
+        "domain": "cryptozoology",
+        "senses": 45
+      },
+      {
+        "domain": "robotics",
+        "senses": 45
+      },
+      {
+        "domain": "order-theory",
+        "senses": 45
+      },
+      {
+        "domain": "Wicca",
+        "senses": 45
+      },
+      {
+        "domain": "pseudoscience",
+        "senses": 45
+      },
+      {
+        "domain": "semiotics",
+        "senses": 44
+      },
+      {
+        "domain": "swimming",
+        "senses": 44
+      },
+      {
+        "domain": "Zoroastrianism",
+        "senses": 44
+      },
+      {
+        "domain": "patent-law",
+        "senses": 43
+      },
+      {
+        "domain": "epistemology",
+        "senses": 43
+      },
+      {
+        "domain": "softball",
+        "senses": 42
+      },
+      {
+        "domain": "Norse mythology",
+        "senses": 42
+      },
+      {
+        "domain": "Shinto",
+        "senses": 40
+      },
+      {
+        "domain": "teratology",
+        "senses": 40
+      },
+      {
+        "domain": "machining",
+        "senses": 40
+      },
+      {
+        "domain": "linguistic-morphology",
+        "senses": 40
+      },
+      {
+        "domain": "beekeeping",
+        "senses": 39
+      },
+      {
+        "domain": "syntax",
+        "senses": 39
+      },
+      {
+        "domain": "diplomacy",
+        "senses": 39
+      },
+      {
+        "domain": "complex-analysis",
+        "senses": 38
+      },
+      {
+        "domain": "motorcycling",
+        "senses": 38
+      },
+      {
+        "domain": "backgammon",
+        "senses": 38
+      },
+      {
+        "domain": "plumbing",
+        "senses": 37
+      },
+      {
+        "domain": "hip-hop",
+        "senses": 37
+      },
+      {
+        "domain": "units-of-measure",
+        "senses": 37
+      },
+      {
+        "domain": "radiology",
+        "senses": 37
+      },
+      {
+        "domain": "combinatorics",
+        "senses": 37
+      },
+      {
+        "domain": "commercial enterprise",
+        "senses": 36
+      },
+      {
+        "domain": "audio",
+        "senses": 36
+      },
+      {
+        "domain": "bullfighting",
+        "senses": 36
+      },
+      {
+        "domain": "petrochemistry",
+        "senses": 36
+      },
+      {
+        "domain": "demographics",
+        "senses": 36
+      },
+      {
+        "domain": "electromagnetism",
+        "senses": 35
+      },
+      {
+        "domain": "language",
+        "senses": 35
+      },
+      {
+        "domain": "performing arts",
+        "senses": 35
+      },
+      {
+        "domain": "cartomancy",
+        "senses": 35
+      },
+      {
+        "domain": "Freemasonry",
+        "senses": 35
+      },
+      {
+        "domain": "urology",
+        "senses": 35
+      },
+      {
+        "domain": "antiquity",
+        "senses": 34
+      },
+      {
+        "domain": "web-design",
+        "senses": 34
+      },
+      {
+        "domain": "time",
+        "senses": 33
+      },
+      {
+        "domain": "air travel",
+        "senses": 33
+      },
+      {
+        "domain": "farming",
+        "senses": 32
+      },
+      {
+        "domain": "software-compilation",
+        "senses": 32
+      },
+      {
+        "domain": "comedy",
+        "senses": 32
+      },
+      {
+        "domain": "weather",
+        "senses": 32
+      },
+      {
+        "domain": "arachnology",
+        "senses": 31
+      },
+      {
+        "domain": "Gnosticism",
+        "senses": 31
+      },
+      {
+        "domain": "histology",
+        "senses": 31
+      },
+      {
+        "domain": "Hinduism",
+        "senses": 31
+      },
+      {
+        "domain": "horology",
+        "senses": 31
+      },
+      {
+        "domain": "bookbinding",
+        "senses": 31
+      },
+      {
+        "domain": "driving",
+        "senses": 31
+      },
+      {
+        "domain": "lutherie",
+        "senses": 31
+      },
+      {
+        "domain": "historiography",
+        "senses": 31
+      },
+      {
+        "domain": "lacrosse",
+        "senses": 31
+      },
+      {
+        "domain": "occult",
+        "senses": 30
+      },
+      {
+        "domain": "homeopathy",
+        "senses": 30
+      },
+      {
+        "domain": "information-theory",
+        "senses": 30
+      },
+      {
+        "domain": "space-science",
+        "senses": 30
+      },
+      {
+        "domain": "anime",
+        "senses": 30
+      },
+      {
+        "domain": "Protestantism",
+        "senses": 29
+      },
+      {
+        "domain": "handicraft",
+        "senses": 29
+      },
+      {
+        "domain": "dramaturgy",
+        "senses": 29
+      },
+      {
+        "domain": "American football",
+        "senses": 29
+      },
+      {
+        "domain": "gastroenterology",
+        "senses": 29
+      },
+      {
+        "domain": "ship",
+        "senses": 29
+      },
+      {
+        "domain": "Old Testament",
+        "senses": 28
+      },
+      {
+        "domain": "volleyball",
+        "senses": 28
+      },
+      {
+        "domain": "navy",
+        "senses": 27
+      },
+      {
+        "domain": "herpetology",
+        "senses": 27
+      },
+      {
+        "domain": "gynaecology",
+        "senses": 27
+      },
+      {
+        "domain": "pragmatics",
+        "senses": 26
+      },
+      {
+        "domain": "telegraphy",
+        "senses": 26
+      },
+      {
+        "domain": "ethnology",
+        "senses": 26
+      },
+      {
+        "domain": "probability",
+        "senses": 25
+      },
+      {
+        "domain": "palaeography",
+        "senses": 25
+      },
+      {
+        "domain": "textual-criticism",
+        "senses": 25
+      },
+      {
+        "domain": "electrochemistry",
+        "senses": 25
+      },
+      {
+        "domain": "card game",
+        "senses": 24
+      },
+      {
+        "domain": "creationism",
+        "senses": 24
+      },
+      {
+        "domain": "health",
+        "senses": 24
+      },
+      {
+        "domain": "location",
+        "senses": 24
+      },
+      {
+        "domain": "graffiti",
+        "senses": 24
+      },
+      {
+        "domain": "newspapers",
+        "senses": 23
+      },
+      {
+        "domain": "darts",
+        "senses": 23
+      },
+      {
+        "domain": "skating",
+        "senses": 23
+      },
+      {
+        "domain": "biotechnology",
+        "senses": 22
+      },
+      {
+        "domain": "fascism",
+        "senses": 22
+      },
+      {
+        "domain": "roguelikes",
+        "senses": 22
+      },
+      {
+        "domain": "farriery",
+        "senses": 22
+      },
+      {
+        "domain": "anarchism",
+        "senses": 22
+      },
+      {
+        "domain": "etymology",
+        "senses": 22
+      },
+      {
+        "domain": "seafaring",
+        "senses": 22
+      },
+      {
+        "domain": "academia",
+        "senses": 22
+      },
+      {
+        "domain": "smoking",
+        "senses": 22
+      },
+      {
+        "domain": "graphic-design",
+        "senses": 22
+      },
+      {
+        "domain": "clinical-psychology",
+        "senses": 21
+      },
+      {
+        "domain": "church service",
+        "senses": 21
+      },
+      {
+        "domain": "vehicles",
+        "senses": 21
+      },
+      {
+        "domain": "diving",
+        "senses": 20
+      },
+      {
+        "domain": "algebraic-topology",
+        "senses": 20
+      },
+      {
+        "domain": "Middle Ages",
+        "senses": 20
+      },
+      {
+        "domain": "blackjack",
+        "senses": 20
+      },
+      {
+        "domain": "animal husbandry",
+        "senses": 19
+      },
+      {
+        "domain": "game",
+        "senses": 19
+      },
+      {
+        "domain": "travel-industry",
+        "senses": 19
+      },
+      {
+        "domain": "netball",
+        "senses": 19
+      },
+      {
+        "domain": "aerodynamics",
+        "senses": 19
+      },
+      {
+        "domain": "riding",
+        "senses": 19
+      },
+      {
+        "domain": "pulmonology",
+        "senses": 18
+      },
+      {
+        "domain": "IRC",
+        "senses": 18
+      },
+      {
+        "domain": "fortification",
+        "senses": 18
+      },
+      {
+        "domain": "phrenology",
+        "senses": 18
+      },
+      {
+        "domain": "bibliography",
+        "senses": 18
+      },
+      {
+        "domain": "money",
+        "senses": 18
+      },
+      {
+        "domain": "systems-theory",
+        "senses": 18
+      },
+      {
+        "domain": "nanotechnology",
+        "senses": 18
+      },
+      {
+        "domain": "ESA",
+        "senses": 18
+      },
+      {
+        "domain": "shogi",
+        "senses": 18
+      },
+      {
+        "domain": "socialism",
+        "senses": 18
+      },
+      {
+        "domain": "epigraphy",
+        "senses": 17
+      },
+      {
+        "domain": "calligraphy",
+        "senses": 17
+      },
+      {
+        "domain": "prostitution",
+        "senses": 17
+      },
+      {
+        "domain": "ballistics",
+        "senses": 16
+      },
+      {
+        "domain": "criminal law",
+        "senses": 16
+      },
+      {
+        "domain": "cuisine",
+        "senses": 16
+      },
+      {
+        "domain": "contract",
+        "senses": 16
+      },
+      {
+        "domain": "Rubik's-Cube",
+        "senses": 16
+      },
+      {
+        "domain": "biogeography",
+        "senses": 16
+      },
+      {
+        "domain": "Latin",
+        "senses": 16
+      },
+      {
+        "domain": "classical-studies",
+        "senses": 15
+      },
+      {
+        "domain": "beer",
+        "senses": 15
+      },
+      {
+        "domain": "fortifications",
+        "senses": 15
+      },
+      {
+        "domain": "ball-games",
+        "senses": 15
+      },
+      {
+        "domain": "informatics",
+        "senses": 15
+      },
+      {
+        "domain": "tourism",
+        "senses": 14
+      },
+      {
+        "domain": "navigation",
+        "senses": 14
+      },
+      {
+        "domain": "hairdressing",
+        "senses": 14
+      },
+      {
+        "domain": "tax",
+        "senses": 14
+      },
+      {
+        "domain": "maritime",
+        "senses": 14
+      },
+      {
+        "domain": "Windows",
+        "senses": 14
+      },
+      {
+        "domain": "aircraft",
+        "senses": 14
+      },
+      {
+        "domain": "squash",
+        "senses": 14
+      },
+      {
+        "domain": "fine arts",
+        "senses": 14
+      },
+      {
+        "domain": "mountaineering",
+        "senses": 14
+      },
+      {
+        "domain": "archeology",
+        "senses": 14
+      },
+      {
+        "domain": "measure-theory",
+        "senses": 14
+      },
+      {
+        "domain": "car",
+        "senses": 13
+      },
+      {
+        "domain": "letterpress-typography",
+        "senses": 13
+      },
+      {
+        "domain": "Arthurian legend",
+        "senses": 13
+      },
+      {
+        "domain": "entertainment-industry",
+        "senses": 13
+      },
+      {
+        "domain": "circus",
+        "senses": 13
+      },
+      {
+        "domain": "glaciology",
+        "senses": 13
+      },
+      {
+        "domain": "war",
+        "senses": 13
+      },
+      {
+        "domain": "lepidopterology",
+        "senses": 13
+      },
+      {
+        "domain": "mammalogy",
+        "senses": 13
+      },
+      {
+        "domain": "boat",
+        "senses": 13
+      },
+      {
+        "domain": "stock exchange",
+        "senses": 12
+      },
+      {
+        "domain": "telephone",
+        "senses": 12
+      },
+      {
+        "domain": "dyeing",
+        "senses": 12
+      },
+      {
+        "domain": "caving",
+        "senses": 12
+      },
+      {
+        "domain": "videography",
+        "senses": 12
+      },
+      {
+        "domain": "Scrabble",
+        "senses": 12
+      },
+      {
+        "domain": "judo",
+        "senses": 12
+      },
+      {
+        "domain": "papermaking",
+        "senses": 12
+      },
+      {
+        "domain": "phenomenology",
+        "senses": 12
+      },
+      {
+        "domain": "commercial",
+        "senses": 12
+      },
+      {
+        "domain": "ethnography",
+        "senses": 12
+      },
+      {
+        "domain": "airplane",
+        "senses": 11
+      },
+      {
+        "domain": "vexillology",
+        "senses": 11
+      },
+      {
+        "domain": "musicology",
+        "senses": 11
+      },
+      {
+        "domain": "dominoes",
+        "senses": 11
+      },
+      {
+        "domain": "telecommunication",
+        "senses": 11
+      },
+      {
+        "domain": "Spanish",
+        "senses": 11
+      },
+      {
+        "domain": "nephrology",
+        "senses": 11
+      },
+      {
+        "domain": "bryology",
+        "senses": 11
+      },
+      {
+        "domain": "vegetation",
+        "senses": 11
+      },
+      {
+        "domain": "Chinese-cuisine",
+        "senses": 11
+      },
+      {
+        "domain": "limnology",
+        "senses": 11
+      },
+      {
+        "domain": "information-technology",
+        "senses": 11
+      },
+      {
+        "domain": "tarot",
+        "senses": 11
+      },
+      {
+        "domain": "legend",
+        "senses": 11
+      },
+      {
+        "domain": "blogging",
+        "senses": 10
+      },
+      {
+        "domain": "legislation",
+        "senses": 10
+      },
+      {
+        "domain": "campanology",
+        "senses": 10
+      },
+      {
+        "domain": "bioinformatics",
+        "senses": 10
+      },
+      {
+        "domain": "ropemaking",
+        "senses": 10
+      },
+      {
+        "domain": "temperature",
+        "senses": 10
+      },
+      {
+        "domain": "Bible",
+        "senses": 10
+      },
+      {
+        "domain": "handball",
+        "senses": 10
+      },
+      {
+        "domain": "gemology",
+        "senses": 10
+      },
+      {
+        "domain": "hunt",
+        "senses": 10
+      },
+      {
+        "domain": "parachuting",
+        "senses": 10
+      },
+      {
+        "domain": "duration",
+        "senses": 10
+      },
+      {
+        "domain": "Roman mythology",
+        "senses": 10
+      },
+      {
+        "domain": "Sikhism",
+        "senses": 10
+      },
+      {
+        "domain": "rhetoric",
+        "senses": 10
+      },
+      {
+        "domain": "corporation",
+        "senses": 9
+      },
+      {
+        "domain": "conchology",
+        "senses": 9
+      },
+      {
+        "domain": "ballet",
+        "senses": 9
+      },
+      {
+        "domain": "classical mythology",
+        "senses": 9
+      },
+      {
+        "domain": "drug",
+        "senses": 9
+      },
+      {
+        "domain": "legislature",
+        "senses": 9
+      },
+      {
+        "domain": "hydrodynamics",
+        "senses": 9
+      },
+      {
+        "domain": "broadcast medium",
+        "senses": 9
+      },
+      {
+        "domain": "acrobatics",
+        "senses": 9
+      },
+      {
+        "domain": "Eastern-Christianity",
+        "senses": 9
+      },
+      {
+        "domain": "river",
+        "senses": 9
+      },
+      {
+        "domain": "movie",
+        "senses": 9
+      },
+      {
+        "domain": "topography",
+        "senses": 9
+      },
+      {
+        "domain": "auction",
+        "senses": 9
+      },
+      {
+        "domain": "dancing",
+        "senses": 9
+      },
+      {
+        "domain": "computer-games",
+        "senses": 9
+      },
+      {
+        "domain": "election",
+        "senses": 9
+      },
+      {
+        "domain": "xiangqi",
+        "senses": 9
+      },
+      {
+        "domain": "racquet-sports",
+        "senses": 8
+      },
+      {
+        "domain": "recording",
+        "senses": 8
+      },
+      {
+        "domain": "radio-communications",
+        "senses": 8
+      },
+      {
+        "domain": "glassmaking",
+        "senses": 8
+      },
+      {
+        "domain": "neurophysiology",
+        "senses": 8
+      },
+      {
+        "domain": "phycology",
+        "senses": 8
+      },
+      {
+        "domain": "skydiving",
+        "senses": 8
+      },
+      {
+        "domain": "energy",
+        "senses": 8
+      },
+      {
+        "domain": "narcotic",
+        "senses": 8
+      },
+      {
+        "domain": "conservation",
+        "senses": 8
+      },
+      {
+        "domain": "nematology",
+        "senses": 8
+      },
+      {
+        "domain": "occultism",
+        "senses": 8
+      },
+      {
+        "domain": "handwriting",
+        "senses": 8
+      },
+      {
+        "domain": "microorganism",
+        "senses": 8
+      },
+      {
+        "domain": "temporal-location",
+        "senses": 8
+      },
+      {
+        "domain": "mysticism",
+        "senses": 8
+      },
+      {
+        "domain": "engraving",
+        "senses": 8
+      },
+      {
+        "domain": "mammal",
+        "senses": 8
+      },
+      {
+        "domain": "homo",
+        "senses": 8
+      },
+      {
+        "domain": "motor vehicle",
+        "senses": 7
+      },
+      {
+        "domain": "spinning",
+        "senses": 7
+      },
+      {
+        "domain": "Sanskrit",
+        "senses": 7
+      },
+      {
+        "domain": "monarchy",
+        "senses": 7
+      },
+      {
+        "domain": "ACG",
+        "senses": 7
+      },
+      {
+        "domain": "psychophysics",
+        "senses": 7
+      },
+      {
+        "domain": "Western-Christianity",
+        "senses": 7
+      },
+      {
+        "domain": "cheerleading",
+        "senses": 7
+      },
+      {
+        "domain": "factory",
+        "senses": 7
+      },
+      {
+        "domain": "hydraulics",
+        "senses": 7
+      },
+      {
+        "domain": "capitalism",
+        "senses": 7
+      },
+      {
+        "domain": "Sufism",
+        "senses": 7
+      },
+      {
+        "domain": "quantum-field-theory",
+        "senses": 7
+      },
+      {
+        "domain": "radiography",
+        "senses": 7
+      },
+      {
+        "domain": "neurobiology",
+        "senses": 7
+      },
+      {
+        "domain": "editing",
+        "senses": 7
+      },
+      {
+        "domain": "handbells",
+        "senses": 7
+      },
+      {
+        "domain": "speech-pathology",
+        "senses": 7
+      },
+      {
+        "domain": "police",
+        "senses": 7
+      },
+      {
+        "domain": "Christian theology",
+        "senses": 7
+      },
+      {
+        "domain": "sociopolitics",
+        "senses": 7
+      },
+      {
+        "domain": "dressage",
+        "senses": 7
+      },
+      {
+        "domain": "planets",
+        "senses": 7
+      },
+      {
+        "domain": "pregnancy",
+        "senses": 6
+      },
+      {
+        "domain": "Linux",
+        "senses": 6
+      },
+      {
+        "domain": "naturism",
+        "senses": 6
+      },
+      {
+        "domain": "paintball",
+        "senses": 6
+      },
+      {
+        "domain": "singing",
+        "senses": 6
+      },
+      {
+        "domain": "operation",
+        "senses": 6
+      },
+      {
+        "domain": "drafting",
+        "senses": 6
+      },
+      {
+        "domain": "traffic",
+        "senses": 6
+      },
+      {
+        "domain": "chronology",
+        "senses": 6
+      },
+      {
+        "domain": "quilting",
+        "senses": 6
+      },
+      {
+        "domain": "physical chemistry",
+        "senses": 6
+      },
+      {
+        "domain": "fish",
+        "senses": 6
+      },
+      {
+        "domain": "ontology",
+        "senses": 6
+      },
+      {
+        "domain": "rock-paper-scissors",
+        "senses": 6
+      },
+      {
+        "domain": "speech-therapy",
+        "senses": 6
+      },
+      {
+        "domain": "horseracing",
+        "senses": 6
+      },
+      {
+        "domain": "solution",
+        "senses": 6
+      },
+      {
+        "domain": "investment",
+        "senses": 6
+      },
+      {
+        "domain": "visual-art",
+        "senses": 6
+      },
+      {
+        "domain": "Ayurveda",
+        "senses": 6
+      },
+      {
+        "domain": "Ornithology",
+        "senses": 6
+      },
+      {
+        "domain": "water sport",
+        "senses": 6
+      },
+      {
+        "domain": "aerial-freestyle",
+        "senses": 6
+      },
+      {
+        "domain": "organization",
+        "senses": 5
+      },
+      {
+        "domain": "Anglican Church",
+        "senses": 5
+      },
+      {
+        "domain": "badminton",
+        "senses": 5
+      },
+      {
+        "domain": "dialectology",
+        "senses": 5
+      },
+      {
+        "domain": "meat",
+        "senses": 5
+      },
+      {
+        "domain": "planktology",
+        "senses": 5
+      },
+      {
+        "domain": "neurotoxicology",
+        "senses": 5
+      },
+      {
+        "domain": "DVD",
+        "senses": 5
+      },
+      {
+        "domain": "financial",
+        "senses": 5
+      },
+      {
+        "domain": "vegetable",
+        "senses": 5
+      },
+      {
+        "domain": "CAD",
+        "senses": 5
+      },
+      {
+        "domain": "ironworking",
+        "senses": 5
+      },
+      {
+        "domain": "higher-education",
+        "senses": 5
+      },
+      {
+        "domain": "acarology",
+        "senses": 5
+      },
+      {
+        "domain": "Kantianism",
+        "senses": 5
+      },
+      {
+        "domain": "parasitology",
+        "senses": 5
+      },
+      {
+        "domain": "dogs",
+        "senses": 5
+      },
+      {
+        "domain": "machine learning",
+        "senses": 5
+      },
+      {
+        "domain": "colloid",
+        "senses": 5
+      },
+      {
+        "domain": "Orthodox Church",
+        "senses": 5
+      },
+      {
+        "domain": "Arabic",
+        "senses": 5
+      },
+      {
+        "domain": "fisheries",
+        "senses": 5
+      },
+      {
+        "domain": "quarrying",
+        "senses": 5
+      },
+      {
+        "domain": "science fiction",
+        "senses": 5
+      },
+      {
+        "domain": "country",
+        "senses": 5
+      },
+      {
+        "domain": "guitar",
+        "senses": 5
+      },
+      {
+        "domain": "Japanese",
+        "senses": 4
+      },
+      {
+        "domain": "vent",
+        "senses": 4
+      },
+      {
+        "domain": "scientific",
+        "senses": 4
+      },
+      {
+        "domain": "virus",
+        "senses": 4
+      },
+      {
+        "domain": "corporate finance",
+        "senses": 4
+      },
+      {
+        "domain": "simulation",
+        "senses": 4
+      },
+      {
+        "domain": "petrography",
+        "senses": 4
+      },
+      {
+        "domain": "existentialism",
+        "senses": 4
+      },
+      {
+        "domain": "dressmaking",
+        "senses": 4
+      },
+      {
+        "domain": "bowmaking",
+        "senses": 4
+      },
+      {
+        "domain": "information",
+        "senses": 4
+      },
+      {
+        "domain": "colorimetry",
+        "senses": 4
+      },
+      {
+        "domain": "andrology",
+        "senses": 4
+      },
+      {
+        "domain": "stock-exchange",
+        "senses": 4
+      },
+      {
+        "domain": "cabinetwork",
+        "senses": 4
+      },
+      {
+        "domain": "communications",
+        "senses": 4
+      },
+      {
+        "domain": "parliamentary-procedure",
+        "senses": 4
+      },
+      {
+        "domain": "chromatography",
+        "senses": 4
+      },
+      {
+        "domain": "scholarly",
+        "senses": 4
+      },
+      {
+        "domain": "uranography",
+        "senses": 4
+      },
+      {
+        "domain": "voodoo",
+        "senses": 4
+      },
+      {
+        "domain": "officialese",
+        "senses": 4
+      },
+      {
+        "domain": "paleogeography",
+        "senses": 4
+      },
+      {
+        "domain": "astrocartography",
+        "senses": 4
+      },
+      {
+        "domain": "organism",
+        "senses": 4
+      },
+      {
+        "domain": "acoustics",
+        "senses": 4
+      },
+      {
+        "domain": "tools",
+        "senses": 4
+      },
+      {
+        "domain": "ice hockey",
+        "senses": 3
+      },
+      {
+        "domain": "paleobiology",
+        "senses": 3
+      },
+      {
+        "domain": "fabrics",
+        "senses": 3
+      },
+      {
+        "domain": "Swahili",
+        "senses": 3
+      },
+      {
+        "domain": "Italian",
+        "senses": 3
+      },
+      {
+        "domain": "living thing",
+        "senses": 3
+      },
+      {
+        "domain": "Persian",
+        "senses": 3
+      },
+      {
+        "domain": "retailing",
+        "senses": 3
+      },
+      {
+        "domain": "beverages",
+        "senses": 3
+      },
+      {
+        "domain": "crafts",
+        "senses": 3
+      },
+      {
+        "domain": "Hebrew",
+        "senses": 3
+      },
+      {
+        "domain": "social media",
+        "senses": 3
+      },
+      {
+        "domain": "racing",
+        "senses": 3
+      },
+      {
+        "domain": "game bird",
+        "senses": 3
+      },
+      {
+        "domain": "pes\u00e4pallo",
+        "senses": 3
+      },
+      {
+        "domain": "celestial body",
+        "senses": 3
+      },
+      {
+        "domain": "gardening",
+        "senses": 3
+      },
+      {
+        "domain": "Roman law",
+        "senses": 3
+      },
+      {
+        "domain": "jazz",
+        "senses": 3
+      },
+      {
+        "domain": "checkers",
+        "senses": 3
+      },
+      {
+        "domain": "areology",
+        "senses": 3
+      },
+      {
+        "domain": "pedology",
+        "senses": 3
+      },
+      {
+        "domain": "gerontology",
+        "senses": 3
+      },
+      {
+        "domain": "modelling",
+        "senses": 3
+      },
+      {
+        "domain": "psycholinguistics",
+        "senses": 3
+      },
+      {
+        "domain": "pharmaceuticals",
+        "senses": 3
+      },
+      {
+        "domain": "manosphere",
+        "senses": 3
+      },
+      {
+        "domain": "transportation",
+        "senses": 3
+      },
+      {
+        "domain": "German",
+        "senses": 3
+      },
+      {
+        "domain": "Teuton",
+        "senses": 3
+      },
+      {
+        "domain": "Luke",
+        "senses": 3
+      },
+      {
+        "domain": "visual-arts",
+        "senses": 3
+      },
+      {
+        "domain": "order",
+        "senses": 2
+      },
+      {
+        "domain": "MIDI",
+        "senses": 2
+      },
+      {
+        "domain": "university",
+        "senses": 2
+      },
+      {
+        "domain": "sociobiology",
+        "senses": 2
+      },
+      {
+        "domain": "behavior",
+        "senses": 2
+      },
+      {
+        "domain": "West Indies",
+        "senses": 2
+      },
+      {
+        "domain": "wit",
+        "senses": 2
+      },
+      {
+        "domain": "odontology",
+        "senses": 2
+      },
+      {
+        "domain": "paleoanthropology",
+        "senses": 2
+      },
+      {
+        "domain": "feudalism",
+        "senses": 2
+      },
+      {
+        "domain": "Apocrypha",
+        "senses": 2
+      },
+      {
+        "domain": "printing-technology",
+        "senses": 2
+      },
+      {
+        "domain": "Fungi",
+        "senses": 2
+      },
+      {
+        "domain": "lithography",
+        "senses": 2
+      },
+      {
+        "domain": "pocket-billiards",
+        "senses": 2
+      },
+      {
+        "domain": "histopathology",
+        "senses": 2
+      },
+      {
+        "domain": "train",
+        "senses": 2
+      },
+      {
+        "domain": "illness",
+        "senses": 2
+      },
+      {
+        "domain": "fungus",
+        "senses": 2
+      },
+      {
+        "domain": "nuclear physics",
+        "senses": 2
+      },
+      {
+        "domain": "spiritualism",
+        "senses": 2
+      },
+      {
+        "domain": "historical linguistics",
+        "senses": 2
+      },
+      {
+        "domain": "medium",
+        "senses": 2
+      },
+      {
+        "domain": "vessel",
+        "senses": 2
+      },
+      {
+        "domain": "mineralology",
+        "senses": 2
+      },
+      {
+        "domain": "stone",
+        "senses": 2
+      },
+      {
+        "domain": "angling",
+        "senses": 2
+      },
+      {
+        "domain": "Jamaica",
+        "senses": 2
+      },
+      {
+        "domain": "cannabis",
+        "senses": 2
+      },
+      {
+        "domain": "gemmology",
+        "senses": 2
+      },
+      {
+        "domain": "ruminant",
+        "senses": 2
+      },
+      {
+        "domain": "climate",
+        "senses": 2
+      },
+      {
+        "domain": "trains",
+        "senses": 2
+      },
+      {
+        "domain": "stratigraphy",
+        "senses": 2
+      },
+      {
+        "domain": "country-dancing",
+        "senses": 2
+      },
+      {
+        "domain": "finances",
+        "senses": 2
+      },
+      {
+        "domain": "radio-technology",
+        "senses": 2
+      },
+      {
+        "domain": "anesthesiology",
+        "senses": 2
+      },
+      {
+        "domain": "quantum theory",
+        "senses": 2
+      },
+      {
+        "domain": "demonology",
+        "senses": 2
+      },
+      {
+        "domain": "auto racing",
+        "senses": 2
+      },
+      {
+        "domain": "wireless-telegraphy",
+        "senses": 2
+      },
+      {
+        "domain": "knit",
+        "senses": 2
+      },
+      {
+        "domain": "traumatology",
+        "senses": 2
+      },
+      {
+        "domain": "microeconomics",
+        "senses": 2
+      },
+      {
+        "domain": "particle physics",
+        "senses": 2
+      },
+      {
+        "domain": "lake",
+        "senses": 2
+      },
+      {
+        "domain": "analytic-number-theory",
+        "senses": 2
+      },
+      {
+        "domain": "concert",
+        "senses": 2
+      },
+      {
+        "domain": "hawking",
+        "senses": 2
+      },
+      {
+        "domain": "Taoism",
+        "senses": 2
+      },
+      {
+        "domain": "hydrostatics",
+        "senses": 2
+      },
+      {
+        "domain": "a cappella singing",
+        "senses": 2
+      },
+      {
+        "domain": "palentology",
+        "senses": 2
+      },
+      {
+        "domain": "immunochemistry",
+        "senses": 2
+      },
+      {
+        "domain": "role-playing-games",
+        "senses": 2
+      },
+      {
+        "domain": "psychopathology",
+        "senses": 2
+      },
+      {
+        "domain": "piledriving",
+        "senses": 2
+      },
+      {
+        "domain": "ballooning",
+        "senses": 2
+      },
+      {
+        "domain": "aerospace",
+        "senses": 2
+      },
+      {
+        "domain": "polo",
+        "senses": 2
+      },
+      {
+        "domain": "industry",
+        "senses": 2
+      },
+      {
+        "domain": "weapon",
+        "senses": 2
+      },
+      {
+        "domain": "states",
+        "senses": 2
+      },
+      {
+        "domain": "papercraft",
+        "senses": 2
+      },
+      {
+        "domain": "colour",
+        "senses": 2
+      },
+      {
+        "domain": "World War II",
+        "senses": 2
+      },
+      {
+        "domain": "stenography",
+        "senses": 2
+      },
+      {
+        "domain": "electronics-manufacturing",
+        "senses": 2
+      },
+      {
+        "domain": "hydrography",
+        "senses": 2
+      },
+      {
+        "domain": "cities",
+        "senses": 2
+      },
+      {
+        "domain": "croquet",
+        "senses": 2
+      },
+      {
+        "domain": "scriptwriting",
+        "senses": 2
+      },
+      {
+        "domain": "mountain climbing",
+        "senses": 2
+      },
+      {
+        "domain": "quoits",
+        "senses": 2
+      },
+      {
+        "domain": "vertebrate",
+        "senses": 2
+      },
+      {
+        "domain": "urbanism",
+        "senses": 1
+      },
+      {
+        "domain": "microscopy",
+        "senses": 1
+      },
+      {
+        "domain": "linguistic",
+        "senses": 1
+      },
+      {
+        "domain": "muscle",
+        "senses": 1
+      },
+      {
+        "domain": "board game",
+        "senses": 1
+      },
+      {
+        "domain": "computer technology",
+        "senses": 1
+      },
+      {
+        "domain": "fasteners",
+        "senses": 1
+      },
+      {
+        "domain": "corporation law",
+        "senses": 1
+      },
+      {
+        "domain": "jewellery",
+        "senses": 1
+      },
+      {
+        "domain": "weight class",
+        "senses": 1
+      },
+      {
+        "domain": "matrix algebra",
+        "senses": 1
+      },
+      {
+        "domain": "cards",
+        "senses": 1
+      },
+      {
+        "domain": "Lisp",
+        "senses": 1
+      },
+      {
+        "domain": "winemaking",
+        "senses": 1
+      },
+      {
+        "domain": "publication",
+        "senses": 1
+      },
+      {
+        "domain": "tort",
+        "senses": 1
+      },
+      {
+        "domain": "astrogeology",
+        "senses": 1
+      },
+      {
+        "domain": "jet engine",
+        "senses": 1
+      },
+      {
+        "domain": "in-technical-contexts",
+        "senses": 1
+      },
+      {
+        "domain": "rock 'n' roll",
+        "senses": 1
+      },
+      {
+        "domain": "Abrahamic-religions",
+        "senses": 1
+      },
+      {
+        "domain": "cockfighting",
+        "senses": 1
+      },
+      {
+        "domain": "craps",
+        "senses": 1
+      },
+      {
+        "domain": "Haiti",
+        "senses": 1
+      },
+      {
+        "domain": "Revelation",
+        "senses": 1
+      },
+      {
+        "domain": "One Thousand and One Nights",
+        "senses": 1
+      },
+      {
+        "domain": "metaphysics",
+        "senses": 1
+      },
+      {
+        "domain": "insects",
+        "senses": 1
+      },
+      {
+        "domain": "mammology",
+        "senses": 1
+      },
+      {
+        "domain": "bone",
+        "senses": 1
+      },
+      {
+        "domain": "computer-sciences",
+        "senses": 1
+      },
+      {
+        "domain": "sheepdog-trials",
+        "senses": 1
+      },
+      {
+        "domain": "ball game",
+        "senses": 1
+      },
+      {
+        "domain": "alpine-skiing",
+        "senses": 1
+      },
+      {
+        "domain": "smithwork",
+        "senses": 1
+      },
+      {
+        "domain": "equitation",
+        "senses": 1
+      },
+      {
+        "domain": "Episcopal Church",
+        "senses": 1
+      },
+      {
+        "domain": "childish",
+        "senses": 1
+      },
+      {
+        "domain": "rhythm",
+        "senses": 1
+      },
+      {
+        "domain": "pneumology",
+        "senses": 1
+      },
+      {
+        "domain": "color",
+        "senses": 1
+      },
+      {
+        "domain": "Anglo-Saxon",
+        "senses": 1
+      },
+      {
+        "domain": "news article",
+        "senses": 1
+      },
+      {
+        "domain": "talking",
+        "senses": 1
+      },
+      {
+        "domain": "bacteria",
+        "senses": 1
+      },
+      {
+        "domain": "metonymy",
+        "senses": 1
+      },
+      {
+        "domain": "sight",
+        "senses": 1
+      },
+      {
+        "domain": "folktale",
+        "senses": 1
+      },
+      {
+        "domain": "NASA",
+        "senses": 1
+      },
+      {
+        "domain": "internet",
+        "senses": 1
+      },
+      {
+        "domain": "civil law",
+        "senses": 1
+      },
+      {
+        "domain": "Indian-Chinese-cuisine",
+        "senses": 1
+      },
+      {
+        "domain": "Ethiopia",
+        "senses": 1
+      },
+      {
+        "domain": "maritime law",
+        "senses": 1
+      },
+      {
+        "domain": "psychotherapy",
+        "senses": 1
+      },
+      {
+        "domain": "World Wide Web",
+        "senses": 1
+      },
+      {
+        "domain": "water travel",
+        "senses": 1
+      },
+      {
+        "domain": "seasons",
+        "senses": 1
+      },
+      {
+        "domain": "information science",
+        "senses": 1
+      },
+      {
+        "domain": "lubricants",
+        "senses": 1
+      },
+      {
+        "domain": "petroleum",
+        "senses": 1
+      },
+      {
+        "domain": "automobile",
+        "senses": 1
+      },
+      {
+        "domain": "mineral extraction",
+        "senses": 1
+      },
+      {
+        "domain": "historical-ethnography",
+        "senses": 1
+      },
+      {
+        "domain": "transmission",
+        "senses": 1
+      },
+      {
+        "domain": "music genre",
+        "senses": 1
+      },
+      {
+        "domain": "viticulture",
+        "senses": 1
+      },
+      {
+        "domain": "computer-software",
+        "senses": 1
+      },
+      {
+        "domain": "cryptocurrency",
+        "senses": 1
+      },
+      {
+        "domain": "CSS",
+        "senses": 1
+      },
+      {
+        "domain": "historical-demography",
+        "senses": 1
+      },
+      {
+        "domain": "brick-making",
+        "senses": 1
+      },
+      {
+        "domain": "livestock",
+        "senses": 1
+      },
+      {
+        "domain": "Marxism",
+        "senses": 1
+      },
+      {
+        "domain": "art-history",
+        "senses": 1
+      },
+      {
+        "domain": "encryption",
+        "senses": 1
+      },
+      {
+        "domain": "tasting",
+        "senses": 1
+      },
+      {
+        "domain": "holism",
+        "senses": 1
+      },
+      {
+        "domain": "colleges",
+        "senses": 1
+      },
+      {
+        "domain": "sailing vessel",
+        "senses": 1
+      },
+      {
+        "domain": "investing",
+        "senses": 1
+      },
+      {
+        "domain": "numeration system",
+        "senses": 1
+      },
+      {
+        "domain": "otology",
+        "senses": 1
+      },
+      {
+        "domain": "Mafia",
+        "senses": 1
+      },
+      {
+        "domain": "Melanesia",
+        "senses": 1
+      },
+      {
+        "domain": "computer graphics",
+        "senses": 1
+      },
+      {
+        "domain": "Pashto",
+        "senses": 1
+      },
+      {
+        "domain": "insect",
+        "senses": 1
+      },
+      {
+        "domain": "accountancy",
+        "senses": 1
+      },
+      {
+        "domain": "gem-cutting",
+        "senses": 1
+      },
+      {
+        "domain": "sewage-treatment",
+        "senses": 1
+      },
+      {
+        "domain": "Amerindian",
+        "senses": 1
+      },
+      {
+        "domain": "library science",
+        "senses": 1
+      },
+      {
+        "domain": "geochemistry",
+        "senses": 1
+      },
+      {
+        "domain": "tin-plate-manufacture",
+        "senses": 1
+      },
+      {
+        "domain": "china clay",
+        "senses": 1
+      },
+      {
+        "domain": "economic-liberalism",
+        "senses": 1
+      },
+      {
+        "domain": "tectonics",
+        "senses": 1
+      },
+      {
+        "domain": "nobility",
+        "senses": 1
+      },
+      {
+        "domain": "veganism",
+        "senses": 1
+      },
+      {
+        "domain": "Foreign Service",
+        "senses": 1
+      },
+      {
+        "domain": "chemical analysis",
+        "senses": 1
+      },
+      {
+        "domain": "cigars",
+        "senses": 1
+      },
+      {
+        "domain": "senior high school",
+        "senses": 1
+      },
+      {
+        "domain": "region",
+        "senses": 1
+      },
+      {
+        "domain": "veterinary-pathology",
+        "senses": 1
+      },
+      {
+        "domain": "quadruped",
+        "senses": 1
+      },
+      {
+        "domain": "spaceflight",
+        "senses": 1
+      },
+      {
+        "domain": "radio-technics",
+        "senses": 1
+      },
+      {
+        "domain": "Buddhist",
+        "senses": 1
+      },
+      {
+        "domain": "court game",
+        "senses": 1
+      },
+      {
+        "domain": "justice",
+        "senses": 1
+      },
+      {
+        "domain": "trade",
+        "senses": 1
+      },
+      {
+        "domain": "diet",
+        "senses": 1
+      },
+      {
+        "domain": "sailmaking",
+        "senses": 1
+      },
+      {
+        "domain": "sugar-making",
+        "senses": 1
+      },
+      {
+        "domain": "fairytale",
+        "senses": 1
+      },
+      {
+        "domain": "countries",
+        "senses": 1
+      },
+      {
+        "domain": "codicology",
+        "senses": 1
+      },
+      {
+        "domain": "hearing",
+        "senses": 1
+      },
+      {
+        "domain": "meats",
+        "senses": 1
+      },
+      {
+        "domain": "horse racing",
+        "senses": 1
+      },
+      {
+        "domain": "angelology",
+        "senses": 1
+      },
+      {
+        "domain": "bookkeeping",
+        "senses": 1
+      },
+      {
+        "domain": "Indian-cookery",
+        "senses": 1
+      },
+      {
+        "domain": "Scholasticism",
+        "senses": 1
+      },
+      {
+        "domain": "space-sciences",
+        "senses": 1
+      },
+      {
+        "domain": "court",
+        "senses": 1
+      },
+      {
+        "domain": "matrimonial law",
+        "senses": 1
+      },
+      {
+        "domain": "growth",
+        "senses": 1
+      },
+      {
+        "domain": "Zen",
+        "senses": 1
+      },
+      {
+        "domain": "case law",
+        "senses": 1
+      }
+    ],
+    "by_source": [
+      {
+        "attached_cosine": 0,
+        "attached_xref": 0,
+        "canonical_senses_first_from_source": 212659,
+        "canonical_senses_with_source": 212659,
+        "new_clusters": 0,
+        "senses_ingested": 212659,
+        "source": "oewn"
+      },
+      {
+        "attached_cosine": 0,
+        "attached_xref": 0,
+        "canonical_senses_first_from_source": 1023904,
+        "canonical_senses_with_source": 1125445,
+        "new_clusters": 0,
+        "senses_ingested": 1126537,
+        "source": "wiktionary"
+      },
+      {
+        "attached_cosine": 48416,
+        "attached_xref": 2695,
+        "canonical_senses_first_from_source": 8636,
+        "canonical_senses_with_source": 59747,
+        "new_clusters": 8636,
+        "senses_ingested": 59747,
+        "source": "wikidata_lexemes"
+      },
+      {
+        "attached_cosine": 20459,
+        "attached_xref": 0,
+        "canonical_senses_first_from_source": 331525,
+        "canonical_senses_with_source": 351984,
+        "new_clusters": 331525,
+        "senses_ingested": 351984,
+        "source": "mesh"
+      },
+      {
+        "attached_cosine": 643,
+        "attached_xref": 0,
+        "canonical_senses_first_from_source": 37449,
+        "canonical_senses_with_source": 38092,
+        "new_clusters": 37449,
+        "senses_ingested": 38092,
+        "source": "gene_ontology"
+      },
+      {
+        "attached_cosine": 10420,
+        "attached_xref": 0,
+        "canonical_senses_first_from_source": 51699,
+        "canonical_senses_with_source": 62119,
+        "new_clusters": 51699,
+        "senses_ingested": 62119,
+        "source": "chebi"
+      },
+      {
+        "attached_cosine": 65241,
+        "attached_xref": 0,
+        "canonical_senses_first_from_source": 892098,
+        "canonical_senses_with_source": 957339,
+        "new_clusters": 892098,
+        "senses_ingested": 957339,
+        "source": "ncbi_taxonomy"
+      }
+    ],
+    "by_tier": [
+      {
+        "senses": 212659,
+        "tier": "0 WordNet"
+      },
+      {
+        "senses": 941179,
+        "tier": "1 Wiktionary"
+      },
+      {
+        "senses": 82725,
+        "tier": "2 Wiktionary (rare/obsolete)"
+      },
+      {
+        "senses": 8636,
+        "tier": "3 Wikidata lexemes only"
+      },
+      {
+        "senses": 1312771,
+        "tier": "4 concept / domain sources"
+      }
+    ],
+    "by_upos": [
+      {
+        "senses": 1211613,
+        "upos": "PROPN"
+      },
+      {
+        "senses": 983337,
+        "upos": "NOUN"
+      },
+      {
+        "senses": 204487,
+        "upos": "ADJ"
+      },
+      {
+        "senses": 104001,
+        "upos": "VERB"
+      },
+      {
+        "senses": 33634,
+        "upos": "ADV"
+      },
+      {
+        "senses": 12283,
+        "upos": "X"
+      },
+      {
+        "senses": 4232,
+        "upos": "INTJ"
+      },
+      {
+        "senses": 1279,
+        "upos": "ADP"
+      },
+      {
+        "senses": 824,
+        "upos": "PRON"
+      },
+      {
+        "senses": 794,
+        "upos": "SYM"
+      },
+      {
+        "senses": 414,
+        "upos": "NUM"
+      },
+      {
+        "senses": 394,
+        "upos": "SCONJ"
+      },
+      {
+        "senses": 387,
+        "upos": "DET"
+      },
+      {
+        "senses": 153,
+        "upos": "PART"
+      },
+      {
+        "senses": 72,
+        "upos": "PUNCT"
+      },
+      {
+        "senses": 66,
+        "upos": "CCONJ"
+      }
+    ],
+    "canonical_senses": 2557970,
+    "lemmas": 2147145,
+    "licence_scenarios": [
+      {
+        "exclude": [
+          "wiktionary"
+        ],
+        "pct": 61.36,
+        "scenario": "no share-alike (drop Wiktionary)",
+        "senses_kept": 1569663
+      },
+      {
+        "exclude": [
+          "wiktionary",
+          "oewn"
+        ],
+        "pct": 54.69,
+        "scenario": "no attribution-required lexicons (drop Wiktionary, OEWN)",
+        "senses_kept": 1398997
+      },
+      {
+        "exclude": [
+          "snomed_ct_uk"
+        ],
+        "pct": 100.0,
+        "scenario": "no restricted (drop SNOMED CT)",
+        "senses_kept": 2557970
+      },
+      {
+        "exclude": [
+          "wiktionary",
+          "oewn",
+          "gene_ontology",
+          "chebi",
+          "mesh",
+          "snomed_ct_uk"
+        ],
+        "pct": 39.76,
+        "scenario": "CC0 / public domain only",
+        "senses_kept": 1017040
+      }
+    ],
+    "multi_source_senses": 211739,
+    "n_domains": 925,
+    "senses_per_lemma": {
+      "distribution": [
+        {
+          "lemmas": 1981392,
+          "pct": 92.28,
+          "senses": "1"
+        },
+        {
+          "lemmas": 99321,
+          "pct": 4.63,
+          "senses": "2"
+        },
+        {
+          "lemmas": 48203,
+          "pct": 2.24,
+          "senses": "3-5"
+        },
+        {
+          "lemmas": 11993,
+          "pct": 0.56,
+          "senses": "6-10"
+        },
+        {
+          "lemmas": 4584,
+          "pct": 0.21,
+          "senses": "11-20"
+        },
+        {
+          "lemmas": 1500,
+          "pct": 0.07,
+          "senses": "21-50"
+        },
+        {
+          "lemmas": 139,
+          "pct": 0.01,
+          "senses": "51-100"
+        },
+        {
+          "lemmas": 13,
+          "pct": 0.0,
+          "senses": "101-1024"
+        }
+      ],
+      "max": 178,
+      "mean": 1.191,
+      "median": 1.0
+    }
+  }
+}

@@ -4,8 +4,9 @@ Research system for **sense-level tokenization**: every distinct meaning of ever
 (plus domain terms) is one token. A translator converts English to and from this sense-token
 language; a core language model is trained and runs entirely on sense tokens.
 
-Status: **Phase 2 — full inventory v1.0 + structural tokens** (Wiktionary, Open English WordNet,
-Wikidata lexemes and items, MeSH, Gene Ontology, ChEBI, NCBI Taxonomy; SNOMED CT UK prepared).
+Status: **Phase 2 — inventory v1.0 (2,557,970 sense tokens) + 393 structural tokens**, at Gate 2
+(Wiktionary, Open English WordNet, Wikidata lexemes, MeSH, Gene Ontology, ChEBI, NCBI Taxonomy;
+Wikidata items and SNOMED CT UK prepared for a later build).
 See [`docs/phase2_report.md`](docs/phase2_report.md) and, for v0.1,
 [`docs/phase1_report.md`](docs/phase1_report.md).
 

@@ -70,7 +70,7 @@ Full checksums, URLs and HTTP metadata: `data/raw/MANIFEST.json` (written by
 | Source | Version used | Licence | Where it is used |
 |---|---|---|---|
 | Wikidata lexemes | `wikidata-20261028-lexemes.json.gz` (md5 `b7513e4d…9ffed6`, sha256 pinned in `configs/download.yaml`) | CC0 1.0 | English lexeme senses (glosses, examples), forms with grammatical features, sense → item links |
-| Wikidata items | `wikidata-20261026-all.json.gz`, streamed once and never stored (md5 `356990468877421dc061694ad61c487f`, checked after the pass; D-032) | CC0 1.0 | concept senses (label = lemma, English description = gloss), cross-references to the domain sources |
+| Wikidata items | `wikidata-20261026-all.json.gz`, streamed once and never stored (md5 `356990468877421dc061694ad61c487f`, checked after the pass; D-032) — **not in v1.0** (pass lost, D-045) | CC0 1.0 | concept senses (label = lemma, English description = gloss), cross-references to the domain sources |
 | NCBI Taxonomy | taxdump monthly archive `taxdmp_2026-11-01.zip` | Public domain (U.S. Government work; NCBI places no restrictions on use or redistribution; citation requested) | scientific-name senses (genus and above, species); names also decide MeSH genus casing |
 | Gene Ontology | `go.obo`, release 2026-07-26 | CC BY 4.0 | GO term senses (molecular function, biological process, cellular component) |
 | ChEBI | release 255, `chebi.obo.gz` (3-star entities only) | CC BY 4.0 | chemical entity senses |

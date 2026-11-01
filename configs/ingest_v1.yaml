@@ -6,7 +6,7 @@ inputs:
   - data/interim/senses_raw_wiktionary.parquet
   - data/interim/senses_raw_oewn.parquet
   - data/interim/senses_raw_wikidata_lexemes.parquet
-  - data/interim/senses_raw_wikidata_items.parquet
+  # - data/interim/senses_raw_wikidata_items.parquet   # not in v1.0: stream lost at 74% (D-045); v1.1
   - data/interim/senses_raw_mesh.parquet
   - data/interim/senses_raw_gene_ontology.parquet
   - data/interim/senses_raw_chebi.parquet

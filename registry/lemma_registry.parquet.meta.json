@@ -1,11 +1,22 @@
 {
   "code": {
     "dirty": true,
-    "git_commit": "679b97dd2d37f94c2d32baa0243e76751dbbe87b"
+    "git_commit": "0fbb5796bfadaaf8c1ab32cb34dee2375da33588"
   },
   "config": {
     "assign_ids": true,
-    "build_id": "v0.1",
+    "build_id": "v1.0",
+    "gloss_order": [
+      "oewn",
+      "wiktionary",
+      "wikidata_lexemes",
+      "gene_ontology",
+      "chebi",
+      "mesh",
+      "snomed_ct_uk",
+      "ncbi_taxonomy",
+      "wikidata_items"
+    ],
     "ids": {
       "layout": {
         "lemma_bits": 22,
@@ -14,12 +25,20 @@
       }
     },
     "inputs": {
-      "dedupe_map": "data/interim/dedupe_map.parquet",
+      "attachments": "data/interim/attachments_v1.parquet",
+      "dedupe_map": "data/interim/dedupe_map_v1.parquet",
       "pairs": "data/interim/align_pairs.parquet",
-      "senses": "data/interim/senses_norm.parquet"
+      "senses": "data/interim/senses_norm_v1.parquet"
     },
     "licences": {
+      "chebi": "CC-BY-4.0",
+      "gene_ontology": "CC-BY-4.0",
+      "mesh": "NLM-MeSH-terms",
+      "ncbi_taxonomy": "public-domain-NCBI",
       "oewn": "CC-BY-4.0",
+      "snomed_ct_uk": "SNOMED-CT-affiliate-restricted",
+      "wikidata_items": "CC0-1.0",
+      "wikidata_lexemes": "CC0-1.0",
       "wiktionary": "CC-BY-SA-4.0+GFDL"
     },
     "ordering": {
@@ -35,11 +54,11 @@
     },
     "outputs": {
       "history_dir": "data/processed/registry_history",
-      "inventory": "data/processed/inventory_v0_1.parquet",
+      "inventory": "data/processed/inventory_v1_0.parquet",
       "lemma_registry": "data/processed/lemma_registry.parquet",
       "registry": "data/processed/id_registry.parquet",
       "registry_commit_dir": "registry",
-      "stats": "data/processed/inventory_v0_1.stats.json"
+      "stats": "data/processed/inventory_v1_0.stats.json"
     },
     "policy": {
       "absorb_lineage": true,
@@ -53,11 +72,28 @@
       "subsenses": "keep",
       "tune_metric": "f0.5"
     },
+    "restricted_id_prefixes": [
+      "sct:"
+    ],
+    "restricted_sources": [
+      "snomed_ct_uk"
+    ],
+    "source_order": [
+      "oewn",
+      "wiktionary",
+      "wikidata_lexemes",
+      "wikidata_items",
+      "mesh",
+      "gene_ontology",
+      "chebi",
+      "ncbi_taxonomy",
+      "snomed_ct_uk"
+    ],
     "stage": "inventory.build"
   },
-  "config_path": "configs/inventory.yaml",
-  "config_sha256": "bb3c67da1b5323c20cbf59531ad5b7552450087e693930f49ebf3627c9f1faa8",
-  "created_at": "2026-11-01T03:25:50+00:00",
+  "config_path": "configs/inventory_v1.yaml",
+  "config_sha256": "753dcb376e2f5c532cdfc5d773ad801ad66c33cef516f9202901b166b13f75e6",
+  "created_at": "2026-11-01T17:09:58+00:00",
   "extra": {
     "layout": {
       "lemma_bits": 22,
@@ -68,9 +104,9 @@
   },
   "inputs": [],
   "output": {
-    "bytes": 7076468,
+    "bytes": 19715487,
     "path": "registry/lemma_registry.parquet",
-    "sha256": "33f37e7cff8804071b34d1f72ee9553b12351af5d07b45d8cae78da0eda488c7"
+    "sha256": "2a6017b946a4f6abd26489a17d9d937d569657954b7e3b4612041d7add913923"
   },
   "packages": {
     "duckdb": "2.0.0",
@@ -86,7 +122,12 @@
     "transformers": "5.22.1"
   },
   "source_versions": {
+    "chebi": "ChEBI release 255 sha256:c2765eb4599f",
+    "gene_ontology": "GO release 2026-07-26 (data-version: releases/2026-07-26) sha256:d3593751d885",
+    "mesh": "MeSH 2026 descriptors (file of 2026-08-12) sha256:449792ed59ba",
+    "ncbi_taxonomy": "NCBI Taxonomy taxdump, monthly archive 2026-11-01 sha256:bca3df962e06",
     "oewn": "oewn:2025+ (2025-12-31) sha256:31f4af16c54b",
+    "wikidata_lexemes": "Wikidata lexemes dump 2026-10-28 sha256:1f0d5b11ff3e",
     "wiktionary": "kaikki.org English 2026-10-25 (enwiktionary dump 2026-10-01; wiktextract f9fe161+6f96ddf) sha256:3ff7bef28ce7"
   },
   "stage": "inventory.build.registry"

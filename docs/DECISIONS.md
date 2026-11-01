@@ -371,3 +371,16 @@ either layout from HEAD and from the working tree.
 everything else is replaced (`common.load_config`). The v1.0 configs (`normalise_v1.yaml`,
 `inventory_v1.yaml`) extend the v0.1 ones, so the rules cannot drift apart; provenance records the
 merged config.
+
+**D-045 Inventory v1.0 ships without Wikidata items.** The full-dump pass (D-032) had reached
+74% (88.6M items scanned, 3.68M superset rows, 3 h 15 min) when the cloud container running it
+was recycled while the session was idle (~16:25 UTC); the process died with it, and the pass
+cannot resume (one deflate stream; nothing on disk to continue from). Rather than hold Gate 2 for
+another ~4.5 h pass, v1.0 is built from the other sources; the items ingest, its concept filter
+(D-038) and its stage-2 threshold (tuned on a trial of the first 100 MB of the dump) are ready.
+Adding items later is safe for ids: a later build attaches items to the existing clusters and
+issues new ids for the rest, append-only; domain senses that would have joined an item cluster
+keep their v1.0 ids through member overlap. Lesson for long jobs in this environment: background
+work only survives while a session turn is active, so a multi-hour job must either keep the
+session busy or be resumable (for this dump: the bz2 multistream variant, whose streams can be
+restarted independently, or a gzip index with seek points).
