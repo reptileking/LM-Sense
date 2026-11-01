@@ -13,7 +13,7 @@ Supporting detail: [`phase2_stats.md`](phase2_stats.md) (all tables), [`phase2_s
 | Source | Version | Licence | Ingest | Senses ingested | What is kept |
 |---|---|---|---|---|---|
 | Wikidata lexemes | dump 2026-10-28 | CC0 | `ingest.wikidata_lexemes` | TBD_LEX | every English lexeme sense with a gloss; forms with grammatical features feed the forms table |
-| Wikidata items | JSON dump 2026-10-26 (156.7 GB, streamed, never stored) | CC0 | `ingest.wikidata_items stream` + `select` | TBD_ITEMS | items linked from English lexeme senses + *concepts*: classes (P279) with an English description and Wikipedia article, minus people, works, Wikimedia pages and the types the domain sources own (D-038) |
+| Wikidata items | JSON dump 2026-10-26 (156.7 GB, streamed, never stored) | CC0 | `ingest.wikidata_items stream` + `select` | TBD_ITEMS | items linked from English lexeme senses + *concepts*: classes (P279) with a lower-case English label (common nouns), an English description and a Wikipedia article, minus people, Wikimedia pages and the types the domain sources own (D-038) |
 | NCBI Taxonomy | taxdump 2026-11-01 | public domain | `ingest.ncbi_taxonomy` | 957,340 | formal ranks domain … species with well-formed names; placeholders and specimen labels dropped (D-039) |
 | Gene Ontology | release 2026-07-26 | CC BY 4.0 | `ingest.obo` | 38,092 | non-obsolete terms |
 | ChEBI | release 255 | CC BY 4.0 | `ingest.obo` | 62,119 | 3-star entities; HTML stripped from definitions (D-040) |
@@ -82,7 +82,7 @@ category, so each can grow without renumbering; append-only registry
 
 Tests: `uv run pytest` — 74 tests (73 pass, the local registry-history test skips until a second local registry version exists). New in Phase 2: stage-2 attachment rules (cosine,
 cross-reference, Wikidata bridge, one-to-one per source, case and kingdom rules), MeSH lemma
-rules (27 cases), structural registry (layout, append-only), SNOMED RF2 reader on fixtures,
+rules (22 cases), Wikidata line filter and concept selection, structural registry (layout, append-only), SNOMED RF2 reader on fixtures,
 restricted-source redaction / rehydration / hold-out, sharded ledger, config inheritance, and
 the committed ledger read from HEAD in either layout.
 
@@ -111,7 +111,7 @@ TBD_NUMBERS
    garbled Latin (lemminflect's out-of-vocabulary rules: "Xenarthra" → "xenarthrum") and
    lower-cased genera. The rules now use lemminflect's dictionary, singularise only regular
    English plurals, keep scientific names verbatim and detect genera with the NCBI name list
-   (D-035, 29 test cases); ~103k MeSH lemmas changed relative to the first version.
+   (D-035, 22 test cases); ~103k MeSH lemmas changed relative to the first version.
 7. **ChEBI definitions carried HTML** (`<em>`, `<sub>`, `<small>D</small>`; 28,736 of them): stripped
    in names, definitions and synonyms (D-040).
 8. **Out of memory**: the first stage-2 implementation kept one Python dict per sense and loaded

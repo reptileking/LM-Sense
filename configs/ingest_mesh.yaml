@@ -13,4 +13,4 @@ scr_classes: [1, 3, 4]               # chemical, rare disease, organism (not pro
 tree_domains: {A: anatomy, B: biology, C: medicine, D: pharmacology, E: medicine, F: psychology,
                G: biology, H: science, I: social-sciences, J: technology, K: humanities,
                L: information-science, M: social-sciences, N: health-care, V: publishing, Z: geography}
-scr_domains: {chemical: chemistry, "rare disease": medicine, organism: biology}
+scr_domains: {chemical: chemistry, "rare disease": medicine, organism: taxonomy}   # taxonomy as for NCBI
