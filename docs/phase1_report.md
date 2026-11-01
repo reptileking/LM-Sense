@@ -1,6 +1,8 @@
 # Phase 1 report — Sense inventory v0.1 (Wiktionary + Open English WordNet)
 
-**Gate 1: awaiting your approval.** 2026-11-01, branch `claude/senselm-research-system-psq9xl`.
+**Gate 1: approved 2026-11-01** — 22 + 10-bit ID layout and the fine policy approved; the
+uncertain band is to be judged by a locally hosted LLM on the owner's server (not a paid API).
+Branch `claude/senselm-research-system-psq9xl`.
 Supporting detail: [`phase1_stats.md`](phase1_stats.md) (all tables), [`phase1_stats.json`](phase1_stats.json)
 (every number), [`DECISIONS.md`](DECISIONS.md), [`GRANULARITY.md`](GRANULARITY.md),
 [`LICENSES.md`](LICENSES.md), [`../eval/alignment_eval.md`](../eval/alignment_eval.md),

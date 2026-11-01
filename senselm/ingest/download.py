@@ -26,30 +26,35 @@ from senselm.common import dump_json, load_config, resolve, setup_logging, sha25
 
 LOG = logging.getLogger("senselm.download")
 CHUNK = 1 << 20
+# Wikimedia and others reject anonymous clients (e.g. Python's default User-Agent) with 403;
+# their policies ask for a descriptive agent with a contact URL. No personal data.
+DEFAULT_USER_AGENT = "SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)"
 
 
 class BlockedDownload(RuntimeError):
     pass
 
 
-def _head(url: str, timeout: int) -> dict[str, str]:
-    req = urllib.request.Request(url, method="HEAD")
+def _head(url: str, timeout: int, user_agent: str = DEFAULT_USER_AGENT) -> dict[str, str]:
+    req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": user_agent})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return {k.lower(): v for k, v in resp.headers.items()}
 
 
-def fetch(url: str, dest: Path, *, timeout: int = 60) -> dict[str, Any]:
+def fetch(
+    url: str, dest: Path, *, timeout: int = 60, user_agent: str = DEFAULT_USER_AGENT
+) -> dict[str, Any]:
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_name(dest.name + ".part")
     try:
-        headers = _head(url, timeout)
+        headers = _head(url, timeout, user_agent)
     except urllib.error.HTTPError as e:  # 403/407 from the egress proxy or server
         raise BlockedDownload(f"HTTP {e.code} for {url}") from e
     except urllib.error.URLError as e:
         raise BlockedDownload(f"cannot reach {url}: {e.reason}") from e
     total = int(headers.get("content-length", 0)) or None
     start = part.stat().st_size if part.exists() else 0
-    req = urllib.request.Request(url)
+    req = urllib.request.Request(url, headers={"User-Agent": user_agent})
     if start:
         req.add_header("Range", f"bytes={start}-")
     try:
@@ -95,7 +100,11 @@ def run(cfg: dict[str, Any], only: list[str] | None = None) -> dict[str, Any]:
             meta = manifest["sources"].get(name, {})
             if not meta.get("last_modified"):
                 try:  # record upstream identity for files fetched outside this stage
-                    h = _head(src["url"], int(cfg.get("timeout_s", 60)))
+                    h = _head(
+                        src["url"],
+                        int(cfg.get("timeout_s", 60)),
+                        cfg.get("user_agent", DEFAULT_USER_AGENT),
+                    )
                     if int(h.get("content-length", -1)) == dest.stat().st_size:
                         meta = {
                             "last_modified": h.get("last-modified"),
@@ -107,12 +116,26 @@ def run(cfg: dict[str, Any], only: list[str] | None = None) -> dict[str, Any]:
         else:
             LOG.info("%s: downloading %s", name, src["url"])
             try:
-                meta = fetch(src["url"], dest, timeout=int(cfg.get("timeout_s", 60)))
+                meta = fetch(
+                    src["url"],
+                    dest,
+                    timeout=int(cfg.get("timeout_s", 60)),
+                    user_agent=cfg.get("user_agent", DEFAULT_USER_AGENT),
+                )
             except BlockedDownload as e:
                 blocked.append((name, src["url"], str(dest)))
                 LOG.error("%s: BLOCKED (%s)", name, e)
                 continue
         digest = sha256_file(dest)
+        if src.get("md5"):  # publishers such as Wikimedia only provide md5/sha1 sums
+            import hashlib as _h
+
+            md5 = _h.md5()
+            with dest.open("rb") as fh:
+                for block in iter(lambda: fh.read(CHUNK), b""):
+                    md5.update(block)
+            if md5.hexdigest() != src["md5"]:
+                raise RuntimeError(f"{name}: md5 mismatch ({md5.hexdigest()} != {src['md5']})")
         if pinned and digest != pinned:
             raise RuntimeError(
                 f"{name}: sha256 mismatch ({digest} != pinned {pinned}). The upstream file has "

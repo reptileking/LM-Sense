@@ -123,7 +123,9 @@ file contains no aligner scores (blind labelling). Labels: `same` / `related` / 
 acting as annotator, not by a human**; a human spot-check is recommended (Gate-1 decision).
 Dev/test halves are assigned by hashing the pair id.
 
-**D-019 LLM judge.** Implemented (`senselm.inventory.judge`, Message Batches, JSON-schema output,
+**D-019 LLM judge.** *Gate 1 (2026-11-01): the owner chose a locally hosted LLM on their own
+server instead of a paid API (see D-030); the Anthropic Batch path below remains available but
+is not used.* Implemented (`senselm.inventory.judge`, Message Batches, JSON-schema output,
 dry-run estimate, hard £ cap checked against the worst case before each chunk) but **disabled**:
 no project API key is configured. Middle-band pairs are kept separate and counted; the dry-run
 estimate is in the Phase-1 report. Default model `claude-opus-5-5` (configurable; a cheaper
@@ -132,7 +134,7 @@ yields no verdict (pair stays separate).
 
 ## Granularity, IDs, ordering
 
-**D-020 Policies.** See docs/GRANULARITY.md. Fine (default, issues IDs): subsenses kept,
+**D-020 Policies.** *Approved at Gate 1 (2026-11-01): the fine policy issues the IDs.* See docs/GRANULARITY.md. Fine (default, issues IDs): subsenses kept,
 merge only paraphrases, greedy one-to-one matching. Coarse (counts only): subsenses collapsed,
 same-or-related merged, many-to-one onto WordNet senses. A third mode, `components`, exists for
 experiments but is not used (transitive chaining collapses polysemous verbs).
@@ -151,8 +153,7 @@ distinct term is a lemma. Because IDs are permanent, the layout cannot be widene
 renumbering everything, so it is fixed now at 22 lemma bits (4,194,304 slots) and 10 sense bits
 (1,024 senses per lemma). The top 4,096 lemma slots are reserved for structural tokens:
 `token_id ≥ 0xFFC00000` (4,194,304 ids). Lemma id 0 is never assigned (token id 0 is never
-lexical). **Open decision for Gate 1** (alternative: 20 + 10 with a separate namespace for domain
-terms).
+lexical). *Approved at Gate 1 (2026-11-01).*
 
 **D-023 Sense order within a lemma** (frequency proxy; OEWN 2025 ships no tag counts):
 1. senses with a WordNet member, by WordNet sense number (Princeton numbering follows SemCor

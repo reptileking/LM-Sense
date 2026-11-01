@@ -111,13 +111,12 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
     cos = pair_cosines(pairs, vec_index, mat)
     pairs = pairs.with_columns(pl.Series("cosine", np.round(cos, 4), dtype=pl.Float32))
 
-    # Optional LLM-judge verdicts (cached by pair); absent when the judge is disabled.
-    jcfg = cfg.get("llm_judge", {})
-    verdicts = None
-    jpath = resolve(jcfg.get("cache_path", "data/interim/judge_cache.parquet"))
-    if jcfg.get("enabled") and jpath.exists():
-        verdicts = pl.read_parquet(jpath).select("oewn_id", "wikt_id", "verdict")
-    if verdicts is not None:
+    # Optional LLM-judge verdicts (cached by pair; written by judge / judge_local ``import``)
+    vcfg = cfg.get("judge_verdicts", {})
+    vpath = resolve(vcfg.get("path", "data/interim/judge_cache.parquet"))
+    if vcfg.get("use") and vpath.exists():
+        verdicts = pl.read_parquet(vpath).select("oewn_id", "wikt_id", "verdict")
+        prov.add_input(vpath)
         pairs = pairs.join(verdicts, on=["oewn_id", "wikt_id"], how="left")
     else:
         pairs = pairs.with_columns(pl.lit(None, dtype=pl.String).alias("verdict"))

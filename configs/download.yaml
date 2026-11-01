@@ -29,3 +29,42 @@ sources:
     version: "oewn:2025 (2025-12-31)"
     licence: "CC BY 4.0"
     sha256: 9ca6d1dcb75f822fdd66617f7d9da48142ace38dd544d6ad5e2feca1674ad3fe
+  # ---------------------------------------------------------------- Phase 2 (domain extension)
+  # Dated dump URLs where publishers provide them; sha256 pinned after the first download.
+  - name: wikidata_lexemes
+    url: https://dumps.wikimedia.org/wikidatawiki/entities/20261028/wikidata-20261028-lexemes.json.gz
+    path: data/raw/wikidata/wikidata-20261028-lexemes.json.gz
+    version: "Wikidata lexemes dump 2026-10-28"
+    licence: "CC0 1.0"
+    sha256: 1f0d5b11ff3eaad4255c33ff23d7eed0b9394985945f25829a15e0702394896b
+    md5: b7513e4dcd3dcd526e32c9646f9ffed6        # from wikidata-20261028-md5sums.txt
+  - name: ncbi_taxonomy
+    url: https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump_archive/taxdmp_2026-11-01.zip
+    path: data/raw/ncbi_taxonomy/taxdmp_2026-11-01.zip
+    version: "NCBI Taxonomy taxdump, monthly archive 2026-11-01"
+    licence: "Public domain (NCBI / U.S. National Library of Medicine); citation requested"
+    sha256: bca3df962e06e9d27bb94aa93d56ed2f0e2190dc32dbb03f4be6ad13153ecc02
+  - name: gene_ontology
+    url: https://current.geneontology.org/ontology/go.obo
+    path: data/raw/go/go.obo
+    version: "GO release 2026-07-26 (data-version: releases/2026-07-26)"
+    licence: "CC BY 4.0"
+    sha256: d3593751d885ca160b2ab7baf6c7eccd88ca3c4599f79436c674bad661095ff0
+  - name: chebi
+    url: https://ftp.ebi.ac.uk/pub/databases/chebi/archive/rel255/ontology/chebi.obo.gz
+    path: data/raw/chebi/chebi-rel255.obo.gz
+    version: "ChEBI release 255"
+    licence: "CC BY 4.0"
+    sha256: c2765eb4599fbcbb265385f5280a241c83ef3cecb302f92afdc2879f9c7e7d6c
+  - name: mesh_descriptors
+    url: https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/desc2026.xml
+    path: data/raw/mesh/desc2026.xml
+    version: "MeSH 2026 descriptors (file of 2026-08-12)"
+    licence: "NLM MeSH terms and conditions (free of charge; attribution; no misrepresentation)"
+    sha256: 449792ed59ba4d60035e44724352f7361ec0dc945b67dcd821a50ff32f81bcdb
+  - name: mesh_supplementary
+    url: https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/supp2026.xml
+    path: data/raw/mesh/supp2026.xml
+    version: "MeSH 2026 supplementary concept records (file of 2026-08-12)"
+    licence: "NLM MeSH terms and conditions (free of charge; attribution; no misrepresentation)"
+    sha256: 8ec0efa76e050813ffefad4f6cff280cd85e2a26110119949e987aba564824ca

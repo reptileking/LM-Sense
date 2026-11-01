@@ -165,12 +165,16 @@ def canonical_senses(
         .group_by("cluster")
         .agg(pl.struct("source", "source_id").alias("extra_members"))
     )
-    agg = agg.join(extra, on="cluster", how="left", maintain_order="left").with_columns(
-        pl.when(pl.col("extra_members").is_not_null())
-        .then(pl.concat_list("members", "extra_members"))
-        .otherwise(pl.col("members"))
-        .alias("members")
-    ).drop("extra_members")
+    agg = (
+        agg.join(extra, on="cluster", how="left", maintain_order="left")
+        .with_columns(
+            pl.when(pl.col("extra_members").is_not_null())
+            .then(pl.concat_list("members", "extra_members"))
+            .otherwise(pl.col("members"))
+            .alias("members")
+        )
+        .drop("extra_members")
+    )
     agg = agg.with_columns(
         pl.coalesce("_w_lemma", "_any_lemma").alias("lemma"),
         pl.coalesce("_w_upos", "_any_upos").alias("upos"),
@@ -291,7 +295,9 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
             hist.mkdir(parents=True, exist_ok=True)
             seq = len(list(hist.glob("id_registry.*.parquet")))  # name order = chronological order
             prev_build = prev["created_in"].max()
-            prev.write_parquet(hist / f"id_registry.{seq:04d}.{prev_build}.parquet", compression="zstd")
+            prev.write_parquet(
+                hist / f"id_registry.{seq:04d}.{prev_build}.parquet", compression="zstd"
+            )
         reg_prov = Provenance(
             stage="inventory.build.registry", config=cfg, extra={"layout": layout.to_dict()}
         )

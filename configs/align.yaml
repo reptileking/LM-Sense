@@ -36,6 +36,13 @@ embedding:
 # granularity policy configs, not here.
 judge_band: {low: 0.55, high: 0.69}
 
+# Verdicts of an LLM judge to apply in the band (see judge.py / judge_local.py). The local judge
+# runs on the owner's server; its verdicts are imported into `path`.
+judge_verdicts:
+  use: false                         # set true once verdicts for the band have been imported
+  path: data/interim/judge_cache.parquet
+
+# Paid-API judge (Anthropic Batches): kept for reference, not used (Gate 1: local LLM instead).
 llm_judge:
   enabled: false                    # no project API key configured -> dry-run estimate only
   dry_run: true

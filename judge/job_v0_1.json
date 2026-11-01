@@ -1,0 +1,11 @@
+{
+  "band": 56292,
+  "band_def": {
+    "high": 0.69,
+    "low": 0.55
+  },
+  "gold": 300,
+  "prompt_version": "ae6cc226f808",
+  "rows": 56565,
+  "sha256": "19eb1c44a792be6ba5d8f3190a79b6ee6b0ba18b2e43c4ce7355af0ce805fb92"
+}

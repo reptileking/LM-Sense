@@ -1,0 +1,28 @@
+# Local-LLM judge for the uncertain alignment band (Gate 1 decision: run on the owner's server).
+#   pipeline env:  uv run python -m senselm.inventory.judge_local export --config configs/judge_local.yaml
+#   judging host:  uv run python -m senselm.inventory.judge_local probe  --config configs/judge_local.yaml --model <name>
+#                  uv run python -m senselm.inventory.judge_local pilot  --config configs/judge_local.yaml --model <name>
+#                  uv run python -m senselm.inventory.judge_local run    --config configs/judge_local.yaml --model <name>
+#   pipeline env:  uv run python -m senselm.inventory.judge_local import --config configs/judge_local.yaml --model <name>
+stage: inventory.judge_local
+align_config: configs/align.yaml
+gold_path: eval/alignment_gold.csv
+job_path: judge/job_v0_1.parquet              # git-tracked: the judging host needs only the repo
+verdicts_dir: judge/verdicts                  # git-tracked shards written by pilot / run
+cache_path: data/interim/judge_cache.parquet  # import target, joined by align (judge_verdicts.use)
+pilot_dir: eval
+band: {low: 0.55, high: 0.69}                 # must equal configs/align.yaml judge_band
+
+# Server on the judging host: any OpenAI-compatible endpoint.
+base_url: http://localhost:11434/v1           # Ollama; vLLM :8000/v1, llama.cpp :8080/v1, LM Studio :1234/v1
+model: null                                   # chosen after `probe` (largest instruct model that fits)
+api_key_env: LOCAL_LLM_API_KEY                # only if the server requires a key
+structured_output: auto                       # auto | json_schema | json_object | none
+max_tokens: 256                               # raise to ~2048 for reasoning ("thinking") models
+seed: 0
+timeout_s: 180
+retries: 3
+concurrency: 4                                # vLLM / llama.cpp (-np N) gain from 8-32 parallel requests
+flush_every: 500
+max_requests: null                            # optional cap per run
+max_hours: null                               # optional time budget per run (resumable)
