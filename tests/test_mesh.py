@@ -55,6 +55,13 @@ TAXA = frozenset(
             "sideroblastic anemia with spinocerebellar ataxia",
         ),
         ("heart-hand syndrome, slovenian type", False, "", "heart-hand syndrome, slovenian type"),
+        (
+            "Phosphotransferases (Nitrogenous Group Acceptor)",
+            False,
+            "",
+            "phosphotransferases (nitrogenous group acceptor)",
+        ),
+        ("National Cancer Institute (U.S.)", False, "", "national cancer institute (U.S.)"),
     ],
 )
 def test_dictionary_form(term: str, organism: bool, scope: str, lemma: str) -> None:

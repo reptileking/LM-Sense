@@ -241,7 +241,7 @@ def dictionary_form(
     for i, w in enumerate(orig):
         inside = depth > 0
         depth = max(0, depth + w.count("(") - w.count(")"))
-        if (
+        if sentence_case and (
             inside or "(" in w or "/" in w
         ):  # strain designations "(A/Hong Kong/45/2019 (H3N2))": verbatim
             words.append(w)
@@ -290,13 +290,14 @@ def dictionary_form(
             continue
         parts = []
         for p in hy:
+            core = p.strip("()[],")  # "(Nitrogenous" is judged as "Nitrogenous", "(U.S.)" as "U.S."
             keep = (
-                not p
-                or KEEP_CASE_RE.search(p)
-                or (len(p) == 1 and p.isupper())
+                not core
+                or KEEP_CASE_RE.search(core)
+                or (len(core) == 1 and core.isupper())
                 or genus
                 or (eponym and i == 0)
-                or (organism and latin_word(p, taxa))
+                or (organism and latin_word(core, taxa))
             )
             parts.append(p if keep else p.lower())
         words.append("-".join(parts))
