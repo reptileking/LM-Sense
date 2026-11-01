@@ -457,11 +457,19 @@ def main() -> None:
     ap.add_argument("command", choices=["export", "probe", "pilot", "run", "import"])
     ap.add_argument("--config", required=True, type=Path)
     ap.add_argument("--model", default=None, help="override the configured model name")
+    ap.add_argument(
+        "--base-url",
+        default=None,
+        help="override the server URL, e.g. http://localhost:8000/v1 (vLLM), :8080/v1 (llama.cpp), "
+        ":1234/v1 (LM Studio); the default config points at Ollama (:11434/v1)",
+    )
     args = ap.parse_args()
     setup_logging()
     cfg = load_config(args.config)
     if args.model:
         cfg["model"] = args.model
+    if args.base_url:
+        cfg["base_url"] = args.base_url
     if args.command == "export":
         export(cfg)
         return
