@@ -463,6 +463,13 @@ def main() -> None:
         help="override the server URL, e.g. http://localhost:8000/v1 (vLLM), :8080/v1 (llama.cpp), "
         ":1234/v1 (LM Studio); the default config points at Ollama (:11434/v1)",
     )
+    ap.add_argument(
+        "--max-tokens",
+        type=int,
+        default=None,
+        help="answer budget; reasoning ('thinking') models need ~2048",
+    )
+    ap.add_argument("--concurrency", type=int, default=None, help="parallel requests")
     args = ap.parse_args()
     setup_logging()
     cfg = load_config(args.config)
@@ -470,6 +477,10 @@ def main() -> None:
         cfg["model"] = args.model
     if args.base_url:
         cfg["base_url"] = args.base_url
+    if args.max_tokens:
+        cfg["max_tokens"] = args.max_tokens
+    if args.concurrency:
+        cfg["concurrency"] = args.concurrency
     if args.command == "export":
         export(cfg)
         return
