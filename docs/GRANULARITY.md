@@ -122,8 +122,9 @@ subsense, which *Mice* joins).
   meaning into transitive and intransitive senses that WordNet keeps as one: only one of them
   merges with the WordNet sense.
 * Within-Wiktionary near-duplicates (not exact) are never merged under the fine policy.
-* Stage 2 compares a new sense with the lemma's existing senses only; a domain term whose lemma
-  differs from the general word (MeSH "Neoplasms" vs "tumor") is not merged — synonyms are kept
-  for alignment but never create or merge senses on their own (D-034).
+* Stage 2 compares a new sense with the existing senses of the *same lemma* only. Tokens are per
+  lemma by design (WordNet's synonyms "tumor" and "neoplasm" are two tokens of one concept), so a
+  domain term is merged with the general sense of its own lemma, never with a synonym's; synonyms
+  are kept for alignment but never create or merge senses on their own (D-034).
 * Vague Wikidata lexeme glosses ("chemical compound", "type of paint") attach to the wrong one of
   several close senses about one time in five (gold-set precision 0.78 for lexemes).
