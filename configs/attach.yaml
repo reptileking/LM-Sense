@@ -1,0 +1,38 @@
+# Stage-2 alignment: attach Phase-2 source senses to the inventory (docs/DECISIONS.md D-037). Run:
+#   uv run python -m senselm.inventory.attach --config configs/attach.yaml
+stage: inventory.attach
+senses: data/interim/senses_norm_v1.parquet
+pairs: data/interim/align_pairs.parquet          # stage-1 (OEWN-Wiktionary) scored pairs
+policy_config: configs/inventory.yaml            # stage-1 policy (fine)
+align_config: configs/align.yaml                 # embedding model, revision, text template
+output: data/interim/attachments_v1.parquet
+# Wikidata items superset (stream output): Q-id -> MeSH / ChEBI / GO / NCBI cross-references for
+# the items that Wiktionary and lexeme senses link to (identity evidence; optional)
+bridge: data/interim/wikidata_items_superset.parquet
+pos_classes: {NOUN: N, PROPN: N, VERB: V, ADJ: A, ADV: R}
+# Earlier sources can create clusters that later ones attach to.
+source_order: [wikidata_lexemes, wikidata_items, mesh, gene_ontology, chebi, ncbi_taxonomy, snomed_ct_uk]
+# Cosine needed to attach without a cross-reference. Chosen on the plateaus of the per-source
+# precision/recall curves of eval/attach_gold.csv (40 labelled senses per source, F0.5;
+# eval/attach_gold_eval.json), not at the noisy argmax.
+thresholds:
+  default: 0.60
+  wikidata_lexemes: 0.60     # P 0.78 / R 0.78 (flat curve: errors are wrong-candidate, not low-score)
+  mesh: 0.60                 # P 0.97 / R 0.93
+  gene_ontology: 0.65        # P 0.95 / R 1.00
+  chebi: 0.65                # P 0.89 / R 0.94
+  ncbi_taxonomy: 0.53        # P 1.00 / R 0.74 with the case and kingdom rules below
+gold:
+  seed: 20261101
+  per_source: 40
+  sample_output: eval/attach_gold_sample.json
+  path: eval/attach_gold.csv
+  eval_output: eval/attach_gold_eval.json
+# Taxa: a capitalised genus and the lowercase common noun derived from it are different lexemes.
+no_case_fallback: [ncbi_taxonomy]
+# Kingdom consistency: WordNet lexicographer files a taxon of each kingdom may attach to.
+taxon_lexfiles:
+  Metazoa: [noun.animal]
+  Viridiplantae: [noun.plant]
+  Fungi: [noun.plant]           # WordNet files fungi under noun.plant
+  default: [noun.animal, noun.plant]

@@ -1,0 +1,12 @@
+# Gene Ontology -> term senses. Run:
+#   uv run python -m senselm.ingest.obo --config configs/ingest_go.yaml
+stage: ingest.gene_ontology
+manifest: data/raw/MANIFEST.json
+source: gene_ontology
+source_name: gene_ontology
+input: data/raw/go/go.obo
+output: data/interim/senses_raw_gene_ontology.parquet
+pos_label: term
+domain: molecular-biology
+tag_prefix: go
+undefined_gloss_prefix: "a GO term that is a kind of"

@@ -209,3 +209,146 @@ full inventory.
 **D-029 Fresh v0.1 registry.** The ID registry was regenerated from scratch by the final
 Phase-1 build (development builds before the first commit were never released). From the first
 commit of `registry/` onwards, IDs are permanent and protected by the append-only checks.
+
+## Phase 2
+
+**D-030 Local LLM judge.** *Gate 1 (2026-11-01): the owner chose a locally hosted LLM on their own
+computer/server for the ~56k uncertain-band pairs instead of a paid API.*
+`senselm/inventory/judge_local.py` talks to any OpenAI-compatible `/v1/chat/completions` server
+(Ollama, vLLM, llama.cpp server, LM Studio) using only the standard library, so the judging
+machine needs nothing beyond a clone of the repository and `uv`. The job file
+(`judge/job_v0_1.parquet`: 300 gold pairs + 56,265 decision-relevant band pairs, D-027) is
+committed; `probe` checks the endpoint and detects structured output (json_schema → json_object →
+plain text with tolerant parsing, including `<think>` blocks); `pilot` judges the 300 gold pairs
+first and reports accuracy, so a model is accepted only if it beats the cosine band baseline;
+`run` writes resumable shards under `judge/verdicts/<model>/` (temperature 0, seed 0, fixed
+prompt version recorded with every verdict); `import` builds `data/interim/judge_cache.parquet`,
+which `align` joins when `judge_verdicts.use: true`. Verdicts are committed, so the judging can run
+on the owner's machine while everything else runs here. Status at Gate 2: the owner's machine was
+not connected (Remote Control), so no verdicts exist yet and the band stays "keep separate" (the
+conservative default of the fine policy).
+
+**D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
+User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`
+— the project name and repository only, no personal data — as Wikimedia's policy requests.
+
+**D-032 Streaming the Wikidata JSON dump.** The full dump (`wikidata-20261026-all.json.gz`,
+156.7 GB gzip, ~1.6 TB JSON) cannot be stored (≈20 GB free) and is streamed once:
+* 64 MB HTTP range requests over **two** parallel connections (Wikimedia's per-IP courtesy limit;
+  each connection is capped at ~5 MB/s), reassembled in order; every range's length is verified
+  and any transport error is retried with back-off. The first full attempt died at 12% on an
+  `http.client.IncompleteRead`, which the retry clause did not catch; it now retries every
+  exception;
+* sha256 and md5 are computed on the fly; the md5 is checked against Wikimedia's published sum
+  after the pass, and gzip's own CRC-32 checks the inflated content;
+* inflation in the main process, line filtering in two worker processes: a filter *thread* starved
+  the network reader through the GIL (1.4 MB/s → 9.9 MB/s after the change);
+* the pass cannot resume after a crash: the dump is one deflate stream (plus a 22-byte "[" member)
+  whose decompressor state cannot be checkpointed, and storing the compressed file is impossible.
+  A crash costs a restart (~4.3 h).
+The pass writes a *superset* (D-038); the concept filter runs afterwards on it.
+
+**D-033 Wikidata lexemes.** English lexemes (Q1860), one row per sense (gloss = English gloss;
+lexemes without senses yield one `no_gloss` row so their forms still reach the forms table).
+The Q-ids of lexical categories and grammatical features were mapped by reading the data (e.g. the
+feature on "ran" of lexeme "run" is Q1392475 = past tense) because the Wikidata API rate-limited
+label lookups (HTTP 429); the full tables are in `configs/normalise.yaml` and
+`senselm/ingest/wikidata_lexemes.py`.
+
+**D-034 Synonyms never create senses.** In the domain sources only the preferred name of a
+concept becomes a sense (MeSH preferred term, GO/ChEBI `name`, NCBI scientific name, SNOMED
+preferred synonym, Wikidata English label). Entry terms, synonyms, common names and aliases go to
+`relations` and are used for alignment only. Otherwise every synonym would be a separate token
+for the same meaning, which is exactly what the sense inventory exists to avoid.
+
+**D-035 MeSH dictionary forms.** MeSH headings are Title Case, often plural and sometimes
+inverted ("Insulin, Regular, Pork"); a token's lemma must be the dictionary form a text would
+contain. Rules (module docstring of `senselm/ingest/mesh.py`, tests in `tests/test_mesh.py`):
+prefer a non-inverted entry term, else un-invert short inversions; keep the case of acronyms,
+parts with digits or internal capitals, single capital letters and genus names; lower-case the
+rest, **per hyphen part** ("Self-Assessment" → "self-assessment"); singularise the head noun with
+lemminflect's dictionary, applying its OOV rules only to regular English plurals of Title Case
+words (its OOV rules turn Latin into nonsense: "Xenarthra" → "xenarthrum", "Sophora" →
+"sophorum"). Organism records keep scientific names verbatim ("Escherichia coli", "Populus");
+genus detection uses the single-word scientific names of the pinned NCBI taxdump (165,860 names),
+because no rule on the word itself separates "Ophiocordyceps" from "Coliphages". Supplementary
+records are mostly sentence case, where only the first capital is uninformative. A first version
+lower-cased genera and garbled 7,700 descriptor lemmas; the dev review caught it before release.
+
+**D-036 SNOMED CT is restricted.** The UK edition (TRUD, affiliate licence) may be used but not
+redistributed. `senselm/ingest/snomed.py` reads RF2 Snapshot files from the release zips and tags
+every row `licence:restricted`; the build refuses to run with a restricted source present unless
+`allow_restricted: true`, which requires the redacting ledger writer (restricted-only senses keep
+their token ids in the git-tracked ledger but with hashed keys and no lemma text; restricted member
+ids are stripped from other rows). That writer is specified here and will be implemented and
+tested when the TRUD files are available; until then SNOMED is commented out of
+`configs/ingest_v1.yaml`. Files needed: the "SNOMED CT UK Edition, RF2: Full, Snapshot & Delta"
+release zip(s) (International + UK clinical extension) in `data/raw/snomed/`.
+
+**D-037 Stage-2 alignment (attach).** Stage 1 (OEWN ↔ Wiktionary, the v0.1 fine policy) is
+recomputed unchanged, so every v0.1 cluster anchor survives. The other sources are then attached
+one at a time in `source_order` (lexemes, items, MeSH, GO, ChEBI, NCBI Taxonomy, SNOMED):
+candidates share the lemma (exact case; case-insensitive only when no exact-case cluster exists,
+never for taxa) and the POS class (NOUN ≡ PROPN); score = max cosine to the cluster's members
+(same embedding model and cache as stage 1); cross-references (Wiktionary/lexeme Q-ids, item
+P685/P486/P683/P686, also bridged through the items superset for items that are not senses) rank
+above every cosine edge; greedy one-to-one per source; a sense that does not attach starts a new
+cluster that later sources can join. Thresholds per source from the plateaus of the precision/
+recall curves of a blind 200-sense gold set (`eval/attach_gold.csv`, 40 per source; MeSH 0.60,
+GO 0.65, ChEBI 0.65, NCBI 0.53, lexemes 0.60). Two rules came from that gold set's errors:
+taxa never use the case-insensitive fallback (a genus "Mus" is not the noun "mus"), and a taxon
+may only join a cluster whose WordNet members have a lexicographer file compatible with its
+kingdom (Metazoa → noun.animal, plants and fungi → noun.plant) — NCBI precision 0.84 → 1.00.
+Memory: a first implementation kept a Python dict per sense (12.7 GB, OOM-killed); it now keeps
+columns in Polars and loads only the cached vectors a query needs.
+
+**D-038 Wikidata items: the concept filter.** Superset (written by the stream, 2 steps so the
+filter can change without re-streaming): English label AND (linked from an English lexeme sense
+via P5137 OR has "subclass of" P279 OR carries a domain cross-reference: P685 NCBI, P486/P6694
+MeSH, P683 ChEBI, P686 GO, P5806 SNOMED, P8814 WordNet 3.1). Senses: items linked from lexeme
+senses, plus *concepts*: P279 (a class, i.e. a common noun), an English description (the gloss),
+an English Wikipedia article (notability) and no excluded type (scholarly article, human,
+Wikimedia category / disambiguation / template, and taxon / gene / protein / chemical compound,
+whose dedicated sources are NCBI, GO, ChEBI and MeSH). Named entities (people, places, works,
+organisations) are out of scope for v1.0: their surface names are not senses of English words
+and the byte fallback spells them.
+
+**D-039 NCBI Taxonomy filter.** Formal ranks domain … species only; names must have the form the
+rank requires (one capitalised word above species; a strict binomial or a virus-style name for
+species); placeholder subtrees (environmental samples, unclassified, uncultured, metagenomes) and
+names with `sp.`, `cf.`, strain codes or nomenclatural annotations are dropped. This keeps
+957,340 of ~2.7M taxa: vocabulary (*Mus musculus*) rather than specimen labels
+(*Brevundimonas sp. S2*). Glosses are synthesised from rank, lineage and common names.
+
+**D-040 GO and ChEBI.** One sense per non-obsolete term; ChEBI only 3-star (manually curated)
+entities. Terms without a definition get a gloss synthesised from their `is_a` parents
+(10,859 ChEBI terms). ChEBI definitions contain inline HTML (`<em>`, `<sub>`, `<small>D</small>`
+in 28,736 of them): tags are stripped and entities unescaped in names, definitions and synonyms.
+
+**D-041 Structural vocabulary.** 393 tokens in the reserved range (docs/STRUCTURAL_TOKENS.md),
+one reserved lemma slot (1,024 ids) per category so every category can grow without renumbering:
+specials, 256 byte tokens + `<bytes_start>`/`<bytes_end>` (byte value = sense index, so decoding a
+byte token is a mask), 32 UniMorph features emitted after the sense token they inflect, case (4),
+whitespace (7, incl. a clitic marker), punctuation (56, one per character), digits (10; numbers
+are digit sequences), minimal pragmatics (8: register, emphasis, quotation, irony, hedging) and
+orthographic variant selectors (6: British/American/archaic/…). The structural registry is
+append-only like the lexical one (`registry/structural_registry.parquet`).
+
+**D-042 Inventory v1.0 build.** Clusters = stage-1 clusters ∪ stage-2 attachments (exact
+duplicates removed in normalise follow their kept sense). A cluster's lemma and POS come from its
+Wiktionary member when present, else from the first member in `source_order`; gloss from the
+first member (WordNet's when present). New senses get sense indices in this order: WordNet,
+Wiktionary, rare Wiktionary (exactly the v0.1 tiers), then Wikidata-lexeme-only senses, then
+concept / domain senses in source order — general vocabulary before technical senses of the same
+lemma. Every canonical sense lists its members and their licences (`licences`), so any licensed
+subset can be removed by filtering.
+
+**D-043 Ledger sharding.** GitHub rejects files over 100 MB and warns above 50 MB. A ledger table
+larger than 45 MB is written as equal shards (`registry/id_registry-00000.parquet`, …, contiguous
+token-id ranges; `ids.write_ledger` / `ids.read_ledger`); the cross-machine append-only test reads
+either layout from HEAD and from the working tree.
+
+**D-044 Config inheritance.** A config may say `extends: <path>`; mappings merge recursively and
+everything else is replaced (`common.load_config`). The v1.0 configs (`normalise_v1.yaml`,
+`inventory_v1.yaml`) extend the v0.1 ones, so the rules cannot drift apart; provenance records the
+merged config.

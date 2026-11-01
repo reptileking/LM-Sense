@@ -129,3 +129,16 @@ def test_oewn_ingest(tmp_path: Path, oewn_files: tuple[Path, Path]) -> None:
     assert "oewn:namenet" in paris["tags"]  # absent from the base edition
     run_ = df.filter(pl.col("lemma") == "run").row(0, named=True)
     assert run_["forms"] == [{"form": "ran", "tags": []}]
+
+
+def test_config_extends(tmp_path: Path) -> None:
+    from senselm.common import load_config
+
+    base = tmp_path / "base.yaml"
+    base.write_text("a: 1\nm: {x: 1, y: {z: 2}}\nl: [1, 2]\n")
+    child = tmp_path / "child.yaml"
+    child.write_text(f"extends: {base}\nm: {{y: {{w: 3}}}}\nl: [3]\n")
+    cfg = load_config(child)
+    assert cfg["a"] == 1 and cfg["l"] == [3]
+    assert cfg["m"] == {"x": 1, "y": {"z": 2, "w": 3}}
+    assert cfg["_config_path"] == str(child)

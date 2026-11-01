@@ -24,6 +24,9 @@ from senselm.inventory.ids import (
     Layout,
     assign_ids,
     check_append_only,
+    ledger_paths,
+    read_ledger,
+    write_ledger,
 )
 
 REPO = Path(__file__).resolve().parents[1]
@@ -178,17 +181,55 @@ def test_registry_history() -> None:
         assert problems == [], f"{older.name} -> {newer.name}: {problems}"
 
 
+def _head_ledger(name: str) -> pl.DataFrame | None:
+    """Ledger table ``name`` as committed at HEAD (single file or shards)."""
+    try:
+        files = subprocess.run(
+            ["git", "ls-tree", "--name-only", "HEAD", "registry/"],
+            cwd=REPO,
+            capture_output=True,
+            check=True,
+            text=True,
+        ).stdout.split()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+    shards = sorted(
+        f for f in files if f.startswith(f"registry/{name}-") and f.endswith(".parquet")
+    )
+    paths = shards or [f for f in files if f == f"registry/{name}.parquet"]
+    if not paths:
+        return None
+    blobs = [
+        subprocess.run(
+            ["git", "show", f"HEAD:{f}"], cwd=REPO, capture_output=True, check=True
+        ).stdout
+        for f in paths
+    ]
+    return pl.concat([pl.read_parquet(io.BytesIO(b)) for b in blobs], how="vertical")
+
+
 def test_committed_registry_is_append_only() -> None:
     """Working-tree registry/ must extend the registry committed at HEAD (cross-machine guard)."""
-    rel = "registry/id_registry.parquet"
-    current = REPO / rel
-    try:
-        blob = subprocess.run(
-            ["git", "show", f"HEAD:{rel}"], cwd=REPO, capture_output=True, check=True
-        ).stdout
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    head = _head_ledger("id_registry")
+    if head is None:
         pytest.skip("no registry committed at HEAD yet")
-    if not current.exists():
-        pytest.fail(f"{rel} is committed at HEAD but missing from the working tree")
-    problems = check_append_only(pl.read_parquet(io.BytesIO(blob)), pl.read_parquet(current))
+    current = read_ledger(REPO / "registry", "id_registry")
+    if current is None:
+        pytest.fail("registry/id_registry is committed at HEAD but missing from the working tree")
+    problems = check_append_only(head, current)
     assert problems == [], problems
+
+
+def test_ledger_sharding(tmp_path: Path) -> None:
+    df = pl.DataFrame({"token_id": list(range(5000)), "lemma": [f"w{i}" for i in range(5000)]})
+
+    def writer(t: object, path: Path) -> None:
+        pl.from_arrow(t).write_parquet(path, compression="uncompressed")
+
+    assert write_ledger(df, tmp_path, "id_registry", writer) == [tmp_path / "id_registry.parquet"]
+    shards = write_ledger(df, tmp_path, "id_registry", writer, max_bytes=20_000)
+    assert len(shards) > 1 and not (tmp_path / "id_registry.parquet").exists()
+    assert read_ledger(tmp_path, "id_registry").equals(df)
+    assert ledger_paths(tmp_path, "id_registry") == shards
+    write_ledger(df, tmp_path, "id_registry", writer)  # back to one file: shards removed
+    assert ledger_paths(tmp_path, "id_registry") == [tmp_path / "id_registry.parquet"]

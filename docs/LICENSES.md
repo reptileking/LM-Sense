@@ -2,8 +2,9 @@
 
 Every source used by SenseLM, its exact version, its licence, and what that obliges us to do.
 Every sense record carries its provenance (`members`: list of `(source, source_id)`, plus
-`sources` and `licences` columns in `inventory_v0_1.parquet`), so any licensed subset can be
-excluded by filtering, e.g. the CC BY-only subset is `sources == ["oewn"]`.
+`sources` and `licences` columns in `inventory_v0_1.parquet` / `inventory_v1_0.parquet`), so any
+licensed subset can be excluded by filtering, e.g. the CC BY-only subset of v0.1 is
+`sources == ["oewn"]`.
 
 **Never used, in any form (hard constraint):** the Oxford English Dictionary (OED) and
 BabelNet. No code path downloads or reads them; no derived resource (e.g. BabelNet-based
@@ -64,9 +65,59 @@ Full checksums, URLs and HTTP metadata: `data/raw/MANIFEST.json` (written by
 | `eval/alignment_gold.csv` (contains glosses from both sources) | CC BY-SA 4.0 |
 | `data/processed/inventory_v0_1.parquet`, `id_registry.parquet` | CC BY-SA 4.0 as a whole; OEWN-only rows CC BY 4.0 |
 
-## Phase 2 sources (to be added with their ingest modules)
+## Data sources (Phase 2)
 
-Wikidata lexemes and items (CC0), NCBI Taxonomy (public domain, NCBI), Gene Ontology (CC BY
-4.0), ChEBI (CC BY 4.0), MeSH (NLM terms and conditions; free, attribution and no
-modification of the vocabulary's meaning), SNOMED CT UK edition (TRUD licence: affiliate /
-UK national licence, **not redistributable**; would need its own excluded subset).
+| Source | Version used | Licence | Where it is used |
+|---|---|---|---|
+| Wikidata lexemes | `wikidata-20261028-lexemes.json.gz` (md5 `b7513e4d…9ffed6`, sha256 pinned in `configs/download.yaml`) | CC0 1.0 | English lexeme senses (glosses, examples), forms with grammatical features, sense → item links |
+| Wikidata items | `wikidata-20261026-all.json.gz`, streamed once and never stored (md5 `356990468877421dc061694ad61c487f`, checked after the pass; D-032) | CC0 1.0 | concept senses (label = lemma, English description = gloss), cross-references to the domain sources |
+| NCBI Taxonomy | taxdump monthly archive `taxdmp_2026-11-01.zip` | Public domain (U.S. Government work; NCBI places no restrictions on use or redistribution; citation requested) | scientific-name senses (genus and above, species); names also decide MeSH genus casing |
+| Gene Ontology | `go.obo`, release 2026-07-26 | CC BY 4.0 | GO term senses (molecular function, biological process, cellular component) |
+| ChEBI | release 255, `chebi.obo.gz` (3-star entities only) | CC BY 4.0 | chemical entity senses |
+| MeSH | 2026 descriptors `desc2026.xml` and supplementary concept records `supp2026.xml` (files of 2026-08-12) | NLM Terms and Conditions for MeSH (free of charge; attribution; modifications must be indicated; no implied NLM endorsement) | descriptor and SCR senses (chemicals, rare diseases, organisms) |
+| SNOMED CT UK Edition | **not yet used** (needs the owner's NHS TRUD download; D-036) | SNOMED CT Affiliate Licence via the UK national licence — **use only, no redistribution** | clinical concept senses, tagged `licence:restricted` |
+
+Exact URLs, sizes and checksums: `data/raw/MANIFEST.json` and `configs/download.yaml`.
+
+### Obligations (Phase 2)
+
+**Wikidata (CC0 1.0)** — none. Attribution ("Wikidata, CC0") is given as a courtesy.
+
+**NCBI Taxonomy (public domain)** — none legally; cite Schoch et al., *NCBI Taxonomy: a
+comprehensive update on curation, resources and tools*, Database 2020, and the dump date.
+
+**Gene Ontology (CC BY 4.0)** — *attribution*: cite the GO Consortium (Ashburner et al., Nat.
+Genet. 2000; The Gene Ontology Consortium, *The Gene Ontology knowledgebase in 2023*, Genetics
+2023) and the release date, link the licence, indicate changes (terms become senses; glosses are
+GO definitions; undefined terms get synthesised glosses).
+
+**ChEBI (CC BY 4.0)** — *attribution*: cite Hastings et al., *ChEBI in 2016*, Nucleic Acids Res.
+2016, and release 255, link the licence, indicate changes (HTML markup removed from definitions;
+synthesised glosses for undefined entities).
+
+**MeSH (NLM terms)** — include the NLM acknowledgement with every redistribution, in substance:
+"This product uses publicly available data from the U.S. National Library of Medicine (NLM),
+National Institutes of Health, Department of Health and Human Services; NLM is not responsible
+for the product and does not endorse or recommend this or any other product"; state the MeSH
+version; say that the data were modified (headings turned into dictionary-form lemmas, D-035;
+SCR glosses synthesised) and do not present the result as MeSH. The owner should re-read the
+current NLM terms before any public release.
+
+**SNOMED CT UK (affiliate licence, restricted)** — SNOMED content may be used under the UK
+licence but must not be redistributed: no SNOMED-derived text in git, in released inventories or
+in released models trained on it without checking the licence terms. Enforced by D-036: rows are
+tagged `licence:restricted`, the build refuses restricted sources unless the redacting ledger
+writer is enabled, and the `no restricted` subset is a simple filter on `sources`.
+
+**The v1.0 inventory as a whole** stays CC BY-SA 4.0 (it contains Wiktionary text). Subsets by
+filtering `sources` / `licences`: senses attested only by CC0 / public-domain sources (Wikidata,
+NCBI Taxonomy) carry no obligations; adding OEWN, GO, ChEBI needs attribution (CC BY 4.0);
+adding MeSH needs the NLM statement; Wiktionary brings share-alike. Counts per subset:
+docs/phase2_stats.md ("Licence scenarios").
+
+### Tools added in Phase 2
+
+| Tool | Licence | Use |
+|---|---|---|
+| lemminflect 0.2.3 | MIT | singularising MeSH headings (dictionary lookups) |
+| lxml | BSD | streaming MeSH XML |

@@ -76,12 +76,27 @@ def stage_args(description: str, argv: Sequence[str] | None = None) -> argparse.
 # --------------------------------------------------------------------------- config
 
 
+def _deep_merge(base: dict[str, Any], over: Mapping[str, Any]) -> dict[str, Any]:
+    out = dict(base)
+    for k, v in over.items():
+        out[k] = (
+            _deep_merge(out[k], v) if isinstance(v, Mapping) and isinstance(out.get(k), dict) else v
+        )
+    return out
+
+
 def load_config(path: str | Path) -> dict[str, Any]:
+    """Load a YAML stage config. ``extends: <path>`` (repository-relative) inherits another
+    config: mappings are merged recursively, everything else is replaced."""
     path = Path(path)
     with path.open("r", encoding="utf-8") as fh:
         cfg = yaml.safe_load(fh) or {}
     if not isinstance(cfg, dict):
         raise ValueError(f"config {path} must be a mapping")
+    if "extends" in cfg:
+        base = load_config(resolve(cfg.pop("extends")))
+        base.pop("_config_path", None)
+        cfg = _deep_merge(base, cfg)
     cfg.setdefault("_config_path", str(path))
     return cfg
 

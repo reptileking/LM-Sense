@@ -126,9 +126,14 @@ def to_upos(
 ) -> str | None:
     table = cfg["upos_map"][source]
     upos = table.get(pos)
+    if upos is None:  # prefix rules ("sct:" -> …) and a per-source default ("*")
+        upos = next((v for k, v in table.items() if k.endswith(":") and pos.startswith(k)), None)
+        upos = upos or table.get("*")
     if upos is None:
         return None
-    if source == "wiktionary" and pos == "conj":
+    if upos == "NOUN|PROPN":  # case convention of Wikidata labels / MeSH organism names
+        upos = "PROPN" if lemma[:1].isupper() else "NOUN"
+    if upos == "CONJ":  # coordinating vs subordinating by a closed list
         upos = "CCONJ" if lemma.lower() in set(cfg["coordinating_conjunctions"]) else "SCONJ"
     if source == "oewn" and upos == "NOUN":
         rules = set(cfg.get("oewn_propn_when", []))
@@ -212,7 +217,9 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                                     "upos": upos,
                                     "form": form,
                                     "tags": ftags,
-                                    "origin": "oewn_form" if src == "oewn" else "wikt_entry",
+                                    "origin": {"oewn": "oewn_form", "wiktionary": "wikt_entry"}.get(
+                                        src, f"{src}_form"
+                                    ),
                                     "source": src,
                                     "source_id": entry_key,
                                 }

@@ -1,0 +1,34 @@
+# Canonical sense inventory v1.0 (Phase 2): the v0.1 fine policy for OEWN + Wiktionary, unioned
+# with the stage-2 attachments of the Phase-2 sources; permanent IDs continue the v0.1 registry
+# append-only. Run (after attach):
+#   uv run python -m senselm.inventory.build --config configs/inventory_v1.yaml
+extends: configs/inventory.yaml
+build_id: v1.0
+inputs:
+  senses: data/interim/senses_norm_v1.parquet
+  pairs: data/interim/align_pairs.parquet
+  dedupe_map: data/interim/dedupe_map_v1.parquet
+  attachments: data/interim/attachments_v1.parquet
+outputs:
+  inventory: data/processed/inventory_v1_0.parquet
+  stats: data/processed/inventory_v1_0.stats.json
+# lemma / gloss / POS of a cluster come from its first member in this order (Wiktionary's lemma
+# and POS win whenever present, as in v0.1)
+source_order: [oewn, wiktionary, wikidata_lexemes, wikidata_items, mesh, gene_ontology, chebi,
+               ncbi_taxonomy, snomed_ct_uk]
+# Licence of each source's contribution (docs/LICENSES.md); every canonical sense lists the
+# licences of its members, so licensed subsets can be excluded.
+licences:
+  oewn: CC-BY-4.0
+  wiktionary: CC-BY-SA-4.0+GFDL
+  wikidata_lexemes: CC0-1.0
+  wikidata_items: CC0-1.0
+  mesh: NLM-MeSH-terms
+  gene_ontology: CC-BY-4.0
+  chebi: CC-BY-4.0
+  ncbi_taxonomy: public-domain-NCBI
+  snomed_ct_uk: SNOMED-CT-affiliate-restricted
+# Restricted-licence sources: content must not reach git-tracked files (D-036). A build that
+# contains them refuses to run until allow_restricted is set (with the redacting ledger writer).
+restricted_sources: [snomed_ct_uk]
+allow_restricted: false

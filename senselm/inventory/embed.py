@@ -148,16 +148,34 @@ class EmbeddingCache:
         self.dir.mkdir(parents=True, exist_ok=True)
         self.dim = dim
 
-    def load(self) -> tuple[dict[str, int], np.ndarray]:
+    def load(self, wanted: set[str] | None = None) -> tuple[dict[str, int], np.ndarray]:
+        """(key -> row, float32 matrix) for the cached vectors, restricted to ``wanted`` when
+        given: the cache outgrows memory as float32 (millions of vectors), a query does not."""
         keys: list[str] = []
         mats: list[np.ndarray] = []
         for f in sorted(self.dir.glob("part-*.parquet")):
-            t = pq.read_table(f)
-            keys.extend(t.column("key").to_pylist())
-            flat = t.column("vec").combine_chunks().flatten().to_numpy(zero_copy_only=False)
+            fk = pq.read_table(f, columns=["key"]).column("key").to_pylist()
+            rows = (
+                list(range(len(fk)))
+                if wanted is None
+                else [i for i, k in enumerate(fk) if k in wanted]
+            )
+            if not rows:
+                continue
+            vec = pq.read_table(f, columns=["vec"]).column("vec").combine_chunks()
+            if len(rows) < len(fk):
+                vec = vec.take(pa.array(rows))
+            flat = vec.flatten().to_numpy(zero_copy_only=False)
             mats.append(flat.reshape(-1, self.dim).astype(np.float32))
+            keys.extend(fk[i] for i in rows)
         mat = np.concatenate(mats) if mats else np.zeros((0, self.dim), np.float32)
         return {k: i for i, k in enumerate(keys)}, mat
+
+    def cached_keys(self) -> set[str]:
+        out: set[str] = set()
+        for f in sorted(self.dir.glob("part-*.parquet")):
+            out.update(pq.read_table(f, columns=["key"]).column("key").to_pylist())
+        return out
 
     def add(self, keys: list[str], vecs: np.ndarray) -> Path:
         n = len(list(self.dir.glob("part-*.parquet")))
@@ -177,12 +195,13 @@ def embed_texts(
     cache = EmbeddingCache(
         resolve(cfg.get("cache_dir", "data/interim/embeddings")), emb.cache_tag(), emb.dim
     )
-    index, mat = cache.load()
     keys = [text_key(t) for t in texts]
+    cached = cache.cached_keys()
     missing: dict[str, str] = {}
     for k, t in zip(keys, texts, strict=True):
-        if k not in index and k not in missing:
+        if k not in cached and k not in missing:
             missing[k] = t
+    del cached
     LOG.info(
         "embedding: %d texts, %d unique, %d cached, %d to compute",
         len(texts),
@@ -206,9 +225,9 @@ def embed_texts(
             rate,
             (len(todo) - done) / rate / 60,
         )
-    if todo:
-        index, mat = cache.load()
+    index, mat = cache.load(set(keys))
     out = mat[[index[k] for k in keys]]
+    del mat
     meta = {
         "model": emb.model_name,
         "revision": emb.commit,

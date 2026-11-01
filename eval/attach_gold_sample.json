@@ -1,0 +1,1559 @@
+{
+  "samples": [
+    {
+      "candidates": [
+        "en-unigram-en-noun-58DY~bZw"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L1012406-S1"
+    },
+    {
+      "candidates": [
+        "en-ghostology-en-noun-1ExKGUDV"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L1333773-S2"
+    },
+    {
+      "candidates": [
+        "oewn-gastrin__1.08.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L1406079-S1"
+    },
+    {
+      "candidates": [
+        "oewn-constraint__1.04.00..",
+        "en-constraint-en-noun-2Huv92rg",
+        "en-constraint-en-noun-24uPoKvL",
+        "en-constraint-en-noun-puByoYhc",
+        "en-constraint-en-noun-G6H7zuG2",
+        "oewn-constraint__1.26.00..",
+        "oewn-constraint__1.06.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L14088-S2"
+    },
+    {
+      "candidates": [
+        "en-stair-en-noun-en:single",
+        "oewn-stair__1.06.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L14350-S1"
+    },
+    {
+      "candidates": [
+        "oewn-axe__2.35.00..",
+        "oewn-axe__2.30.00..",
+        "en-axe-en-verb-epRTYTg8"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L14679-S2"
+    },
+    {
+      "candidates": [
+        "oewn-cur__1.05.00..",
+        "oewn-cur__1.18.00..",
+        "en-cur-en-noun-paAxkYv~"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L14740-S2"
+    },
+    {
+      "candidates": [
+        "oewn-bear_out__2.42.00..",
+        "en-bear_out-en-verb-MBCDPtRD",
+        "en-bear_out-en-verb-EXcbU11t"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L1499856-S1"
+    },
+    {
+      "candidates": [
+        "en-self-talk-en-noun-VgO8hfeA"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L1592316-S1"
+    },
+    {
+      "candidates": [
+        "en-accipitrine-en-noun-xuRgp77H"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L1597774-S1"
+    },
+    {
+      "candidates": [
+        "oewn-cock__1.05.01..",
+        "en-cock-en-noun-en:male_bird1",
+        "oewn-cock__1.06.00..",
+        "oewn-cock__1.06.01..",
+        "oewn-cock__1.08.00..",
+        "en-cock-en-noun-K4nAtkrv",
+        "en-cock-en-noun-Kgk-~lXW",
+        "en-cock-en-noun-155wKCJG"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L16567-S1"
+    },
+    {
+      "candidates": [
+        "oewn-milestone__1.10.01..",
+        "oewn-milestone__1.11.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L187264-S1"
+    },
+    {
+      "candidates": [
+        "en-tumoricidally-en-adv-JljyH1-S"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L201771-S1"
+    },
+    {
+      "candidates": [
+        "oewn-drill__1.06.00..",
+        "en-drill-en-noun-UbjABwoR",
+        "oewn-drill__1.04.01..",
+        "en-drill-en-noun-2pWTmpMT",
+        "en-drill-en-noun-ASdHdhIr",
+        "en-drill-en-noun-en:music_genre",
+        "en-drill-en-noun-en:music_performance",
+        "en-drill-en-noun-QdI2J9OU"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L22914-S4"
+    },
+    {
+      "candidates": [
+        "oewn-luger__1.18.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L24296-S1"
+    },
+    {
+      "candidates": [
+        "oewn-tonic__1.06.00..",
+        "oewn-tonic__1.13.02..",
+        "oewn-tonic__1.13.01..",
+        "en-tonic-en-noun-WOtNqplS",
+        "oewn-tonic__1.10.00..",
+        "en-tonic-en-noun-f84Sqpha",
+        "en-tonic-en-noun-oCMYY7b-"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L28931-S2"
+    },
+    {
+      "candidates": [
+        "oewn-suspension__1.04.00..",
+        "oewn-suspension__1.11.00..",
+        "oewn-suspension__1.27.00..",
+        "en-suspension-en-noun-TNmaswMz",
+        "en-suspension-en-noun-d7vZfWMY",
+        "oewn-suspension__1.04.01..",
+        "en-suspension-en-noun-e4SUiWFY",
+        "en-suspension-en-noun-gjj4TgRW"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L295885-S2"
+    },
+    {
+      "candidates": [
+        "en-neurulation-en-noun-gxayfUgh"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L295972-S1"
+    },
+    {
+      "candidates": [
+        "oewn-sponsorship__1.04.01..",
+        "en-sponsorship-en-noun-eQJphCO7"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L298608-S1"
+    },
+    {
+      "candidates": [
+        "oewn-atherosclerosis__1.26.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L29950-S1"
+    },
+    {
+      "candidates": [
+        "en-blueprint-en-noun-ETzzDpDZ",
+        "oewn-blueprint__1.06.00..",
+        "en-blueprint-en-noun-gIzY7wBe",
+        "en-blueprint-en-noun-5Liute0m",
+        "oewn-blueprint__1.09.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L30262-S1"
+    },
+    {
+      "candidates": [
+        "oewn-calibrate__2.30.00..",
+        "oewn-calibrate__2.35.02..",
+        "oewn-calibrate__2.31.02.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L30347-S2"
+    },
+    {
+      "candidates": [
+        "oewn-castrate__2.29.00..",
+        "oewn-castrate__2.29.02..",
+        "en-castrate-en-verb-jhF7SwHN",
+        "oewn-castrate__2.30.02..",
+        "oewn-castrate__2.30.03.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L313763-S2"
+    },
+    {
+      "candidates": [
+        "oewn-dermatologist__1.18.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L31730-S1"
+    },
+    {
+      "candidates": [
+        "oewn-clustering__1.14.00..",
+        "en-clustering-en-noun-ZtwZu489",
+        "en-clustering-en-noun-gYwtCNTv",
+        "en-clustering-en-noun-T5E6hy3E"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L318227-S2"
+    },
+    {
+      "candidates": [
+        "oewn-distemper__1.26.00..",
+        "en-distemper-en-noun-82BV1Snv",
+        "oewn-distemper__1.06.01..",
+        "oewn-distemper__1.06.00..",
+        "oewn-distemper__1.12.00..",
+        "oewn-distemper__1.04.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L319623-S1"
+    },
+    {
+      "candidates": [
+        "oewn-flotsam__1.06.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L320778-S1"
+    },
+    {
+      "candidates": [
+        "en-landscaping-en-noun--f5P7Pjs",
+        "oewn-landscaping__1.06.00..",
+        "oewn-landscaping__1.04.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L323066-S1"
+    },
+    {
+      "candidates": [
+        "en-obstructionism-en-noun-~GL978ll",
+        "oewn-obstructionism__1.04.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L324654-S1"
+    },
+    {
+      "candidates": [
+        "oewn-progesterone__1.27.00..",
+        "en-progesterone-en-noun-NYlbL0lH"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L325981-S1"
+    },
+    {
+      "candidates": [
+        "oewn-snuffbox__1.06.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L328061-S1"
+    },
+    {
+      "candidates": [
+        "en-blight-en-verb-~1yA0~Od",
+        "en-blight-en-verb-MIjybQye",
+        "en-blight-en-verb-r6XItj5m",
+        "oewn-blight__2.43.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L330967-S1"
+    },
+    {
+      "candidates": [
+        "en-linearizer-en-noun-8YaXOsIP"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L37104-S2"
+    },
+    {
+      "candidates": [
+        "oewn-pea__1.20.02..",
+        "en-pea-en-noun-en:any_of_certain_plants_of_the_Fabaceae1",
+        "oewn-pea__1.20.00..",
+        "oewn-pea__1.13.00..",
+        "en-pea-en-noun-en:any_of_several_varieties_of_bean",
+        "en-pea-en-noun-en:money",
+        "en-pea-en-noun-YI7PhpGF",
+        "en-pea-en-noun-d7kgmuAs"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L3783-S1"
+    },
+    {
+      "candidates": [
+        "en-cut-en-verb-rKHIjYFK",
+        "en-cut-en-verb-~DZML53j",
+        "oewn-cut__2.36.11..",
+        "en-cut-en-verb-gR7NfXFc",
+        "en-cut-en-verb-ovOkljg2",
+        "en-cut-en-verb-bv6vsdSr",
+        "en-cut-en-verb-VsPlX4qc",
+        "en-cut-en-verb-7~jzqPg7"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L3967-S6"
+    },
+    {
+      "candidates": [
+        "oewn-spacecraft__1.06.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L41037-S1"
+    },
+    {
+      "candidates": [
+        "en-needle-en-noun-bRf-vhDl",
+        "oewn-needle__1.06.00..",
+        "oewn-needle__1.06.01..",
+        "oewn-needle__1.06.02..",
+        "oewn-needle__1.20.00..",
+        "en-needle-en-noun-h1qltB1v",
+        "en-needle-en-noun-7L697C8e",
+        "en-needle-en-noun-8CiTkER3"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L4917-S2"
+    },
+    {
+      "candidates": [
+        "oewn-visitor__1.18.00..",
+        "en-visitor-en-noun-AlYXIRUo",
+        "en-visitor-en-noun-vKVCckfe",
+        "en-visitor-en-noun-7a5YVVLF",
+        "en-visitor-en-noun-0eSdqwVA",
+        "en-visitor-en-noun-eudG6icj",
+        "en-visitor-en-noun--wLsvAmB",
+        "en-visitor-en-noun-D7f0Nb46"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L7095-S3"
+    },
+    {
+      "candidates": [
+        "oewn-grimoire__1.10.00.."
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L86699-S1"
+    },
+    {
+      "candidates": [
+        "en-blowie-en-noun-JUnLjSdJ",
+        "en-blowie-en-noun-fHRhBrql",
+        "en-blowie-en-noun-aClgWzX6"
+      ],
+      "source": "wikidata_lexemes",
+      "source_id": "L8798-S1"
+    },
+    {
+      "candidates": [
+        "en-evocalcet-en-noun-jFoBYBLN"
+      ],
+      "source": "mesh",
+      "source_id": "C000631688"
+    },
+    {
+      "candidates": [
+        "en-xibornol-en-noun-x7qXVXmL"
+      ],
+      "source": "mesh",
+      "source_id": "C003773"
+    },
+    {
+      "candidates": [
+        "en-norvaline-en-noun-LVyt3yqk"
+      ],
+      "source": "mesh",
+      "source_id": "C005313"
+    },
+    {
+      "candidates": [
+        "en-naphthol_yellow-en-noun-tUX8Hs~r"
+      ],
+      "source": "mesh",
+      "source_id": "C009824"
+    },
+    {
+      "candidates": [
+        "en-nordinone-en-noun-2td~p4zO"
+      ],
+      "source": "mesh",
+      "source_id": "C010495"
+    },
+    {
+      "candidates": [
+        "en-diethylene_glycol-en-noun-LWwFdg8K"
+      ],
+      "source": "mesh",
+      "source_id": "C013484"
+    },
+    {
+      "candidates": [
+        "en-nantenine-en-noun-~5QZX0RH"
+      ],
+      "source": "mesh",
+      "source_id": "C041615"
+    },
+    {
+      "candidates": [
+        "en-littorine-en-noun-AfybM5tn"
+      ],
+      "source": "mesh",
+      "source_id": "C063158"
+    },
+    {
+      "candidates": [
+        "en-titanocene-en-noun-CCm5Y5Xl"
+      ],
+      "source": "mesh",
+      "source_id": "C406884"
+    },
+    {
+      "candidates": [
+        "en-ajoite-en-noun-0ITh7xLa"
+      ],
+      "source": "mesh",
+      "source_id": "C465626"
+    },
+    {
+      "candidates": [
+        "en-anthothecol-en-noun-D7br9ruw"
+      ],
+      "source": "mesh",
+      "source_id": "C530481"
+    },
+    {
+      "candidates": [
+        "en-rutinose-en-noun-eHZoRqAl"
+      ],
+      "source": "mesh",
+      "source_id": "C539209"
+    },
+    {
+      "candidates": [
+        "en-maklamicin-en-noun-pZjCGomy"
+      ],
+      "source": "mesh",
+      "source_id": "C559014"
+    },
+    {
+      "candidates": [
+        "en-eryptosis-en-noun-L9CkOnTb"
+      ],
+      "source": "mesh",
+      "source_id": "D000072817"
+    },
+    {
+      "candidates": [
+        "oewn-rapeseed_oil__1.20.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D000074262"
+    },
+    {
+      "candidates": [
+        "en-cidofovir-en-noun-w24dEyio"
+      ],
+      "source": "mesh",
+      "source_id": "D000077404"
+    },
+    {
+      "candidates": [
+        "en-polyhydroxybutyrate-en-noun-E6ttMxVR"
+      ],
+      "source": "mesh",
+      "source_id": "D000094122"
+    },
+    {
+      "candidates": [
+        "oewn-basilar_artery__1.08.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D001488"
+    },
+    {
+      "candidates": [
+        "en-carbachol-en-noun-uB2LgaMa"
+      ],
+      "source": "mesh",
+      "source_id": "D002217"
+    },
+    {
+      "candidates": [
+        "oewn-coercion__1.04.01..",
+        "en-coercion-en-noun-cKngBvjM",
+        "en-coercion-en-noun-NWQXQYYr",
+        "en-coercion-en-noun-bcyVYOil",
+        "en-coercion-en-noun-e9nJ0DcA",
+        "en-coercion-en-noun-25eUC4T5",
+        "oewn-coercion__1.04.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D003068"
+    },
+    {
+      "candidates": [
+        "oewn-corpus_striatum__1.08.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D003342"
+    },
+    {
+      "candidates": [
+        "en-dieldrin-en-noun-vgh34Q0y"
+      ],
+      "source": "mesh",
+      "source_id": "D004026"
+    },
+    {
+      "candidates": [
+        "en-ethanolaminephosphotransferase-en-noun-2JW3nt~R"
+      ],
+      "source": "mesh",
+      "source_id": "D004982"
+    },
+    {
+      "candidates": [
+        "oewn-fixative__1.27.00..",
+        "en-fixative-en-noun-9J0kEU8T",
+        "oewn-fixative__1.06.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D005404"
+    },
+    {
+      "candidates": [
+        "oewn-glutamine__1.27.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D005973"
+    },
+    {
+      "candidates": [
+        "en-hypotrichosis-en-noun-gq98KofA"
+      ],
+      "source": "mesh",
+      "source_id": "D007039"
+    },
+    {
+      "candidates": [
+        "oewn-infertility__1.26.00..",
+        "en-infertility-en-noun-ppjBUk8a"
+      ],
+      "source": "mesh",
+      "source_id": "D007246"
+    },
+    {
+      "candidates": [
+        "oewn-keratin__1.27.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D007633"
+    },
+    {
+      "candidates": [
+        "en-protoporphyrin-en-noun-hdHZCNCc"
+      ],
+      "source": "mesh",
+      "source_id": "D011524"
+    },
+    {
+      "candidates": [
+        "en-self-assessment-en-noun-3ryIGzr9"
+      ],
+      "source": "mesh",
+      "source_id": "D012647"
+    },
+    {
+      "candidates": [
+        "en-subcommissural_organ-en-noun-qD8GFpry"
+      ],
+      "source": "mesh",
+      "source_id": "D013351"
+    },
+    {
+      "candidates": [
+        "en-tramadol-en-noun-4lY~gMK1"
+      ],
+      "source": "mesh",
+      "source_id": "D014147"
+    },
+    {
+      "candidates": [
+        "en-uteroglobin-en-noun-JK4SVoEH"
+      ],
+      "source": "mesh",
+      "source_id": "D014598"
+    },
+    {
+      "candidates": [
+        "oewn-valproic_acid__1.06.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D014635"
+    },
+    {
+      "candidates": [
+        "en-multiple_chemical_sensitivity-en-noun-X0yTB-c0"
+      ],
+      "source": "mesh",
+      "source_id": "D018777"
+    },
+    {
+      "candidates": [
+        "oewn-populus__1.20.00.."
+      ],
+      "source": "mesh",
+      "source_id": "D032107"
+    },
+    {
+      "candidates": [
+        "oewn-law_enforcement__1.04.00..",
+        "en-law_enforcement-en-noun-sBCh74J8"
+      ],
+      "source": "mesh",
+      "source_id": "D035846"
+    },
+    {
+      "candidates": [
+        "en-myofibroma-en-noun-UqbkPqdz"
+      ],
+      "source": "mesh",
+      "source_id": "D047708"
+    },
+    {
+      "candidates": [
+        "oewn-bomb__1.06.00..",
+        "en-bomb-en-noun-en:Q1271971",
+        "en-bomb-en-noun-en:Q1271971#349ba51005",
+        "en-bomb-en-noun-en:Q1271971#e7dd8272f2",
+        "en-bomb-en-noun-en:Q1271971#7ac9418f87",
+        "en-bomb-en-noun-IMtUoKVr",
+        "en-bomb-en-noun-VUQVMRg1",
+        "en-bomb-en-noun-SAJNhz-7"
+      ],
+      "source": "mesh",
+      "source_id": "D054042"
+    },
+    {
+      "candidates": [
+        "en-herniorrhaphy-en-noun-KQu~L06b"
+      ],
+      "source": "mesh",
+      "source_id": "D059685"
+    },
+    {
+      "candidates": [
+        "oewn-pachytene__1.22.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0000239"
+    },
+    {
+      "candidates": [
+        "en-mitophagy-en-noun-hTl4l3yK"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0000423"
+    },
+    {
+      "candidates": [
+        "oewn-kinetochore__1.08.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0000776"
+    },
+    {
+      "candidates": [
+        "oewn-y_chromosome__1.08.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0000806"
+    },
+    {
+      "candidates": [
+        "oewn-sex_chromatin__1.08.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0001739"
+    },
+    {
+      "candidates": [
+        "oewn-binding__1.07.00..",
+        "oewn-binding__1.06.00..",
+        "en-binding-en-noun-JufUFRI5",
+        "en-binding-en-noun-49MeDHYc",
+        "en-binding-en-noun-ybY~9pzb",
+        "en-binding-en-noun-Yreax-~~",
+        "oewn-binding__1.06.01..",
+        "oewn-binding__1.04.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0005488"
+    },
+    {
+      "candidates": [
+        "en-nucleus-en-noun-8TlyhPF7",
+        "en-nucleus-en-noun-OpukXl~L",
+        "oewn-nucleus__1.17.00..",
+        "oewn-nucleus__1.08.00..",
+        "en-nucleus-en-noun-ZYMCoXl7",
+        "en-nucleus-en-noun-en:syllable",
+        "en-nucleus-en-noun-QXpqXPC9",
+        "oewn-nucleus__1.14.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0005634"
+    },
+    {
+      "candidates": [
+        "en-mitochondrial_matrix-en-noun-h8hUyJAU"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0005759"
+    },
+    {
+      "candidates": [
+        "en-peroxisome-en-noun-qmXur1yG"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0005777"
+    },
+    {
+      "candidates": [
+        "en-neurofilament-en-noun-ucNybEav"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0005883"
+    },
+    {
+      "candidates": [
+        "oewn-digestion__1.22.00..",
+        "en-digestion-en-noun-5WVzVUzP",
+        "en-digestion-en-noun-JwMcAkuu",
+        "oewn-digestion__1.22.01..",
+        "oewn-digestion__1.09.00..",
+        "en-digestion-en-noun-b7boEKQL",
+        "en-digestion-en-noun-6EokbZ9t"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0007586"
+    },
+    {
+      "candidates": [
+        "en-RNA_splicing-en-noun-MkH4Oo8f"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0008380"
+    },
+    {
+      "candidates": [
+        "en-horizontal_gene_transfer-en-noun-gR4iioeI"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0009292"
+    },
+    {
+      "candidates": [
+        "en-etioplast-en-noun-N4C9HxTJ"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0009513"
+    },
+    {
+      "candidates": [
+        "en-phragmosome-en-noun-1MKWVFtS"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0009525"
+    },
+    {
+      "candidates": [
+        "en-photomorphogenesis-en-noun-4RnuGs9U"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0009640"
+    },
+    {
+      "candidates": [
+        "en-skotomorphogenesis-en-noun-Du-5KBSW"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0009647"
+    },
+    {
+      "candidates": [
+        "en-thigmotropism-en-noun-UIIfgYlM"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0009652"
+    },
+    {
+      "candidates": [
+        "en-circumnutation-en-noun-4cFabd3q"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0010031"
+    },
+    {
+      "candidates": [
+        "en-chlororespiration-en-noun-z0B7Gkut"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0010478"
+    },
+    {
+      "candidates": [
+        "en-transport_vesicle-en-noun-o~fU40NN"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0030133"
+    },
+    {
+      "candidates": [
+        "en-extracellular_matrix-en-noun-oq0BvurM"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0031012"
+    },
+    {
+      "candidates": [
+        "oewn-keratinization__1.22.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0031424"
+    },
+    {
+      "candidates": [
+        "oewn-operant_conditioning__1.09.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0035106"
+    },
+    {
+      "candidates": [
+        "en-aggrephagy-en-noun-Km-XnyDd"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0035973"
+    },
+    {
+      "candidates": [
+        "oewn-swimming__1.04.00..",
+        "en-swimming-en-noun-Xh3ngjt8"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0036268"
+    },
+    {
+      "candidates": [
+        "oewn-taxis__1.04.00..",
+        "oewn-taxis__1.04.01..",
+        "en-taxis-en-noun-ijjom44X",
+        "en-taxis-en-noun-Gz97vIZo",
+        "en-taxis-en-noun-Y4yiPsle"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0042330"
+    },
+    {
+      "candidates": [
+        "oewn-kinesis__1.04.00..",
+        "en-kinesis-en-noun-tDbwRULh",
+        "en-kinesis-en-noun-FsybiPe-"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0042465"
+    },
+    {
+      "candidates": [
+        "en-costamere-en-noun-QileJqCf"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0043034"
+    },
+    {
+      "candidates": [
+        "en-varicosity-en-noun-U0hdOEqP",
+        "en-varicosity-en-noun-sniY0Mnk",
+        "oewn-varicosity__1.26.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0043196"
+    },
+    {
+      "candidates": [
+        "en-trichocyst-en-noun-qjva1YlL"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0055039"
+    },
+    {
+      "candidates": [
+        "en-proestrus-en-noun-ViIBXEtN"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0060208"
+    },
+    {
+      "candidates": [
+        "oewn-estrus__1.26.00.."
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0060209"
+    },
+    {
+      "candidates": [
+        "en-reticulophagy-en-noun-k~SmXNPI"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0061709"
+    },
+    {
+      "candidates": [
+        "en-lipophagy-en-noun-1SjRpstK"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0061724"
+    },
+    {
+      "candidates": [
+        "oewn-enucleation__1.04.00..",
+        "en-enucleation-en-noun-6KWFjU9z",
+        "en-enucleation-en-noun-vSpKtF6B"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0090601"
+    },
+    {
+      "candidates": [
+        "en-observational_learning-en-noun-WSygKbrR"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0098597"
+    },
+    {
+      "candidates": [
+        "en-migrasome-en-noun-0-RlAleR"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0140494"
+    },
+    {
+      "candidates": [
+        "en-crinophagy-en-noun-4EMyXCeb"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:0160155"
+    },
+    {
+      "candidates": [
+        "en-ooplasm-en-noun-SAeYb45K"
+      ],
+      "source": "gene_ontology",
+      "source_id": "GO:1990917"
+    },
+    {
+      "candidates": [
+        "en-diclofenamide-en-noun-bg14Jm-A"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:101085"
+    },
+    {
+      "candidates": [
+        "en-clodronic_acid-en-noun-mpDySoJe"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:110423"
+    },
+    {
+      "candidates": [
+        "oewn-carbamate__1.27.00.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:13941"
+    },
+    {
+      "candidates": [
+        "en-gossypetin-en-noun-R3uPBtsM"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:16400"
+    },
+    {
+      "candidates": [
+        "oewn-uracil__1.27.00.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:17568"
+    },
+    {
+      "candidates": [
+        "en-biochanin_A-en-noun-W6TS57t~"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:17574"
+    },
+    {
+      "candidates": [
+        "en-loganate-en-noun-gQdTT-1y"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:18052"
+    },
+    {
+      "candidates": [
+        "en-biuret-en-noun-Tu4C~C~0",
+        "en-biuret-en-noun-3khSPo3Z"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:18138"
+    },
+    {
+      "candidates": [
+        "oewn-polysaccharide__1.27.00.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:18154"
+    },
+    {
+      "candidates": [
+        "en-dodecanoate-en-noun-PCFlSlBD"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:18262"
+    },
+    {
+      "candidates": [
+        "en-tetrapyrrole-en-noun-qxby~2QJ"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:26932"
+    },
+    {
+      "candidates": [
+        "en-kinetin-en-noun-Hsq-TBPv"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:27407"
+    },
+    {
+      "candidates": [
+        "en-antheraxanthin-en-noun-VCxrqLdM"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:27867"
+    },
+    {
+      "candidates": [
+        "en-chloral_hydrate-en-noun-lR1X4jwz",
+        "oewn-chloral_hydrate__1.06.00.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:28142"
+    },
+    {
+      "candidates": [
+        "en-tetrahydrocortisol-en-noun-yTQcV99M"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:28320"
+    },
+    {
+      "candidates": [
+        "en-siroheme-en-noun-NpP~R3Ed"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:28599"
+    },
+    {
+      "candidates": [
+        "en-ferric_ammonium_citrate-en-noun-UW7RVQFY"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:31604"
+    },
+    {
+      "candidates": [
+        "en-parinaric_acid-en-noun-eMvYOtB1"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:32408"
+    },
+    {
+      "candidates": [
+        "en-nicotinate-en-noun-9E3mIoey"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:32544"
+    },
+    {
+      "candidates": [
+        "oewn-aldotetrose__1.27.01.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:33915"
+    },
+    {
+      "candidates": [
+        "en-fenthion-en-noun-9soxN6a~"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:34761"
+    },
+    {
+      "candidates": [
+        "en-sennoside-en-noun-5V7UCbap"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:34974"
+    },
+    {
+      "candidates": [
+        "en-chloromethane-en-noun-YPRomXVe",
+        "en-chloromethane-en-noun-Az6Yy9c6"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:36014"
+    },
+    {
+      "candidates": [
+        "en-hematoporphyrin-en-noun-o8m~2kss"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:36162"
+    },
+    {
+      "candidates": [
+        "en-quinolizinium-en-noun-TWqGSO8A"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:36646"
+    },
+    {
+      "candidates": [
+        "en-calcipotriol-en-noun--HMCk6Pp"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:50749"
+    },
+    {
+      "candidates": [
+        "en-ferrous_oxide-en-noun-KwuelOL~"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:50820"
+    },
+    {
+      "candidates": [
+        "oewn-fluorochrome__1.27.00.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:51217"
+    },
+    {
+      "candidates": [
+        "oewn-apatite__1.27.00.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:52254"
+    },
+    {
+      "candidates": [
+        "en-thioacetal-en-noun-SMVHYGyR"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:59792"
+    },
+    {
+      "candidates": [
+        "en-cannabinerolic_acid-en-noun-srDfK6sE"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:67080"
+    },
+    {
+      "candidates": [
+        "en-maltitol-en-noun-ZOG0NmLq"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:68428"
+    },
+    {
+      "candidates": [
+        "oewn-procarbazine__1.06.00.."
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:71417"
+    },
+    {
+      "candidates": [
+        "en-darolutamide-en-noun-PT9bXCF4"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:747353"
+    },
+    {
+      "candidates": [
+        "en-musk_xylene-en-noun-Wm-T~4C5"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:77320"
+    },
+    {
+      "candidates": [
+        "en-tolclofos-methyl-en-noun-9JjHuUbq"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:81731"
+    },
+    {
+      "candidates": [
+        "en-zofenoprilat-en-noun-eZyrUtmm"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:82602"
+    },
+    {
+      "candidates": [
+        "en-osimertinib-en-noun-ln1o7-R9"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:90943"
+    },
+    {
+      "candidates": [
+        "en-tivozanib-en-noun-guBVYYdq"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:91327"
+    },
+    {
+      "candidates": [
+        "en-tubulosine-en-noun-rPHMfMtP"
+      ],
+      "source": "chebi",
+      "source_id": "CHEBI:9775"
+    },
+    {
+      "candidates": [
+        "en-cyanobacterium-en-noun-AD~JT8UG"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:102234"
+    },
+    {
+      "candidates": [
+        "oewn-mycteroperca__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:103819"
+    },
+    {
+      "candidates": [
+        "oewn-geoffroea__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:107361"
+    },
+    {
+      "candidates": [
+        "oewn-fenusa__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:1129769"
+    },
+    {
+      "candidates": [
+        "oewn-scolymus__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:114286"
+    },
+    {
+      "candidates": [
+        "oewn-thermopsis_macrophylla__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:114322"
+    },
+    {
+      "candidates": [
+        "oewn-gaylussacia_brachycera__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:128894"
+    },
+    {
+      "candidates": [
+        "oewn-stator__1.06.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:131715"
+    },
+    {
+      "candidates": [
+        "en-amborella-en-noun-NwJJm6xe"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:13332"
+    },
+    {
+      "candidates": [
+        "en-alphanodavirus-en-noun-ljO8ahRB"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:143920"
+    },
+    {
+      "candidates": [
+        "oewn-aristolochia_durior__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:158542"
+    },
+    {
+      "candidates": [
+        "en-Mora-en-name-b1svBRzJ",
+        "en-Mora-en-name-6ETPGZvG",
+        "en-Mora-en-name-gSU5bHih",
+        "en-Mora-en-name-fUDHbj3u",
+        "en-Mora-en-name-PdR98AaV"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:162851"
+    },
+    {
+      "candidates": [
+        "oewn-allium_scorodoprasum__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:166823"
+    },
+    {
+      "candidates": [
+        "en-Ibycus-en-name-~n9fGd9W"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:1684993"
+    },
+    {
+      "candidates": [
+        "en-Cochabamba-en-name-PFZGFhFc"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:2170608"
+    },
+    {
+      "candidates": [
+        "oewn-dilleniaceae__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:24942"
+    },
+    {
+      "candidates": [
+        "oewn-oenothera_macrocarpa__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:260701"
+    },
+    {
+      "candidates": [
+        "oewn-urocystis_cepulae__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:3041477"
+    },
+    {
+      "candidates": [
+        "oewn-abyla__1.17.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:3088259"
+    },
+    {
+      "candidates": [
+        "oewn-erianthus__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:323203"
+    },
+    {
+      "candidates": [
+        "oewn-sanguinaria__1.20.00..",
+        "en-sanguinaria-en-noun-E~TH0dXe"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:3471"
+    },
+    {
+      "candidates": [
+        "oewn-maclura_pomifera__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:3496"
+    },
+    {
+      "candidates": [
+        "oewn-quercus__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:3511"
+    },
+    {
+      "candidates": [
+        "oewn-sarracenia__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:4358"
+    },
+    {
+      "candidates": [
+        "oewn-zygnema__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:43951"
+    },
+    {
+      "candidates": [
+        "oewn-clintonia_uniflora__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:44106"
+    },
+    {
+      "candidates": [
+        "oewn-emberiza_hortulana__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:498208"
+    },
+    {
+      "candidates": [
+        "oewn-agamemnon__1.18.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:524127"
+    },
+    {
+      "candidates": [
+        "oewn-luscinia__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:52791"
+    },
+    {
+      "candidates": [
+        "en-Sondra-en-name-b1svBRzJ"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:569994"
+    },
+    {
+      "candidates": [
+        "oewn-pseudemys_rubriventris__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:580249"
+    },
+    {
+      "candidates": [
+        "en-Tessema-en-name-qB5NrbKZ"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:582034"
+    },
+    {
+      "candidates": [
+        "oewn-ixia__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:58996"
+    },
+    {
+      "candidates": [
+        "oewn-ulmus_parvifolia__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:63058"
+    },
+    {
+      "candidates": [
+        "en-Hippodamia-en-name-Cz-DzMyx",
+        "oewn-hippodamia__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:64693"
+    },
+    {
+      "candidates": [
+        "oewn-peronospora__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:70742"
+    },
+    {
+      "candidates": [
+        "oewn-lophius__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:8072"
+    },
+    {
+      "candidates": [
+        "oewn-mergus__1.05.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:8877"
+    },
+    {
+      "candidates": [
+        "oewn-gentiana_saponaria__1.20.00.."
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:984480"
+    },
+    {
+      "candidates": [
+        "en-Bison-en-name-Ow-DtTHl",
+        "en-Bison-en-name-AOJNu51g"
+      ],
+      "source": "ncbi_taxonomy",
+      "source_id": "taxon:9900"
+    }
+  ]
+}

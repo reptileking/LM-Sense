@@ -3,14 +3,18 @@
 ``python -m senselm.inventory.build --config configs/inventory.yaml``          (fine, IDs)
 ``python -m senselm.inventory.build --config configs/inventory_coarse.yaml``   (coarse, counts)
 
-1. cluster source senses under the configured granularity policy (``policy.py``);
+1. cluster source senses under the configured granularity policy (``policy.py``); for a
+   multi-source build (v1.0+) the OEWN / Wiktionary clusters are unioned with the stage-2
+   attachments of the other sources (``attach.py``, ``inputs.attachments``);
 2. aggregate each cluster into one canonical sense that lists every contributing
    ``(source, source_id)`` (provenance, so licensed subsets can be excluded later);
 3. order senses within each lemma by a frequency proxy (docs/DECISIONS.md D-021):
    WordNet-attested senses first in WordNet sense order (SemCor-frequency based), POS
    interleaved with the lemma's dominant POS first; then Wiktionary-only senses in
-   Wiktionary order (top-level senses before their subsenses); senses tagged
-   obsolete/archaic/rare/dated/historical last;
+   Wiktionary order (top-level senses before their subsenses), those tagged
+   obsolete/archaic/rare/dated/historical after the rest; then senses only Wikidata lexemes
+   attest; then concept / domain senses (Wikidata items, MeSH, GO, ChEBI, NCBI Taxonomy,
+   SNOMED CT) in ``source_order``;
 4. assign token IDs append-only against the previous registry (``ids.py``) and refuse to
    write if the permanence invariant would be violated. The previous registry is
    snapshotted to ``registry_history/`` before it is replaced.
@@ -25,7 +29,16 @@ import polars as pl
 
 from senselm.common import Provenance, dump_json, load_config, resolve, stage_args, write_table
 from senselm.inventory.align import is_header
-from senselm.inventory.ids import Layout, assign_ids, check_append_only, from_ledger, to_ledger
+from senselm.inventory.ids import (
+    Layout,
+    assign_ids,
+    check_append_only,
+    from_ledger,
+    ledger_paths,
+    read_ledger,
+    to_ledger,
+    write_ledger,
+)
 from senselm.inventory.policy import assign_clusters
 
 LOG = logging.getLogger("senselm.inventory.build")
@@ -106,13 +119,18 @@ def canonical_senses(
     rare = set(cfg["ordering"]["rare_tags"])
     licences: dict[str, str] = cfg["licences"]
     wrank = wiktionary_ranks(senses.filter(pl.col("source") == "wiktionary"))
+    order = {src: i for i, src in enumerate(cfg.get("source_order", ["oewn", "wiktionary"]))}
     s = senses.join(clusters.select("source_id", "cluster"), on="source_id", how="inner")
     s = s.with_columns(
         pl.when(pl.col("source") == "oewn")
         .then(pl.col("sense_rank").cast(pl.Float64))
-        .otherwise(pl.col("source_id").replace_strict(wrank, default=None, return_dtype=pl.Float64))
+        .when(pl.col("source") == "wiktionary")
+        .then(pl.col("source_id").replace_strict(wrank, default=None, return_dtype=pl.Float64))
+        .otherwise(pl.col("sense_rank").cast(pl.Float64))
         .alias("rank"),
-        pl.when(pl.col("source") == "oewn").then(0).otherwise(1).alias("src_order"),
+        pl.col("source")
+        .replace_strict(order, default=len(order), return_dtype=pl.Int32)
+        .alias("src_order"),
     ).sort("cluster", "src_order", "line_no", "sense_rank", "source_id")
 
     agg = s.group_by("cluster", maintain_order=True).agg(
@@ -155,6 +173,10 @@ def canonical_senses(
         pl.col("rank").filter(pl.col("source") == "oewn").min().alias("oewn_rank"),
         pl.col("rank").filter(pl.col("source") == "wiktionary").min().alias("wikt_rank"),
         pl.col("line_no").filter(pl.col("source") == "wiktionary").min().alias("wikt_line"),
+        pl.col("src_order").first().alias("primary_order"),
+        pl.col("source").first().alias("primary_source"),
+        pl.col("rank").first().alias("primary_rank"),
+        pl.col("line_no").first().alias("primary_line"),
         pl.col("source_version").unique().sort().alias("source_versions"),
     )
     # exact duplicates removed in normalise (dedupe_map) are members too: they matter for ID
@@ -204,21 +226,36 @@ def order_senses(inv: pl.DataFrame) -> pl.DataFrame:
         .select("lemma", "upos", "pos_dominance")
     )
     inv = inv.join(dom, on=["lemma", "upos"], how="left")
+    # tiers (0-2 exactly as in v0.1): 0 WordNet, 1 Wiktionary, 2 rare Wiktionary (obsolete,
+    # archaic, ...), 3 Wikidata-lexeme-only, 4 concept / domain sources. Within the lexicographic
+    # tiers the source's sense order; within tier 4 the source order, then the source's order.
+    lexical = pl.col("has_oewn") | pl.col("has_wiktionary")
     inv = inv.with_columns(
         pl.when(pl.col("has_oewn"))
         .then(0)
-        .when(~pl.col("rare"))
+        .when(pl.col("has_wiktionary") & ~pl.col("rare"))
         .then(1)
-        .otherwise(2)
+        .when(pl.col("has_wiktionary"))
+        .then(2)
+        .when(pl.col("primary_source") == "wikidata_lexemes")
+        .then(3)
+        .otherwise(4)
         .alias("tier"),
         pl.when(pl.col("has_oewn"))
         .then(pl.col("oewn_rank"))
-        .otherwise(pl.col("wikt_rank"))
+        .when(pl.col("has_wiktionary"))
+        .then(pl.col("wikt_rank"))
+        .otherwise(pl.col("primary_rank"))
         .fill_null(1e9)
         .alias("rank_key"),
+        pl.when(lexical).then(0).otherwise(pl.col("primary_order")).alias("src_key"),
+        pl.when(lexical)
+        .then(pl.col("wikt_line"))
+        .otherwise(pl.col("primary_line"))
+        .alias("line_key"),
     )
     return inv.sort(
-        ["lemma", "tier", "rank_key", "pos_dominance", "wikt_line", "canonical_key"],
+        ["lemma", "tier", "src_key", "rank_key", "pos_dominance", "line_key", "canonical_key"],
         nulls_last=True,
     ).with_columns(pl.int_range(pl.len()).over("lemma").alias("order_key"))
 
@@ -229,17 +266,39 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
     for k in ("senses", "pairs", "dedupe_map"):
         prov.add_input(ins[k])
     senses = pl.read_parquet(resolve(ins["senses"]), columns=SENSE_COLS)
+    restricted = set(cfg.get("restricted_sources", [])) & set(senses["source"].unique().to_list())
+    if restricted and not cfg.get("allow_restricted", False):
+        # restricted-licence content (SNOMED CT) must never reach the git-tracked ledger: the
+        # redacting ledger writer is required before such a build may run (D-036)
+        raise RuntimeError(f"restricted sources {sorted(restricted)} present; set allow_restricted")
     pairs = pl.read_parquet(resolve(ins["pairs"]))
     dedupe = pl.read_parquet(resolve(ins["dedupe_map"]))
+    stage1 = ["oewn", "wiktionary"]
     clusters, pstats = assign_clusters(
-        senses.select(
+        senses.filter(pl.col("source").is_in(stage1)).select(
             "source", "source_id", "entry_key", "gloss", "gloss_path", "line_no", "sense_rank"
         ),
         pairs,
         cfg["policy"],
-        dedupe,
+        dedupe.filter(pl.col("source").is_in(stage1)),
     )
     LOG.info("policy %s: %s", cfg["policy"]["name"], pstats)
+    if ins.get("attachments"):  # stage 2: the other sources (attach.py)
+        prov.add_input(ins["attachments"])
+        att = pl.read_parquet(resolve(ins["attachments"])).select("source", "source_id", "cluster")
+        dups = (
+            dedupe.filter(~pl.col("source").is_in(stage1))
+            .join(att.select(pl.col("source_id").alias("kept_id"), "cluster"), on="kept_id")
+            .select("source", pl.col("dropped_id").alias("source_id"), "cluster")
+        )
+        clusters = pl.concat([clusters.select("source", "source_id", "cluster"), att, dups])
+        pstats["attached"] = int((att["cluster"] != att["source_id"]).sum())
+        pstats["stage2_new_clusters"] = int((att["cluster"] == att["source_id"]).sum())
+    missing = senses.join(clusters, on="source_id", how="anti")
+    if missing.height:
+        raise RuntimeError(
+            f"{missing.height} senses have no cluster, e.g. {missing['source_id'][:5].to_list()}"
+        )
     inv = order_senses(canonical_senses(senses, clusters, cfg))
     stats: dict[str, Any] = {
         "policy": cfg["policy"]["name"],
@@ -257,12 +316,18 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
             prov.add_input(reg_path)
         elif outs.get("registry_commit_dir"):
             # data/ was lost (fresh machine): continue from the committed ledger (D-025)
-            ledger = resolve(outs["registry_commit_dir"]) / "id_registry.parquet"
-            lemmas = resolve(outs["registry_commit_dir"]) / "lemma_registry.parquet"
-            if ledger.exists() and lemmas.exists():
-                LOG.warning("no %s: continuing from committed ledger %s", reg_path, ledger)
-                prev, prev_lem = from_ledger(pl.read_parquet(ledger)), pl.read_parquet(lemmas)
-                prov.add_input(ledger)
+            commit_dir = resolve(outs["registry_commit_dir"])
+            ledger, lemmas = (
+                read_ledger(commit_dir, "id_registry"),
+                read_ledger(commit_dir, "lemma_registry"),
+            )
+            if ledger is not None and lemmas is not None:
+                LOG.warning(
+                    "no %s: continuing from the committed ledger in %s", reg_path, commit_dir
+                )
+                prev, prev_lem = from_ledger(ledger), lemmas
+                for f in ledger_paths(commit_dir, "id_registry"):
+                    prov.add_input(f)
         reg, lem, istats = assign_ids(
             inv.select(
                 "canonical_key",
@@ -304,22 +369,31 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
         reg_prov.source_versions = prov.source_versions
         write_table(reg.to_arrow(), reg_path, reg_prov, stats=istats)
         write_table(lem.to_arrow(), lem_path, reg_prov)
-        if outs.get("registry_commit_dir"):  # durable, git-tracked ledger (D-025)
+        if outs.get("registry_commit_dir"):  # durable, git-tracked ledger (D-025), sharded if large
             commit_dir = resolve(outs["registry_commit_dir"])
-            write_table(
-                to_ledger(reg).to_arrow(),
-                commit_dir / "id_registry.parquet",
-                reg_prov,
-                stats=istats,
-                compression_level=19,
+            write_ledger(
+                to_ledger(reg),
+                commit_dir,
+                "id_registry",
+                lambda t, path: write_table(t, path, reg_prov, stats=istats, compression_level=19),
             )
-            write_table(
-                lem.to_arrow(),
-                commit_dir / "lemma_registry.parquet",
-                reg_prov,
-                compression_level=19,
+            write_ledger(
+                lem,
+                commit_dir,
+                "lemma_registry",
+                lambda t, path: write_table(t, path, reg_prov, compression_level=19),
             )
-    inv = inv.drop("tier", "rank_key", "pos_dominance", "wikt_line")
+    inv = inv.drop(
+        "tier",
+        "rank_key",
+        "pos_dominance",
+        "wikt_line",
+        "src_key",
+        "line_key",
+        "primary_order",
+        "primary_rank",
+        "primary_line",
+    )
     prov.extra["layout"] = cfg.get("ids", {}).get("layout")
     write_table(inv.to_arrow(), outs["inventory"], prov, stats=stats)
     if outs.get("stats"):

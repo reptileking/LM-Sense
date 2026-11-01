@@ -1,0 +1,8 @@
+# NCBI Taxonomy -> scientific-name senses (filter documented in the module docstring). Run:
+#   uv run python -m senselm.ingest.ncbi_taxonomy --config configs/ingest_ncbi_taxonomy.yaml
+stage: ingest.ncbi_taxonomy
+manifest: data/raw/MANIFEST.json
+source_name: ncbi_taxonomy
+input: data/raw/ncbi_taxonomy/taxdmp_2026-11-01.zip
+output: data/interim/senses_raw_ncbi_taxonomy.parquet
+ranks: [domain, kingdom, phylum, class, order, family, genus, species]

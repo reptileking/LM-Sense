@@ -1,0 +1,33 @@
+# Phase-2 report statistics (inventory v1.0). Run after the v1.0 build:
+#   uv run python -m senselm.inventory.stats_v1 --config configs/stats_v1.yaml
+stage: inventory.stats_v1
+build_id: v1.0
+inventory: data/processed/inventory_v1_0.parquet
+registry: data/processed/id_registry.parquet
+lemma_registry: data/processed/lemma_registry.parquet
+structural_registry: data/processed/structural_registry.parquet
+attachments: data/interim/attachments_v1.parquet
+senses_norm: data/interim/senses_norm_v1.parquet
+ledger_dir: registry
+layout: {lemma_bits: 22, sense_bits: 10, reserved_lemma_slots: 4096}
+source_order: [oewn, wiktionary, wikidata_lexemes, wikidata_items, mesh, gene_ontology, chebi,
+               ncbi_taxonomy, snomed_ct_uk]
+licence_scenarios:
+  no share-alike (drop Wiktionary): [wiktionary]
+  no attribution-required lexicons (drop Wiktionary, OEWN): [wiktionary, oewn]
+  no restricted (drop SNOMED CT): [snomed_ct_uk]
+  CC0 / public domain only: [wiktionary, oewn, gene_ontology, chebi, mesh, snomed_ct_uk]
+storage:
+  raw downloads (data/raw): ["data/raw/*"]
+  interim tables (data/interim, excl. embedding cache): ["data/interim/*.parquet"]
+  embedding cache: ["data/interim/embeddings"]
+  inventory v1.0: ["data/processed/inventory_v1_0.parquet"]
+  ID registry (local, with glosses): ["data/processed/id_registry.parquet", "data/processed/lemma_registry.parquet"]
+  committed ledger (registry/): ["registry/*.parquet"]
+  structural registry: ["data/processed/structural_registry.parquet"]
+embedding:
+  dims: [512, 1024, 2048, 4096]
+  ranks: [64, 128, 256]
+  bytes_per_param: 2
+output_json: docs/phase2_stats.json
+output_md: docs/phase2_stats.md

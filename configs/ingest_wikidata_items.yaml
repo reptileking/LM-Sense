@@ -1,0 +1,31 @@
+# Wikidata items (CC0). The full dump is streamed once (never stored) into a superset; the
+# concept filter in `select` is applied afterwards and can change without re-streaming.
+#   uv run python -m senselm.ingest.wikidata_items stream --config configs/ingest_wikidata_items.yaml
+#   uv run python -m senselm.ingest.wikidata_items select --config configs/ingest_wikidata_items.yaml
+stage: ingest.wikidata_items
+url: https://dumps.wikimedia.org/wikidatawiki/entities/20261026/wikidata-20261026-all.json.gz
+md5: 356990468877421dc061694ad61c487f      # wikidata-20261026-md5sums.txt (checked after the pass)
+version: "Wikidata JSON dump 2026-10-26"
+linked_items: data/interim/wikidata_lexeme_items.parquet
+superset_output: data/interim/wikidata_items_superset.parquet
+output: data/interim/senses_raw_wikidata_items.parquet
+max_compressed_bytes: null                 # set (e.g. 2000000000) for a trial on the start of the dump
+select:
+  # "Common nouns / concepts": items with an English description that are classes (P279),
+  # have an English Wikipedia article (notability) and are not of an excluded type.
+  # Items linked from an English lexeme sense are always kept.
+  require_enwiki: true
+  min_sitelinks: 1
+  exclude_p31:
+    - Q13442814   # scholarly article
+    - Q5          # human
+    - Q16521      # taxon (NCBI Taxonomy is the taxon source)
+    - Q7187       # gene
+    - Q8054       # protein
+    - Q11173      # chemical compound (ChEBI / MeSH are the chemical sources)
+    - Q4167836    # Wikimedia category
+    - Q4167410    # Wikimedia disambiguation page
+    - Q11266439   # Wikimedia template
+connections: 2          # parallel range requests (Wikimedia caps ~5 MB/s per connection; be polite)
+segment_mb: 64
+workers: 2              # line-filter processes

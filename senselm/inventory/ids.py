@@ -29,6 +29,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import polars as pl
@@ -318,3 +319,55 @@ def from_ledger(ledger: pl.DataFrame) -> pl.DataFrame:
         pl.concat_list("canonical_key", "other_members").list.unique().list.sort().alias("members"),
         pl.lit(None, dtype=pl.String).alias("gloss"),
     ).select(list(REGISTRY_SCHEMA))
+
+
+# --------------------------------------------------------------------------- committed ledger files
+# GitHub refuses files over 100 MB (and warns above 50 MB), so a large ledger table is written as
+# shards <name>-00000.parquet, <name>-00001.parquet, ... (contiguous token_id ranges).
+LEDGER_SHARD_BYTES = 45 << 20
+
+
+def ledger_paths(commit_dir: Path, name: str) -> list[Path]:
+    """The files holding ledger table ``name`` (a single file or its shards, in order)."""
+    shards = sorted(commit_dir.glob(f"{name}-[0-9][0-9][0-9][0-9][0-9].parquet"))
+    single = commit_dir / f"{name}.parquet"
+    return shards or ([single] if single.exists() else [])
+
+
+def read_ledger(commit_dir: Path, name: str) -> pl.DataFrame | None:
+    paths = ledger_paths(commit_dir, name)
+    return pl.concat([pl.read_parquet(p) for p in paths], how="vertical") if paths else None
+
+
+def write_ledger(
+    df: pl.DataFrame,
+    commit_dir: Path,
+    name: str,
+    writer: Any,
+    *,
+    max_bytes: int = LEDGER_SHARD_BYTES,
+) -> list[Path]:
+    """Write ledger table ``name`` with ``writer(table, path)`` as one file, or as equal shards
+    when the single file would exceed ``max_bytes``. Stale files of the other layout are removed."""
+    commit_dir.mkdir(parents=True, exist_ok=True)
+    old = ledger_paths(commit_dir, name)
+    single = commit_dir / f"{name}.parquet"
+    writer(df.to_arrow(), single)
+    size = single.stat().st_size
+    if size <= max_bytes:
+        out = [single]
+    else:
+        n = -(-size // max_bytes) + 1  # ceil, plus slack: shards compress a little worse
+        step = -(-df.height // n)
+        out = []
+        for i in range(n):
+            path = commit_dir / f"{name}-{i:05d}.parquet"
+            writer(df.slice(i * step, step).to_arrow(), path)
+            out.append(path)
+        for f in (single, single.with_name(single.name + ".meta.json")):
+            f.unlink(missing_ok=True)
+    for f in old:
+        if f not in out:
+            f.unlink(missing_ok=True)
+            f.with_name(f.name + ".meta.json").unlink(missing_ok=True)
+    return out

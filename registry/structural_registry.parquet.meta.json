@@ -1,0 +1,625 @@
+{
+  "code": {
+    "dirty": true,
+    "git_commit": "5267260894cae09cd82773f1bcbce20a03ba685b"
+  },
+  "config": {
+    "build_id": "v1.0",
+    "categories": [
+      {
+        "description": "Sequence control and segmentation.",
+        "items": [
+          [
+            "pad",
+            "padding (never predicted)"
+          ],
+          [
+            "bos",
+            "beginning of sequence"
+          ],
+          [
+            "eos",
+            "end of sequence"
+          ],
+          [
+            "unk",
+            "unknown (should not occur: byte fallback covers everything)"
+          ],
+          [
+            "mask",
+            "masked position (masked-LM objectives, infilling)"
+          ],
+          [
+            "sep",
+            "separator between two segments"
+          ],
+          [
+            "doc_start",
+            "start of a document"
+          ],
+          [
+            "doc_end",
+            "end of a document"
+          ],
+          [
+            "turn_system",
+            "start of a system turn (dialogue)"
+          ],
+          [
+            "turn_user",
+            "start of a user turn"
+          ],
+          [
+            "turn_assistant",
+            "start of an assistant turn"
+          ],
+          [
+            "turn_end",
+            "end of a turn"
+          ]
+        ],
+        "name": "special",
+        "slot": 0
+      },
+      {
+        "description": "Byte fallback for anything not in the inventory (names, code, URLs, typos, other languages): <bytes_start>, then UTF-8 bytes, then <bytes_end>. Indices 0-255 are the byte values.",
+        "generate": "bytes",
+        "items": [
+          [
+            "bytes_start",
+            "start of a byte-fallback span"
+          ],
+          [
+            "bytes_end",
+            "end of a byte-fallback span"
+          ]
+        ],
+        "name": "byte",
+        "slot": 1
+      },
+      {
+        "description": "Inflectional features, UniMorph schema names, emitted right after the sense token whose surface form they select (run + PST -> \"ran\"; mouse + PL -> \"mice\"). Unmarked = lemma form.",
+        "items": [
+          [
+            "PRS",
+            "present tense"
+          ],
+          [
+            "PST",
+            "past tense"
+          ],
+          [
+            "FUT",
+            "future (periphrastic marker, rarely needed in English)"
+          ],
+          [
+            "PRF",
+            "perfect aspect"
+          ],
+          [
+            "PROG",
+            "progressive aspect"
+          ],
+          [
+            "IND",
+            "indicative mood"
+          ],
+          [
+            "SBJV",
+            "subjunctive mood (were)"
+          ],
+          [
+            "IMP",
+            "imperative mood"
+          ],
+          [
+            "COND",
+            "conditional mood"
+          ],
+          [
+            "ACT",
+            "active voice"
+          ],
+          [
+            "PASS",
+            "passive voice"
+          ],
+          [
+            "1",
+            "first person"
+          ],
+          [
+            "2",
+            "second person"
+          ],
+          [
+            "3",
+            "third person"
+          ],
+          [
+            "SG",
+            "singular"
+          ],
+          [
+            "PL",
+            "plural"
+          ],
+          [
+            "CMPR",
+            "comparative degree"
+          ],
+          [
+            "SPRL",
+            "superlative degree"
+          ],
+          [
+            "FIN",
+            "finite"
+          ],
+          [
+            "NFIN",
+            "non-finite (infinitive)"
+          ],
+          [
+            "V.PTCP",
+            "participle (with PRS: -ing form; with PST: past participle)"
+          ],
+          [
+            "V.MSDR",
+            "gerund / verbal noun"
+          ],
+          [
+            "NOM",
+            "nominative case (pronouns)"
+          ],
+          [
+            "ACC",
+            "accusative / oblique case (pronouns)"
+          ],
+          [
+            "GEN",
+            "genitive / possessive 's"
+          ],
+          [
+            "MASC",
+            "masculine (pronouns)"
+          ],
+          [
+            "FEM",
+            "feminine (pronouns)"
+          ],
+          [
+            "NEUT",
+            "neuter (pronouns)"
+          ],
+          [
+            "NEG",
+            "negative polarity (contracted n't)"
+          ],
+          [
+            "PSS",
+            "possessive pronoun form (mine, yours)"
+          ],
+          [
+            "DEF",
+            "definite"
+          ],
+          [
+            "INDF",
+            "indefinite"
+          ]
+        ],
+        "name": "morph",
+        "slot": 2
+      },
+      {
+        "description": "Capitalisation of the next word's surface form.",
+        "items": [
+          [
+            "cap",
+            "first letter upper-case (sentence start, titles)"
+          ],
+          [
+            "allcaps",
+            "whole word upper-case"
+          ],
+          [
+            "lower",
+            "force lower-case where the lemma is capitalised"
+          ],
+          [
+            "mixed",
+            "irregular casing: spell the word with byte fallback"
+          ]
+        ],
+        "name": "case",
+        "slot": 3
+      },
+      {
+        "description": "Whitespace. Default detokenisation: one space between words, none before closing or after opening punctuation. These tokens override the default.",
+        "items": [
+          [
+            "nospace",
+            "glue the next token to the previous one"
+          ],
+          [
+            "space",
+            "an explicit space where the default would put none"
+          ],
+          [
+            "newline",
+            "line break"
+          ],
+          [
+            "paragraph",
+            "blank line (paragraph break)"
+          ],
+          [
+            "tab",
+            "tab character"
+          ],
+          [
+            "indent",
+            "one indentation level (4 spaces) at line start"
+          ],
+          [
+            "clitic",
+            "realise the next token as a contraction clitic ('s, 're, 've, 'll, 'd, n't)"
+          ]
+        ],
+        "name": "space",
+        "slot": 4
+      },
+      {
+        "description": "Punctuation and symbols, one token per character.",
+        "items": [
+          [
+            ".",
+            "full stop"
+          ],
+          [
+            ",",
+            "comma"
+          ],
+          [
+            ";",
+            "semicolon"
+          ],
+          [
+            ":",
+            "colon"
+          ],
+          [
+            "!",
+            "exclamation mark"
+          ],
+          [
+            "?",
+            "question mark"
+          ],
+          [
+            "'",
+            "apostrophe / straight single quote"
+          ],
+          [
+            "\"",
+            "straight double quote"
+          ],
+          [
+            "(",
+            "left parenthesis"
+          ],
+          [
+            ")",
+            "right parenthesis"
+          ],
+          [
+            "[",
+            "left bracket"
+          ],
+          [
+            "]",
+            "right bracket"
+          ],
+          [
+            "{",
+            "left brace"
+          ],
+          [
+            "}",
+            "right brace"
+          ],
+          [
+            "-",
+            "hyphen-minus"
+          ],
+          [
+            "\u2013",
+            "en dash"
+          ],
+          [
+            "\u2014",
+            "em dash"
+          ],
+          [
+            "\u2026",
+            "ellipsis"
+          ],
+          [
+            "/",
+            "slash"
+          ],
+          [
+            "\\",
+            "backslash"
+          ],
+          [
+            "&",
+            "ampersand"
+          ],
+          [
+            "%",
+            "percent"
+          ],
+          [
+            "#",
+            "number sign"
+          ],
+          [
+            "@",
+            "at sign"
+          ],
+          [
+            "*",
+            "asterisk"
+          ],
+          [
+            "+",
+            "plus"
+          ],
+          [
+            "=",
+            "equals"
+          ],
+          [
+            "<",
+            "less-than"
+          ],
+          [
+            ">",
+            "greater-than"
+          ],
+          [
+            "|",
+            "vertical bar"
+          ],
+          [
+            "~",
+            "tilde"
+          ],
+          [
+            "^",
+            "caret"
+          ],
+          [
+            "_",
+            "underscore"
+          ],
+          [
+            "`",
+            "backtick"
+          ],
+          [
+            "$",
+            "dollar"
+          ],
+          [
+            "\u00a3",
+            "pound sterling"
+          ],
+          [
+            "\u20ac",
+            "euro"
+          ],
+          [
+            "\u00a5",
+            "yen"
+          ],
+          [
+            "\u00b0",
+            "degree"
+          ],
+          [
+            "\u00a7",
+            "section"
+          ],
+          [
+            "\u00b6",
+            "pilcrow"
+          ],
+          [
+            "\u00a9",
+            "copyright"
+          ],
+          [
+            "\u00ae",
+            "registered"
+          ],
+          [
+            "\u2122",
+            "trade mark"
+          ],
+          [
+            "\u2022",
+            "bullet"
+          ],
+          [
+            "\u00b7",
+            "middle dot"
+          ],
+          [
+            "\u2018",
+            "left single quotation mark"
+          ],
+          [
+            "\u2019",
+            "right single quotation mark"
+          ],
+          [
+            "\u201c",
+            "left double quotation mark"
+          ],
+          [
+            "\u201d",
+            "right double quotation mark"
+          ],
+          [
+            "\u00ab",
+            "left guillemet"
+          ],
+          [
+            "\u00bb",
+            "right guillemet"
+          ],
+          [
+            "\u00d7",
+            "multiplication sign"
+          ],
+          [
+            "\u00f7",
+            "division sign"
+          ],
+          [
+            "\u00b1",
+            "plus-minus"
+          ],
+          [
+            "\u2192",
+            "rightwards arrow"
+          ]
+        ],
+        "name": "punct",
+        "slot": 5
+      },
+      {
+        "description": "Numbers are spelled as digit sequences (with punct tokens for . and ,).",
+        "generate": "digits",
+        "items": [],
+        "name": "digit",
+        "slot": 6
+      },
+      {
+        "description": "Pragmatics (minimal first version). Span markers come in start/end pairs; single markers apply to the following clause.",
+        "items": [
+          [
+            "formal",
+            "formal register"
+          ],
+          [
+            "informal",
+            "informal register"
+          ],
+          [
+            "emph_start",
+            "start of emphasised span (italics, stress)"
+          ],
+          [
+            "emph_end",
+            "end of emphasised span"
+          ],
+          [
+            "quote_start",
+            "start of quoted / reported speech"
+          ],
+          [
+            "quote_end",
+            "end of quoted / reported speech"
+          ],
+          [
+            "irony",
+            "the following clause is ironic or sarcastic"
+          ],
+          [
+            "hedge",
+            "the following claim is hedged"
+          ]
+        ],
+        "name": "prag",
+        "slot": 7
+      },
+      {
+        "description": "Orthographic variant of the next sense token's lemma (from variants.parquet): the decoder picks the variant spelling of that kind instead of the lemma's default spelling.",
+        "items": [
+          [
+            "uk",
+            "British spelling (colour, organise)"
+          ],
+          [
+            "us",
+            "American spelling"
+          ],
+          [
+            "archaic",
+            "archaic / obsolete spelling"
+          ],
+          [
+            "abbrev",
+            "abbreviated form"
+          ],
+          [
+            "nonstandard",
+            "nonstandard / eye-dialect / misspelling"
+          ],
+          [
+            "other",
+            "other listed variant"
+          ]
+        ],
+        "name": "variant",
+        "slot": 8
+      }
+    ],
+    "doc_output": "docs/STRUCTURAL_TOKENS.md",
+    "registry": "data/processed/structural_registry.parquet",
+    "registry_commit": "registry/structural_registry.parquet",
+    "stage": "inventory.structural"
+  },
+  "config_path": "configs/structural.yaml",
+  "config_sha256": "a44867fcbb266c854b00ace1ae01415d1f8deacb477cd509d7ff078d944cce10",
+  "created_at": "2026-11-01T12:53:28+00:00",
+  "inputs": [],
+  "output": {
+    "bytes": 25712,
+    "path": "registry/structural_registry.parquet",
+    "sha256": "335fa89c7be0250f7065e05d61ca1beb662359792c9d4c40f0aede8ade12e853"
+  },
+  "packages": {
+    "duckdb": "2.0.0",
+    "lxml": "6.1.3",
+    "numpy": "2.5.4",
+    "orjson": "3.13.0",
+    "polars": "2.1.0",
+    "pyarrow": "26.0.0",
+    "python": "3.12.3",
+    "scipy": "1.18.1",
+    "tokenizers": "0.23.3",
+    "torch": "2.15.0+cpu",
+    "transformers": "5.22.1"
+  },
+  "source_versions": {},
+  "stage": "inventory.structural",
+  "stats": {
+    "active": 393,
+    "by_category": {
+      "byte": 258,
+      "case": 4,
+      "digit": 10,
+      "morph": 32,
+      "prag": 8,
+      "punct": 56,
+      "space": 7,
+      "special": 12,
+      "variant": 6
+    }
+  }
+}

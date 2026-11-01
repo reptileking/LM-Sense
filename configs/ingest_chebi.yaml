@@ -1,0 +1,13 @@
+# ChEBI -> chemical-entity senses; only 3-star (manually curated) entities. Run:
+#   uv run python -m senselm.ingest.obo --config configs/ingest_chebi.yaml
+stage: ingest.chebi
+manifest: data/raw/MANIFEST.json
+source: chebi
+source_name: chebi
+input: data/raw/chebi/chebi-rel255.obo.gz
+output: data/interim/senses_raw_chebi.parquet
+require_any_subset: ["3:STAR"]
+pos_label: entity
+domain: chemistry
+tag_prefix: chebi
+undefined_gloss_prefix: "a chemical entity that is a"

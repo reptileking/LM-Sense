@@ -810,6 +810,19 @@ wheels = [
 ]
 
 [[package]]
+name = "lemminflect"
+version = "0.2.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2d/41/662a99c976acb78907e6423cb666f0001450c35f74362b402716378f45b1/lemminflect-0.2.3.tar.gz", hash = "sha256:5e125ab381b4156245a8c0b5bcdccb899950ead96546eb9735ea8641636a1af6", size = 765166, upload-time = "2022-10-02T20:54:08.478Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9e/98/9fac8cc177474ddd8d1725d5cae052098662d5e4a6756633335f4393673b/lemminflect-0.2.3-py3-none-any.whl", hash = "sha256:1cf470efa783733ca5654cc1a6ee1de774e59031e61bf6210467625e84a8cf1c", size = 769698, upload-time = "2022-10-02T20:54:05.584Z" },
+]
+
+[[package]]
 name = "librt"
 version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2442,6 +2455,7 @@ source = { editable = "." }
 dependencies = [
     { name = "duckdb" },
     { name = "huggingface-hub" },
+    { name = "lemminflect" },
     { name = "lxml" },
     { name = "matplotlib" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
@@ -2478,6 +2492,7 @@ requires-dist = [
     { name = "anthropic", marker = "extra == 'llm'", specifier = ">=0.40" },
     { name = "duckdb", specifier = ">=1.1" },
     { name = "huggingface-hub", specifier = ">=0.26" },
+    { name = "lemminflect", specifier = ">=0.2.3" },
     { name = "lxml", specifier = ">=5.3" },
     { name = "matplotlib", specifier = ">=3.9" },
     { name = "numpy", specifier = ">=1.26" },

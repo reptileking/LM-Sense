@@ -1,0 +1,30 @@
+# Wikidata lexemes (English, CC0) -> unified raw senses. Run:
+#   uv run python -m senselm.ingest.wikidata_lexemes --config configs/ingest_wikidata_lexemes.yaml
+stage: ingest.wikidata_lexemes
+manifest: data/raw/MANIFEST.json
+source_name: wikidata_lexemes
+input: data/raw/wikidata/wikidata-20261028-lexemes.json.gz
+output: data/interim/senses_raw_wikidata_lexemes.parquet
+linked_items_output: data/interim/wikidata_lexeme_items.parquet
+language_qid: Q1860          # English
+batch_rows: auto
+# Grammatical-feature Q-ids -> the tag vocabulary of Wiktionary forms. Meanings were read off
+# the data (e.g. run->ran carries Q1392475, happier carries Q14169499); see DECISIONS D-033.
+grammatical_features:
+  Q110786: [singular]
+  Q146786: [plural]
+  Q3910936: [present]
+  Q51929074: [third-person]
+  Q1392475: [past]
+  Q1230649: [participle, past]
+  Q10345583: [participle, present]
+  Q3482678: [positive]
+  Q14169499: [comparative]
+  Q1817208: [superlative]
+  Q146233: [genitive]
+  Q2105891: [possessive]
+  Q1861696: [possessive]
+  Q131105: [nominative]
+  Q4818723: [attributive]
+  Q1931259: [predicative]
+  Q30619513: [all-caps]

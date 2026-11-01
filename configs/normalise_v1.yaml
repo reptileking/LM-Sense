@@ -1,0 +1,10 @@
+# Normalisation for inventory v1.0 (Phase 2): the v0.1 rules (configs/normalise.yaml), applied
+# to the union of all sources. Run:
+#   uv run python -m senselm.inventory.normalise --config configs/normalise_v1.yaml
+extends: configs/normalise.yaml
+input: data/interim/senses_raw_v1.parquet
+outputs:
+  senses: data/interim/senses_norm_v1.parquet
+  forms: data/interim/forms_v1.parquet
+  variants: data/interim/variants_v1.parquet
+  dedupe_map: data/interim/dedupe_map_v1.parquet

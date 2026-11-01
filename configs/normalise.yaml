@@ -37,7 +37,7 @@ upos_map:
     num: NUM
     prep: ADP
     postp: ADP
-    conj: SCONJ           # CCONJ if the lemma is in coordinating_conjunctions
+    conj: CONJ            # CCONJ if the lemma is in coordinating_conjunctions, else SCONJ
     particle: PART
     contraction: X
     prefix: X
@@ -55,6 +55,45 @@ upos_map:
     a: ADJ
     s: ADJ                # adjective satellite
     r: ADV
+  # ------------------------------------------------------------------ Phase 2 sources
+  # Wikidata lexical categories (meanings read off the data, see D-033)
+  wikidata_lexemes:
+    Q1084: NOUN          # noun
+    Q24905: VERB         # verb
+    Q34698: ADJ          # adjective
+    Q380057: ADV         # adverb
+    Q147276: PROPN       # proper noun
+    Q576271: DET         # determiner (incl. cardinal numbers in this data)
+    Q5051: DET           # possessive determiner (your, our)
+    Q36484: CONJ         # conjunction
+    Q4833830: ADP        # preposition
+    Q10319522: ADP       # prepositional locution (on behalf of)
+    Q83034: INTJ         # interjection
+    Q10319520: INTJ      # interjectional locution
+    Q63116: NUM          # numeral
+    Q36224: PRON         # pronoun
+    Q468801: PRON        # personal pronoun
+    Q956030: PRON        # indefinite pronoun
+    Q1989081: PRON       # reflexive pronoun
+    Q54310231: PRON      # interrogative word
+    Q1527589: VERB       # phrasal verb
+    Q1778442: VERB       # verb phrase
+    Q10976085: VERB      # verbal locution
+    Q1401131: NOUN       # noun phrase
+    Q217438: NOUN        # demonym (noun)
+    Q81058955: ADJ       # demonym (adjective)
+    Q3734650: ADV        # adverbial phrase
+    Q5978303: ADV        # adverbial locution
+    Q3397768: ADV        # prepositional phrase (adverbial, as for Wiktionary)
+    Q1469454: ADJ        # adjectival phrase
+    "*": X               # affixes, idioms, proverbs, abbreviations, other
+  wikidata_items: {item: "NOUN|PROPN"}
+  ncbi_taxonomy: {taxon: PROPN}
+  gene_ontology: {term: NOUN}
+  chebi: {entity: NOUN}
+  mesh: {descriptor: NOUN, geographic: PROPN, "scr:chemical": NOUN, "scr:rare disease": NOUN,
+         "scr:organism": "NOUN|PROPN"}
+  snomed_ct_uk: {"sct:": NOUN}
 coordinating_conjunctions: ["and", "or", "but", "nor", "yet", "so", "for", "plus", "minus",
   "either", "neither", "both", "et", "&", "'n'", "n'", "'n", "an'", "versus", "vs", "vs.",
   "and/or", "times", "nor yet", "but also", "as well as", "let alone", "rather than"]

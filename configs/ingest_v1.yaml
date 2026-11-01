@@ -1,0 +1,16 @@
+# Union of all per-source raw sense files for inventory v1.0 (Phase 2). Order matters only for
+# readability: Phase-1 sources first, so their rows are identical to v0.1. Run:
+#   uv run python -m senselm.ingest.combine --config configs/ingest_v1.yaml
+stage: ingest.combine
+inputs:
+  - data/interim/senses_raw_wiktionary.parquet
+  - data/interim/senses_raw_oewn.parquet
+  - data/interim/senses_raw_wikidata_lexemes.parquet
+  - data/interim/senses_raw_wikidata_items.parquet
+  - data/interim/senses_raw_mesh.parquet
+  - data/interim/senses_raw_gene_ontology.parquet
+  - data/interim/senses_raw_chebi.parquet
+  - data/interim/senses_raw_ncbi_taxonomy.parquet
+  # - data/interim/senses_raw_snomed.parquet   # enable when the TRUD release is available
+output: data/interim/senses_raw_v1.parquet
+batch_rows: 100000

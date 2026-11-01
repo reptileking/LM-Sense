@@ -1,0 +1,186 @@
+# Structural vocabulary (Phase 2). Each category owns one reserved "lemma slot" (a block of 1,024
+# token ids) above STRUCTURAL_BASE = 0xFFC00000; token_id = (STRUCTURAL_LEMMA_BASE + slot) << 10 | index.
+# Ids are permanent and append-only: add new items at the END of a category (or a new category
+# with a new slot). Never reorder or delete; retire an item with `retired: true`. Run:
+#   uv run python -m senselm.inventory.structural --config configs/structural.yaml
+stage: inventory.structural
+registry: data/processed/structural_registry.parquet
+registry_commit: registry/structural_registry.parquet
+doc_output: docs/STRUCTURAL_TOKENS.md
+build_id: v1.0
+categories:
+  - name: special
+    slot: 0
+    description: Sequence control and segmentation.
+    items:
+      - [pad, "padding (never predicted)"]
+      - [bos, "beginning of sequence"]
+      - [eos, "end of sequence"]
+      - [unk, "unknown (should not occur: byte fallback covers everything)"]
+      - [mask, "masked position (masked-LM objectives, infilling)"]
+      - [sep, "separator between two segments"]
+      - [doc_start, "start of a document"]
+      - [doc_end, "end of a document"]
+      - [turn_system, "start of a system turn (dialogue)"]
+      - [turn_user, "start of a user turn"]
+      - [turn_assistant, "start of an assistant turn"]
+      - [turn_end, "end of a turn"]
+  - name: byte
+    slot: 1
+    description: >-
+      Byte fallback for anything not in the inventory (names, code, URLs, typos, other
+      languages): <bytes_start>, then UTF-8 bytes, then <bytes_end>. Indices 0-255 are the byte values.
+    generate: bytes
+    items:
+      - [bytes_start, "start of a byte-fallback span"]
+      - [bytes_end, "end of a byte-fallback span"]
+  - name: morph
+    slot: 2
+    description: >-
+      Inflectional features, UniMorph schema names, emitted right after the sense token whose
+      surface form they select (run + PST -> "ran"; mouse + PL -> "mice"). Unmarked = lemma form.
+    items:
+      - [PRS, "present tense"]
+      - [PST, "past tense"]
+      - [FUT, "future (periphrastic marker, rarely needed in English)"]
+      - [PRF, "perfect aspect"]
+      - [PROG, "progressive aspect"]
+      - [IND, "indicative mood"]
+      - [SBJV, "subjunctive mood (were)"]
+      - [IMP, "imperative mood"]
+      - [COND, "conditional mood"]
+      - [ACT, "active voice"]
+      - [PASS, "passive voice"]
+      - ["1", "first person"]
+      - ["2", "second person"]
+      - ["3", "third person"]
+      - [SG, "singular"]
+      - [PL, "plural"]
+      - [CMPR, "comparative degree"]
+      - [SPRL, "superlative degree"]
+      - [FIN, "finite"]
+      - [NFIN, "non-finite (infinitive)"]
+      - [V.PTCP, "participle (with PRS: -ing form; with PST: past participle)"]
+      - [V.MSDR, "gerund / verbal noun"]
+      - [NOM, "nominative case (pronouns)"]
+      - [ACC, "accusative / oblique case (pronouns)"]
+      - [GEN, "genitive / possessive 's"]
+      - [MASC, "masculine (pronouns)"]
+      - [FEM, "feminine (pronouns)"]
+      - [NEUT, "neuter (pronouns)"]
+      - [NEG, "negative polarity (contracted n't)"]
+      - [PSS, "possessive pronoun form (mine, yours)"]
+      - [DEF, "definite"]
+      - [INDF, "indefinite"]
+  - name: case
+    slot: 3
+    description: Capitalisation of the next word's surface form.
+    items:
+      - [cap, "first letter upper-case (sentence start, titles)"]
+      - [allcaps, "whole word upper-case"]
+      - [lower, "force lower-case where the lemma is capitalised"]
+      - [mixed, "irregular casing: spell the word with byte fallback"]
+  - name: space
+    slot: 4
+    description: >-
+      Whitespace. Default detokenisation: one space between words, none before closing or after
+      opening punctuation. These tokens override the default.
+    items:
+      - [nospace, "glue the next token to the previous one"]
+      - [space, "an explicit space where the default would put none"]
+      - [newline, "line break"]
+      - [paragraph, "blank line (paragraph break)"]
+      - [tab, "tab character"]
+      - [indent, "one indentation level (4 spaces) at line start"]
+      - [clitic, "realise the next token as a contraction clitic ('s, 're, 've, 'll, 'd, n't)"]
+  - name: punct
+    slot: 5
+    description: Punctuation and symbols, one token per character.
+    items:
+      - [".", "full stop"]
+      - [",", "comma"]
+      - [";", "semicolon"]
+      - [":", "colon"]
+      - ["!", "exclamation mark"]
+      - ["?", "question mark"]
+      - ["'", "apostrophe / straight single quote"]
+      - ['"', "straight double quote"]
+      - ["(", "left parenthesis"]
+      - [")", "right parenthesis"]
+      - ["[", "left bracket"]
+      - ["]", "right bracket"]
+      - ["{", "left brace"]
+      - ["}", "right brace"]
+      - ["-", "hyphen-minus"]
+      - ["–", "en dash"]
+      - ["—", "em dash"]
+      - ["…", "ellipsis"]
+      - ["/", "slash"]
+      - ["\\", "backslash"]
+      - ["&", "ampersand"]
+      - ["%", "percent"]
+      - ["#", "number sign"]
+      - ["@", "at sign"]
+      - ["*", "asterisk"]
+      - ["+", "plus"]
+      - ["=", "equals"]
+      - ["<", "less-than"]
+      - [">", "greater-than"]
+      - ["|", "vertical bar"]
+      - ["~", "tilde"]
+      - ["^", "caret"]
+      - ["_", "underscore"]
+      - ["`", "backtick"]
+      - ["$", "dollar"]
+      - ["£", "pound sterling"]
+      - ["€", "euro"]
+      - ["¥", "yen"]
+      - ["°", "degree"]
+      - ["§", "section"]
+      - ["¶", "pilcrow"]
+      - ["©", "copyright"]
+      - ["®", "registered"]
+      - ["™", "trade mark"]
+      - ["•", "bullet"]
+      - ["·", "middle dot"]
+      - ["‘", "left single quotation mark"]
+      - ["’", "right single quotation mark"]
+      - ["“", "left double quotation mark"]
+      - ["”", "right double quotation mark"]
+      - ["«", "left guillemet"]
+      - ["»", "right guillemet"]
+      - ["×", "multiplication sign"]
+      - ["÷", "division sign"]
+      - ["±", "plus-minus"]
+      - ["→", "rightwards arrow"]
+  - name: digit
+    slot: 6
+    description: Numbers are spelled as digit sequences (with punct tokens for . and ,).
+    generate: digits
+    items: []
+  - name: prag
+    slot: 7
+    description: >-
+      Pragmatics (minimal first version). Span markers come in start/end pairs; single markers
+      apply to the following clause.
+    items:
+      - [formal, "formal register"]
+      - [informal, "informal register"]
+      - [emph_start, "start of emphasised span (italics, stress)"]
+      - [emph_end, "end of emphasised span"]
+      - [quote_start, "start of quoted / reported speech"]
+      - [quote_end, "end of quoted / reported speech"]
+      - [irony, "the following clause is ironic or sarcastic"]
+      - [hedge, "the following claim is hedged"]
+  - name: variant
+    slot: 8
+    description: >-
+      Orthographic variant of the next sense token's lemma (from variants.parquet): the decoder
+      picks the variant spelling of that kind instead of the lemma's default spelling.
+    items:
+      - [uk, "British spelling (colour, organise)"]
+      - [us, "American spelling"]
+      - [archaic, "archaic / obsolete spelling"]
+      - [abbrev, "abbreviated form"]
+      - [nonstandard, "nonstandard / eye-dialect / misspelling"]
+      - [other, "other listed variant"]

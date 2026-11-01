@@ -1,0 +1,12 @@
+# SNOMED CT UK Edition (RF2 Snapshot) -> concept senses. Needs the owner's NHS TRUD download:
+# put the UK Edition RF2 release zip(s) under data/raw/snomed/ and list them here. Run:
+#   uv run python -m senselm.ingest.snomed --config configs/ingest_snomed.yaml
+stage: ingest.snomed
+inputs: [data/raw/snomed/]           # zip files or extracted folders (International + UK packages)
+version: "SNOMED CT UK Edition (set to the release you download, e.g. 41.x)"
+output: data/interim/senses_raw_snomed.parquet
+# Preferred-term language refsets, in priority order: UK clinical (NHS realm), then GB English.
+language_refsets: ["999001261000000100", "900000000000508004"]
+tag_domains: {disorder: medicine, finding: medicine, procedure: medicine, "body structure": anatomy,
+              organism: biology, substance: chemistry, "product": pharmacology,
+              "observable entity": medicine, "qualifier value": medicine}
