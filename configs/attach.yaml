@@ -18,6 +18,7 @@ source_order: [wikidata_lexemes, wikidata_items, mesh, gene_ontology, chebi, ncb
 thresholds:
   default: 0.60
   wikidata_lexemes: 0.60     # P 0.78 / R 0.78 (flat curve: errors are wrong-candidate, not low-score)
+  wikidata_items: 0.58       # P 0.95 / R 0.95 (plateau 0.54-0.58; 8 of 40 gold items attach by Q-id)
   mesh: 0.60                 # P 0.97 / R 0.93
   gene_ontology: 0.65        # P 0.95 / R 1.00
   chebi: 0.65                # P 0.89 / R 0.94
@@ -28,6 +29,8 @@ gold:
   sample_output: eval/attach_gold_sample.json
   path: eval/attach_gold.csv
   eval_output: eval/attach_gold_eval.json
+# never sampled into the committed gold set (D-036)
+restricted_sources: [snomed_ct_uk]
 # Taxa: a capitalised genus and the lowercase common noun derived from it are different lexemes.
 no_case_fallback: [ncbi_taxonomy]
 # Kingdom consistency: WordNet lexicographer files a taxon of each kingdom may attach to.

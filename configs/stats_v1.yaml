@@ -26,7 +26,7 @@ storage:
   committed ledger (registry/): ["registry/*.parquet"]
   structural registry: ["data/processed/structural_registry.parquet"]
 embedding:
-  dims: [512, 1024, 2048, 4096]
+  dims: [512, 768, 1024, 2048]   # 768 = the ~125M-parameter core model of Phase 5
   ranks: [64, 128, 256]
   bytes_per_param: 2
 output_json: docs/phase2_stats.json

@@ -16,6 +16,10 @@ outputs:
 # and POS win whenever present, as in v0.1)
 source_order: [oewn, wiktionary, wikidata_lexemes, wikidata_items, mesh, gene_ontology, chebi,
                ncbi_taxonomy, snomed_ct_uk]
+# gloss of a cluster: from the first member in this order (WordNet, Wiktionary and lexeme
+# definitions, then curated domain definitions; Wikidata descriptions are disambiguators, last)
+gloss_order: [oewn, wiktionary, wikidata_lexemes, gene_ontology, chebi, mesh, snomed_ct_uk,
+              ncbi_taxonomy, wikidata_items]
 # Licence of each source's contribution (docs/LICENSES.md); every canonical sense lists the
 # licences of its members, so licensed subsets can be excluded.
 licences:
@@ -28,7 +32,9 @@ licences:
   chebi: CC-BY-4.0
   ncbi_taxonomy: public-domain-NCBI
   snomed_ct_uk: SNOMED-CT-affiliate-restricted
-# Restricted-licence sources: content must not reach git-tracked files (D-036). A build that
-# contains them refuses to run until allow_restricted is set (with the redacting ledger writer).
+# Restricted-licence sources (D-036): their member ids start with these prefixes. They get
+# permanent ids like everything else, but the git-tracked ledger only holds hashed keys and
+# lemmas for them (restored automatically when a rebuild contains the source again), and a
+# build without them carries their ids over untouched.
 restricted_sources: [snomed_ct_uk]
-allow_restricted: false
+restricted_id_prefixes: ["sct:"]

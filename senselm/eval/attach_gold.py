@@ -3,7 +3,9 @@
 ``python -m senselm.eval.attach_gold render --config configs/attach.yaml``
     eval/attach_gold_sample.json (from ``attach --sample``) -> eval/attach_gold.csv, one row per
     sampled new-source sense with its candidate senses (no scores). Label columns:
-    ``match`` = the candidate number that is the same sense (or ``none``), ``related`` =
+    ``match`` = the candidate number that is the same sense (``2|5`` when two candidate clusters
+    are the same sense, e.g. a WordNet and a Wiktionary cluster that stage 1 kept apart; ``none``
+    when no candidate is), ``related`` =
     candidate numbers that are broader/narrower/metonymic, ``ambiguous``, ``note``.
 
 ``python -m senselm.eval.attach_gold evaluate --config configs/attach.yaml``
@@ -174,7 +176,11 @@ def evaluate(cfg: dict[str, Any]) -> dict[str, Any]:
         sweep = []
         for t in grid:
             att = (d["best_xref"] | (d["best_score"] >= t)).to_numpy()
-            correct = att & (d["best_idx"] == d["match"]).to_numpy()
+            ok = [
+                b in m.split("|")
+                for b, m in zip(d["best_idx"].to_list(), d["match"].to_list(), strict=True)
+            ]
+            correct = att & np.array(ok, dtype=bool)
             has = (d["match"] != "none").to_numpy()
             tp, n_att, n_has = int(correct.sum()), int(att.sum()), int(has.sum())
             p = tp / n_att if n_att else float("nan")

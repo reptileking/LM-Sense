@@ -275,15 +275,27 @@ because no rule on the word itself separates "Ophiocordyceps" from "Coliphages".
 records are mostly sentence case, where only the first capital is uninformative. A first version
 lower-cased genera and garbled 7,700 descriptor lemmas; the dev review caught it before release.
 
-**D-036 SNOMED CT is restricted.** The UK edition (TRUD, affiliate licence) may be used but not
-redistributed. `senselm/ingest/snomed.py` reads RF2 Snapshot files from the release zips and tags
-every row `licence:restricted`; the build refuses to run with a restricted source present unless
-`allow_restricted: true`, which requires the redacting ledger writer (restricted-only senses keep
-their token ids in the git-tracked ledger but with hashed keys and no lemma text; restricted member
-ids are stripped from other rows). That writer is specified here and will be implemented and
-tested when the TRUD files are available; until then SNOMED is commented out of
-`configs/ingest_v1.yaml`. Files needed: the "SNOMED CT UK Edition, RF2: Full, Snapshot & Delta"
-release zip(s) (International + UK clinical extension) in `data/raw/snomed/`.
+**D-036 SNOMED CT is restricted.** The UK edition (NHS TRUD, SNOMED CT affiliate licence via
+the UK national licence) may be used but not redistributed. `senselm/ingest/snomed.py` reads the
+RF2 Snapshot files straight from the release zip(s) and tags every row `licence:restricted`.
+SNOMED senses get permanent token ids like every other sense, but no SNOMED text may reach git:
+* in the committed ledger a token anchored on a SNOMED member (`sct:` id) carries a hashed key and
+  lemma (`restricted:` + sha256 prefix), SNOMED member ids are removed from other tokens' member
+  lists, and lemmas used only by such tokens are hashed in the lemma ledger
+  (`ids.redact_ledger` / `ids.redact_lemmas`);
+* a rebuild that contains SNOMED again (e.g. on a fresh machine with only the ledger) recomputes
+  the hashes and restores the real values before assigning ids (`ids.rehydrate`), so ids
+  continue; a build *without* SNOMED holds those ids out of the assignment untouched (neither
+  continued nor deprecated) and keeps their sense indices reserved;
+* `inventory.build` refuses a restricted source whose ids are not covered by
+  `restricted_id_prefixes`; the stage-2 gold sampler never samples restricted sources (the gold
+  set is committed);
+* `tests/test_build.py::test_restricted_source_never_reaches_the_ledger` checks all three paths.
+The hashes are unsalted on purpose (a salt kept outside git would make the fresh-machine rebuild
+impossible); they keep SNOMED text out of the repository, not secret from SNOMED licensees.
+Files needed from the owner: the SNOMED CT UK Edition RF2 release zip(s) from TRUD (the package
+with the Snapshot files of the International release and the UK clinical extension) in
+`data/raw/snomed/`; then uncomment SNOMED in `configs/ingest_v1.yaml`.
 
 **D-037 Stage-2 alignment (attach).** Stage 1 (OEWN ↔ Wiktionary, the v0.1 fine policy) is
 recomputed unchanged, so every v0.1 cluster anchor survives. The other sources are then attached

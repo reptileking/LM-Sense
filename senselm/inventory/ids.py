@@ -27,7 +27,9 @@ registry) and by the tests.
 
 from __future__ import annotations
 
+import hashlib
 from collections import defaultdict
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -118,12 +120,17 @@ def assign_ids(
     prev_lemmas: pl.DataFrame | None,
     build: str,
     layout: Layout | None = None,
+    reserved: pl.DataFrame | None = None,
 ) -> tuple[pl.DataFrame, pl.DataFrame, dict[str, Any]]:
     """Assign token ids to the canonical senses of a build.
 
     ``senses``: one row per canonical sense, columns ``canonical_key, lemma, upos, members
     (list[str]), gloss, order_key`` - rows must already be sorted in the desired frequency
     order within each lemma (``order_key`` ascending is used as a tiebreak-safe check).
+
+    ``reserved``: registry rows held out of this build (senses of a restricted source the build
+    does not include). They are neither continued nor deprecated, but their sense indices stay
+    taken; the caller appends them to the returned registry unchanged.
 
     Returns (registry, lemma_registry, stats). The registry contains every id ever issued.
     """
@@ -172,7 +179,8 @@ def assign_ids(
             member_to_tid[m] = tid
     prev_info = {r["token_id"]: r for r in prev.to_dicts()}
     used_index: dict[int, int] = defaultdict(lambda: -1)  # lemma_id -> max sense_index ever used
-    for tid in prev["token_id"].to_list():
+    held = reserved["token_id"].to_list() if reserved is not None else []
+    for tid in prev["token_id"].to_list() + held:
         lid, si = layout.unpack(tid)
         used_index[lid] = max(used_index[lid], si)
 
@@ -371,3 +379,83 @@ def write_ledger(
             f.unlink(missing_ok=True)
             f.with_name(f.name + ".meta.json").unlink(missing_ok=True)
     return out
+
+
+# --------------------------------------------------------------------------- restricted licences
+# Senses of a restricted-licence source (SNOMED CT, D-036) keep permanent ids like every other
+# sense, but their text must never reach git. In the committed ledger a token anchored on a
+# restricted member gets a hashed key and lemma, restricted member ids are dropped from other
+# rows, and lemmas used only by such tokens are hashed in the lemma ledger. Hashes are unsalted
+# sha256 prefixes: a rebuild that has the restricted source again recomputes them and restores
+# the real values (:func:`rehydrate`), so ids continue on a fresh machine.
+REDACTED = "restricted:"
+
+
+def redaction(value: str) -> str:
+    return REDACTED + hashlib.sha256(value.encode("utf-8")).hexdigest()[:24]
+
+
+def restricted_key(col: str, prefixes: Sequence[str]) -> pl.Expr:
+    """True for rows whose ``col`` is a restricted member id or an already redacted value."""
+    expr = pl.col(col).str.starts_with(REDACTED)
+    for pre in prefixes:
+        expr = expr | pl.col(col).str.starts_with(pre)
+    return expr
+
+
+def redact_ledger(ledger: pl.DataFrame, prefixes: Sequence[str]) -> pl.DataFrame:
+    if not prefixes:
+        return ledger
+    mask = restricted_key("canonical_key", prefixes)
+    sub = ledger.filter(mask & ~pl.col("canonical_key").str.starts_with(REDACTED))
+    keys = {k: redaction(k) for k in sub["canonical_key"].to_list()}
+    lemmas = {x: redaction(x) for x in sub["lemma"].to_list()}
+    keep = pl.lit(True)
+    for pre in prefixes:
+        keep = keep & ~pl.element().str.starts_with(pre)
+    return ledger.with_columns(
+        pl.when(mask)
+        .then(pl.col("canonical_key").replace(keys))
+        .otherwise(pl.col("canonical_key"))
+        .alias("canonical_key"),
+        pl.when(mask)
+        .then(pl.col("lemma").replace(lemmas))
+        .otherwise(pl.col("lemma"))
+        .alias("lemma"),
+        pl.col("other_members").list.eval(pl.element().filter(keep)).alias("other_members"),
+    )
+
+
+def redact_lemmas(lemmas: pl.DataFrame, reg: pl.DataFrame, prefixes: Sequence[str]) -> pl.DataFrame:
+    """Hash the lemma text of lemma ids whose every token is anchored on a restricted member."""
+    if not prefixes:
+        return lemmas
+    only = (
+        reg.group_by("lemma_id")
+        .agg(restricted_key("canonical_key", prefixes).all().alias("only"))
+        .filter(pl.col("only"))["lemma_id"]
+        .to_list()
+    )
+    sub = lemmas.filter(pl.col("lemma_id").is_in(only) & ~pl.col("lemma").str.starts_with(REDACTED))
+    m = {x: redaction(x) for x in sub["lemma"].to_list()}
+    return lemmas.with_columns(
+        pl.when(pl.col("lemma_id").is_in(only))
+        .then(pl.col("lemma").replace(m))
+        .otherwise(pl.col("lemma"))
+    )
+
+
+def rehydrate(
+    prev: pl.DataFrame, prev_lemmas: pl.DataFrame, keys: Sequence[str], lemmas: Sequence[str]
+) -> tuple[pl.DataFrame, pl.DataFrame]:
+    """Undo :func:`redact_ledger` / :func:`redact_lemmas` for the restricted senses of this build."""
+    km = {redaction(k): k for k in keys}
+    lm = {redaction(x): x for x in lemmas}
+    if not km and not lm:
+        return prev, prev_lemmas
+    prev = prev.with_columns(
+        pl.col("canonical_key").replace(km),
+        pl.col("lemma").replace(lm),
+        pl.col("members").list.eval(pl.element().replace(km)),
+    )
+    return prev, prev_lemmas.with_columns(pl.col("lemma").replace(lm))

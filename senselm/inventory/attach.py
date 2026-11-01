@@ -250,6 +250,8 @@ def run(cfg: dict[str, Any], *, sample: bool = False) -> dict[str, Any]:
         stats[f"{src}:senses"] = sub.height
         stats[f"{src}:with_candidates"] = len({c[0] for c in cand})
         if sample:
+            if src in set(cfg.get("restricted_sources", [])):  # the gold set is committed (D-036)
+                continue
             by_s: dict[str, list[str]] = defaultdict(list)
             for sid, c, _ in cand:
                 by_s[sid].append(c)

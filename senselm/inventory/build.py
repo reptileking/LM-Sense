@@ -36,6 +36,10 @@ from senselm.inventory.ids import (
     from_ledger,
     ledger_paths,
     read_ledger,
+    redact_ledger,
+    redact_lemmas,
+    rehydrate,
+    restricted_key,
     to_ledger,
     write_ledger,
 )
@@ -120,6 +124,7 @@ def canonical_senses(
     licences: dict[str, str] = cfg["licences"]
     wrank = wiktionary_ranks(senses.filter(pl.col("source") == "wiktionary"))
     order = {src: i for i, src in enumerate(cfg.get("source_order", ["oewn", "wiktionary"]))}
+    gloss_order = {src: i for i, src in enumerate(cfg.get("gloss_order", list(order)))}
     s = senses.join(clusters.select("source_id", "cluster"), on="source_id", how="inner")
     s = s.with_columns(
         pl.when(pl.col("source") == "oewn")
@@ -131,6 +136,9 @@ def canonical_senses(
         pl.col("source")
         .replace_strict(order, default=len(order), return_dtype=pl.Int32)
         .alias("src_order"),
+        pl.col("source")
+        .replace_strict(gloss_order, default=len(gloss_order), return_dtype=pl.Int32)
+        .alias("gloss_rank"),
     ).sort("cluster", "src_order", "line_no", "sense_rank", "source_id")
 
     agg = s.group_by("cluster", maintain_order=True).agg(
@@ -142,8 +150,12 @@ def canonical_senses(
         pl.col("lemma").first().alias("_any_lemma"),
         pl.col("upos").filter(pl.col("source") == "wiktionary").first().alias("_w_upos"),
         pl.col("upos").first().alias("_any_upos"),
-        # gloss: WordNet's (concise, uniform style) when present, else the first Wiktionary one
-        pl.col("gloss").first().alias("gloss"),
+        # gloss: WordNet's (concise, uniform style) when present, else the first Wiktionary one,
+        # else the first in gloss_order (curated definitions before Wikidata's short descriptions)
+        pl.col("gloss")
+        .filter(pl.col("gloss_rank") == pl.col("gloss_rank").min())
+        .first()
+        .alias("gloss"),
         pl.struct("source", "gloss").alias("glosses"),
         pl.col("examples")
         .list.explode(keep_nulls=False, empty_as_null=False)
@@ -266,11 +278,17 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
     for k in ("senses", "pairs", "dedupe_map"):
         prov.add_input(ins[k])
     senses = pl.read_parquet(resolve(ins["senses"]), columns=SENSE_COLS)
+    # restricted-licence sources (SNOMED CT, D-036): their member ids start with one of
+    # restricted_id_prefixes; the committed ledger only carries hashed keys and lemmas for them
+    prefixes = list(cfg.get("restricted_id_prefixes", []))
     restricted = set(cfg.get("restricted_sources", [])) & set(senses["source"].unique().to_list())
-    if restricted and not cfg.get("allow_restricted", False):
-        # restricted-licence content (SNOMED CT) must never reach the git-tracked ledger: the
-        # redacting ledger writer is required before such a build may run (D-036)
-        raise RuntimeError(f"restricted sources {sorted(restricted)} present; set allow_restricted")
+    if restricted:
+        ids_of = senses.filter(pl.col("source").is_in(sorted(restricted)))["source_id"].to_list()
+        uncovered = [x for x in ids_of if not any(x.startswith(pre) for pre in prefixes)]
+        if not prefixes or uncovered:
+            raise RuntimeError(
+                f"restricted sources {sorted(restricted)}: ids not covered by restricted_id_prefixes"
+            )
     pairs = pl.read_parquet(resolve(ins["pairs"]))
     dedupe = pl.read_parquet(resolve(ins["dedupe_map"]))
     stage1 = ["oewn", "wiktionary"]
@@ -328,6 +346,18 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                 prev, prev_lem = from_ledger(ledger), lemmas
                 for f in ledger_paths(commit_dir, "id_registry"):
                     prov.add_input(f)
+        held = None
+        assign_prev = prev
+        if prev is not None and prev_lem is not None and prefixes:
+            # restore redacted ledger rows of the restricted senses this build contains ...
+            rk = inv.filter(restricted_key("canonical_key", prefixes))
+            prev, prev_lem = rehydrate(
+                prev, prev_lem, rk["canonical_key"].to_list(), rk["lemma"].to_list()
+            )
+            assign_prev = prev
+            if not restricted:  # ... or hold them out untouched when it contains none
+                mask = restricted_key("canonical_key", prefixes)
+                held, assign_prev = prev.filter(mask), prev.filter(~mask)
         reg, lem, istats = assign_ids(
             inv.select(
                 "canonical_key",
@@ -337,11 +367,15 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
                 "gloss",
                 "order_key",
             ),
-            prev,
+            assign_prev,
             prev_lem,
             cfg["build_id"],
             layout,
+            reserved=held,
         )
+        if held is not None and held.height:
+            reg = pl.concat([reg, held.select(reg.columns).cast(reg.schema)]).sort("token_id")
+            istats["held_restricted_ids"] = held.height
         if prev is not None:
             problems = check_append_only(prev, reg)
             if problems:
@@ -372,13 +406,13 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
         if outs.get("registry_commit_dir"):  # durable, git-tracked ledger (D-025), sharded if large
             commit_dir = resolve(outs["registry_commit_dir"])
             write_ledger(
-                to_ledger(reg),
+                redact_ledger(to_ledger(reg), prefixes),
                 commit_dir,
                 "id_registry",
                 lambda t, path: write_table(t, path, reg_prov, stats=istats, compression_level=19),
             )
             write_ledger(
-                lem,
+                redact_lemmas(lem, reg, prefixes),
                 commit_dir,
                 "lemma_registry",
                 lambda t, path: write_table(t, path, reg_prov, compression_level=19),

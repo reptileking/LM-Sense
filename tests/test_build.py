@@ -163,3 +163,99 @@ def test_rebuild_from_committed_ledger_after_data_loss(pipeline: dict[str, Any])
     reg2 = pl.read_parquet(p["reg"])
     assert check_append_only(reg1, reg2) == []
     assert reg1.select("token_id", "canonical_key").equals(reg2.select("token_id", "canonical_key"))
+
+
+def _ledger_text(ledger_dir: Path) -> str:
+    """Every string in the committed ledger files, for leak checks."""
+    out = []
+    for f in sorted(ledger_dir.glob("*.parquet")):
+        df = pl.read_parquet(f)
+        for c, dt in df.schema.items():
+            if dt == pl.String:
+                out += [x for x in df[c].to_list() if x]
+            elif dt == pl.List(pl.String):
+                out += [x for xs in df[c].to_list() if xs for x in xs]
+    return "\n".join(out)
+
+
+def test_restricted_source_never_reaches_the_ledger(pipeline: dict[str, Any]) -> None:
+    """SNOMED-style rows: hashed in the git ledger, restored on rebuild, held when absent (D-036)."""
+    p, icfg, tmp = pipeline["paths"], pipeline["icfg"], pipeline["tmp"]
+    ledger_dir = tmp / "registry"
+    base = {**icfg, "outputs": {**icfg["outputs"], "registry_commit_dir": str(ledger_dir)}}
+    build.run(base)
+    inv0 = pl.read_parquet(p["inv"])
+    bank = inv0.filter(pl.col("lemma") == "bank").sort("sense_index").row(0, named=True)
+    senses = pl.read_parquet(p["senses"])
+    tmpl = senses.filter(pl.col("source") == "oewn").row(0, named=True)
+    secret = []
+    for sid, lemma, gloss in [
+        ("sct:22298006", "myocardial infarction", "necrosis of the myocardium"),
+        ("sct:999", "bank", "a stored supply of donated tissue"),
+    ]:
+        secret.append(
+            {
+                **tmpl,
+                "source": "snomed_ct_uk",
+                "source_id": sid,
+                "lemma": lemma,
+                "upos": "NOUN",
+                "gloss": gloss,
+                "entry_key": sid,
+                "examples": [],
+                "tags": ["licence:restricted"],
+                "domain": "medicine",
+                "lexfile": None,
+                "synset_id": None,
+                "hypernyms": [],
+                "sense_rank": 0,
+                "line_no": 0,
+            }
+        )
+    with_secret = pl.concat([senses, pl.DataFrame(secret, schema=senses.schema)])
+    with_secret.write_parquet(p["senses"])
+    att = pl.DataFrame(
+        {
+            "source": ["snomed_ct_uk"] * 2,
+            "source_id": ["sct:22298006", "sct:999"],
+            "cluster": ["sct:22298006", bank["canonical_key"]],
+            "score": [None, 0.9],
+            "via": ["new", "cosine"],
+        }
+    )
+    att_path = tmp / "att.parquet"
+    att.write_parquet(att_path)
+    cfg = {
+        **base,
+        "inputs": {**base["inputs"], "attachments": str(att_path)},
+        "source_order": ["oewn", "wiktionary", "snomed_ct_uk"],
+        "licences": {**base["licences"], "snomed_ct_uk": "restricted"},
+        "restricted_sources": ["snomed_ct_uk"],
+        "restricted_id_prefixes": ["sct:"],
+    }
+    build.run(cfg)
+    reg1 = pl.read_parquet(p["reg"])
+    mi = reg1.filter(pl.col("canonical_key") == "sct:22298006")
+    assert mi.height == 1 and mi["status"][0] == "active"  # local registry: real values
+    text = _ledger_text(ledger_dir)
+    assert "sct:" not in text and "myocardial" not in text  # git ledger: none of it
+    assert "restricted:" in text and "bank" in text
+
+    # fresh machine: only the ledger survives; the rebuild restores keys and keeps every id
+    Path(p["reg"]).unlink()
+    Path(p["lem"]).unlink()
+    build.run(cfg)
+    reg2 = pl.read_parquet(p["reg"])
+    assert check_append_only(reg1, reg2) == []
+    cols = ["token_id", "lemma", "canonical_key", "status"]
+    assert reg1.select(cols).sort("token_id").equals(reg2.select(cols).sort("token_id"))
+
+    # a build without the restricted source keeps its ids untouched (not deprecated)
+    senses.write_parquet(p["senses"])
+    no_secret = {**cfg, "inputs": {**cfg["inputs"], "attachments": None}}
+    stats = build.run(no_secret)
+    reg3 = pl.read_parquet(p["reg"])
+    assert check_append_only(reg2, reg3) == []
+    assert reg3.filter(pl.col("canonical_key") == "sct:22298006")["status"].to_list() == ["active"]
+    assert stats["ids"]["held_restricted_ids"] == 1
+    assert "myocardial" not in _ledger_text(ledger_dir)
