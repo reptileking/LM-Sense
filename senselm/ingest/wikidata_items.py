@@ -343,7 +343,9 @@ def stream(cfg: dict[str, Any]) -> dict[str, Any]:
 def select(cfg: dict[str, Any]) -> dict[str, Any]:
     """Superset -> senses under the configured filter (no re-streaming needed)."""
     scfg = cfg["select"]
-    sup = pl.read_parquet(resolve(cfg["superset_output"]))
+    sup = pl.scan_parquet(
+        resolve(cfg["superset_output"])
+    )  # lazy: the superset has millions of rows
     excluded = set(scfg.get("exclude_p31", []))
     has_excluded = pl.col("p31").list.eval(pl.element().is_in(list(excluded))).list.any()
     concept = (
@@ -359,9 +361,12 @@ def select(cfg: dict[str, Any]) -> dict[str, Any]:
         # (languages, products, recurring events, breeds); items linked from lexemes are kept anyway
         concept = concept & ~pl.col("label").str.contains(r"^\p{Lu}")
     keep = pl.col("linked") | concept
-    sel = sup.with_columns(concept.alias("concept")).filter(
-        keep & pl.col("description").is_not_null()
+    sel = (
+        sup.with_columns(concept.alias("concept"))
+        .filter(keep & pl.col("description").is_not_null())
+        .collect()
     )
+    n_superset = sup.select(pl.len()).collect().item()
     prov = Provenance(
         stage="ingest.wikidata_items.select", config=cfg, source_versions={SOURCE: cfg["version"]}
     )
@@ -394,7 +399,7 @@ def select(cfg: dict[str, Any]) -> dict[str, Any]:
         )
     table = pa.Table.from_pylist(rows, schema=SENSE_SCHEMA)
     st = {
-        "superset": sup.height,
+        "superset": n_superset,
         "selected": sel.height,
         "linked": int(sel["linked"].sum()),
         "concept": int(sel["concept"].sum()),
