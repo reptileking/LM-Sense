@@ -1,0 +1,66 @@
+# Cross-source alignment (OEWN <-> Wiktionary). Run:
+#   uv run python -m senselm.inventory.align --config configs/align.yaml
+# Produces scored candidate pairs + per-policy merge decisions; the granularity policy that
+# turns them into canonical senses lives in configs/inventory*.yaml.
+stage: inventory.align
+input: data/interim/senses_norm.parquet
+output: data/interim/align_pairs.parquet
+
+# Candidate pairs: same lemma + same POS class. NOUN and PROPN share a class because OEWN has
+# no proper-noun category (PROPN is inferred from Namenet / instance_hypernym).
+pos_classes: {NOUN: N, PROPN: N, VERB: V, ADJ: A, ADV: R}
+# Only for OEWN (lemma, class) groups with NO exact-case Wiktionary counterpart.
+case_insensitive_fallback: true
+
+embedding:
+  model: BAAI/bge-base-en-v1.5      # chosen by benchmark + gold dev split (D-016)
+  revision: a5beb1e3e68b9ab74eb54cfd186867f64f240e1a   # HF commit, pinned for reproducibility
+  pooling: cls                      # bge: CLS token; e5/gte: mean
+  normalize: true
+  prefix: ""                        # bge needs no instruction for symmetric similarity
+  max_length: 128
+  batch_size: auto
+  threads: auto
+  dtype: float32                    # float32 | bfloat16 (AMX); see D-016 for the comparison
+  cache_dir: data/interim/embeddings
+  write_every: 20000                # texts per cache shard (resumable)
+  text:
+    include_lemma: false
+    include_example: true
+    max_example_chars: 200
+    prefer_example_types: [example] # use a usage example before a (long, archaic) quotation
+    include_parent: false           # prepend Wiktionary parent gloss (subsenses)
+
+# Decision bands on cosine similarity. >= high: auto-merge; <= low: separate; between: LLM
+# judge if enabled, otherwise kept separate and counted.
+thresholds:
+  fine:   {high: 0.80, low: 0.70}
+  coarse: {high: 0.72, low: 0.65}
+
+llm_judge:
+  enabled: false                    # no project API key configured -> dry-run estimate only
+  dry_run: true
+  provider: anthropic
+  model: claude-opus-5-5
+  effort: low
+  max_tokens: 2048                  # per request; thinking counts toward it (worst-case bound)
+  expected_output_tokens: 400       # for the expected-cost estimate only
+  use_batches: true                 # Message Batches API: 50% price
+  chunk_requests: 2000              # submit in chunks; cap checked before every chunk
+  max_spend_gbp: 50                 # HARD cap per run (worst case incl. max_tokens)
+  usd_per_gbp: 1.20                 # conservative FX assumption (fewer $ per £ = stricter cap)
+  # USD per million tokens (standard rates; batch_discount applied when use_batches)
+  prices_usd_per_mtok:
+    claude-opus-5-5:   {input: 4.00, output: 20.00}
+    claude-sonnet-5-5: {input: 2.00, output: 10.00}
+    claude-haiku-5-5:  {input: 0.10, output: 0.50}
+  batch_discount: 0.5
+  cache_path: data/interim/judge_cache.parquet
+
+gold:
+  path: eval/alignment_gold.csv
+  eval_output: eval/alignment_eval.json
+  seed: 20261101
+  n_uniform: 150
+  n_group: 150
+  dev_fraction: 0.5                 # thresholds tuned on dev half, reported on test half

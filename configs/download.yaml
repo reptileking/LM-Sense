@@ -1,0 +1,31 @@
+# Raw source downloads (Phase 1). Run:
+#   uv run python -m senselm.ingest.download --config configs/download.yaml
+# sha256 pins make the stage deterministic: if an upstream file changes, the run fails and the
+# pin (and `version`) must be updated deliberately. kaikki.org only serves the latest weekly
+# extraction, so archive data/raw/ if you need to reproduce a build bit-for-bit later.
+stage: download
+manifest: data/raw/MANIFEST.json
+timeout_s: 120
+sources:
+  - name: wiktionary
+    url: https://kaikki.org/dictionary/English/kaikki.org-dictionary-English.jsonl.gz
+    path: data/raw/wiktionary/kaikki.org-dictionary-English.jsonl.gz
+    version: "kaikki.org English 2026-10-25 (enwiktionary dump 2026-10-01; wiktextract f9fe161+6f96ddf)"
+    licence: "CC BY-SA 4.0 and GFDL (Wiktionary content)"
+    sha256: 3ff7bef28ce7ad077ea55cedd9bde2cb7981c40f68adf63c8ceea347341392dc
+  # Open English WordNet 2025+ = OEWN 2025 lexical items + curated proper nouns from Open
+  # English Namenet ("coverage similar to previous OEWN releases"). URL is the one the `wn`
+  # package (v1.1.1) indexes as oewn:2025+; the GitHub release asset is byte-identical.
+  - name: oewn
+    url: https://en-word.net/static/english-wordnet-2025-plus.xml.gz
+    path: data/raw/oewn/english-wordnet-2025-plus.xml.gz
+    version: "oewn:2025+ (2025-12-31)"
+    licence: "CC BY 4.0"
+    sha256: 31f4af16c54b532fd5484d4cc33aee588a31bb5b70683ae8197842fde5b586bc
+  # The base 2025 edition is used only to flag which senses come from Open English Namenet.
+  - name: oewn_base
+    url: https://en-word.net/static/english-wordnet-2025.xml.gz
+    path: data/raw/oewn/english-wordnet-2025.xml.gz
+    version: "oewn:2025 (2025-12-31)"
+    licence: "CC BY 4.0"
+    sha256: 9ca6d1dcb75f822fdd66617f7d9da48142ace38dd544d6ad5e2feca1674ad3fe

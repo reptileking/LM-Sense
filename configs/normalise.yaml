@@ -1,0 +1,79 @@
+# Normalisation of raw senses. Run:
+#   uv run python -m senselm.inventory.normalise --config configs/normalise.yaml
+stage: inventory.normalise
+input: data/interim/senses_raw.parquet
+outputs:
+  senses: data/interim/senses_norm.parquet
+  forms: data/interim/forms.parquet
+  variants: data/interim/variants.parquet
+  dedupe_map: data/interim/dedupe_map.parquet
+batch_rows: 50000
+
+# Lemma normalisation: NFC, whitespace collapsed, these characters mapped. Case is preserved
+# (Polish != polish). See docs/DECISIONS.md D-008.
+lemma_char_map:
+  "’": "'"   # right single quotation mark
+  "‘": "'"   # left single quotation mark
+  "ʼ": "'"   # modifier letter apostrophe
+  "‐": "-"   # hyphen
+  "‑": "-"   # non-breaking hyphen
+
+# Source POS -> Universal POS (UPOS). Unmapped labels are dropped (counted in stats).
+upos_map:
+  wiktionary:
+    noun: NOUN
+    name: PROPN
+    verb: VERB
+    adj: ADJ
+    adv: ADV
+    adv_phrase: ADV
+    prep_phrase: ADV      # "in vain", "at hand": adverbial PPs (D-009)
+    phrase: X
+    proverb: X
+    intj: INTJ
+    pron: PRON
+    det: DET
+    article: DET
+    num: NUM
+    prep: ADP
+    postp: ADP
+    conj: SCONJ           # CCONJ if the lemma is in coordinating_conjunctions
+    particle: PART
+    contraction: X
+    prefix: X
+    suffix: X
+    infix: X
+    interfix: X
+    circumfix: X
+    affix: X
+    symbol: SYM
+    character: SYM
+    punct: PUNCT
+  oewn:
+    n: NOUN               # PROPN when oewn_propn_when matches
+    v: VERB
+    a: ADJ
+    s: ADJ                # adjective satellite
+    r: ADV
+coordinating_conjunctions: ["and", "or", "but", "nor", "yet", "so", "for", "plus", "minus",
+  "either", "neither", "both", "et", "&", "'n'", "n'", "'n", "an'", "versus", "vs", "vs.",
+  "and/or", "times", "nor yet", "but also", "as well as", "let alone", "rather than"]
+# OEWN nouns that are named entities become PROPN: senses only present in the 2025+ edition
+# (Open English Namenet) and senses whose synset has an instance_hypernym.
+oewn_propn_when: [namenet, instance]
+
+alt_of:
+  # alt-of senses carrying one of these tags are distinct lexical items (NASA, ad, 'cause):
+  # they stay senses. Every other alt-of sense is an orthographic variant.
+  abbreviation_tags: [abbreviation, initialism, acronym, clipping, ellipsis, contraction]
+# Untagged Wiktionary senses whose entire gloss is "<qualifiers> spelling/form of X"
+# ("Dated spelling of jail.") are routed to variants as well.
+detect_untagged_variants: true
+
+entry_forms:
+  variant_tags: [alternative]                        # headword-line alternative spellings
+  skip_tags: [canonical, romanization, table-tags, inflection-template, class, error-unknown-tag]
+
+# Exact duplicates within one source (same lemma, UPOS, gloss path, gloss, tags) are data
+# artefacts, not distinctions: keep the first, map the rest via dedupe_map. none | exact
+dedupe: exact

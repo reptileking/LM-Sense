@@ -1,0 +1,16 @@
+# data products and raw dumps are never committed (multi-GB; regenerate via the CLIs)
+/data/
+!/data/README.md
+# python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+build/
+dist/
+# local caches
+.cache/
+*.tmp

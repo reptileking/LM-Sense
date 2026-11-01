@@ -1,0 +1,8 @@
+# Union of per-source raw sense files (run after the per-source ingests). Run:
+#   uv run python -m senselm.ingest.combine --config configs/ingest.yaml
+stage: ingest.combine
+inputs:
+  - data/interim/senses_raw_wiktionary.parquet
+  - data/interim/senses_raw_oewn.parquet
+output: data/interim/senses_raw.parquet
+batch_rows: 100000

@@ -1,0 +1,10 @@
+# Open English WordNet 2025+ -> unified raw senses. Run:
+#   uv run python -m senselm.ingest.oewn --config configs/ingest_oewn.yaml
+stage: ingest.oewn
+manifest: data/raw/MANIFEST.json
+source_name: oewn
+input: data/raw/oewn/english-wordnet-2025-plus.xml.gz
+# Base 2025 edition: senses absent from it are tagged `oewn:namenet` (Open English Namenet).
+base_input: data/raw/oewn/english-wordnet-2025.xml.gz
+output: data/interim/senses_raw_oewn.parquet
+batch_rows: auto

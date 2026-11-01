@@ -1,0 +1,12 @@
+# Wiktionary (kaikki.org wiktextract English) -> unified raw senses. Run:
+#   uv run python -m senselm.ingest.wiktionary --config configs/ingest_wiktionary.yaml
+stage: ingest.wiktionary
+manifest: data/raw/MANIFEST.json
+source_name: wiktionary
+input: data/raw/wiktionary/kaikki.org-dictionary-English.jsonl.gz
+output: data/interim/senses_raw_wiktionary.parquet
+lang_code: en
+batch_rows: auto        # sized from RAM by senselm.hardware
+max_examples: 0         # 0 = keep every example/quotation
+# headword-table bookkeeping rows that are not word forms
+drop_form_tags: [table-tags, inflection-template, class]

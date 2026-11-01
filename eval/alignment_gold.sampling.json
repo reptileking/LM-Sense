@@ -1,0 +1,8 @@
+{
+  "input": "data/interim/senses_norm.parquet",
+  "n_candidate_pairs": 656079,
+  "n_group": 150,
+  "n_groups": 99478,
+  "n_uniform": 150,
+  "seed": 20261101
+}
