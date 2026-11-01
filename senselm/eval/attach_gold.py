@@ -96,13 +96,15 @@ def evaluate(cfg: dict[str, Any]) -> dict[str, Any]:
         pl.col("match").is_not_null()
     )
     senses = pl.read_parquet(resolve(cfg["senses"]), columns=COLS)
-    rows = {r["source_id"]: r for r in senses.iter_rows(named=True)}
     members = _cluster_members(cfg, senses)
     tcfg = {**cfg["embedding"].get("text", {}), "include_example": False}
-    need = sorted(
-        {g for g in gold["source_id"]}
-        | {m for c in gold["candidates"] for x in json.loads(c) for m in members[x["cluster"]]}
-    )
+    cand_clusters = {x["cluster"] for c in gold["candidates"] for x in json.loads(c)}
+    need = sorted(set(gold["source_id"]) | {m for c in cand_clusters for m in members[c]})
+    # only the rows the evaluation reads (a dict per sense of millions would not fit in memory)
+    rows = {
+        r["source_id"]: r
+        for r in senses.filter(pl.col("source_id").is_in(need)).iter_rows(named=True)
+    }
     texts = [
         sense_text(rows[x], tcfg)
         if rows[x]["source"] in STAGE1_SOURCES
@@ -112,9 +114,9 @@ def evaluate(cfg: dict[str, Any]) -> dict[str, Any]:
     mat, _ = embed_texts(texts, cfg["embedding"])
     vec = {x: mat[i] for i, x in enumerate(need)}
     bridge = load_bridge(cfg, senses)
-    key_cluster: dict[str, set[str]] = defaultdict(set)
-    for c, ms in members.items():
-        for m in ms:
+    key_cluster: dict[str, set[str]] = defaultdict(set)  # only candidate clusters are looked up
+    for c in cand_clusters:
+        for m in members[c]:
             for k in identity_keys(rows[m]["source"], rows[m]["relations"], bridge):
                 key_cluster[k].add(c)
     recs = []
@@ -190,12 +192,35 @@ def evaluate(cfg: dict[str, Any]) -> dict[str, Any]:
                 {"threshold": float(t), "precision": p, "recall": r, "f0.5": f05, "attached": n_att}
             )
         best = max(sweep, key=lambda r: (np.nan_to_num(r["f0.5"]), r["threshold"]))
+        thr = cfg.get("thresholds", {})
+        conf = float(thr.get(src, thr.get("default", 0.6))) if src != "ALL" else None
         res[src] = {
             "n": d.height,
             "with_match": int((d["match"] != "none").sum()),
             "xref_best": int(d["best_xref"].sum()),
             "best": best,
+            # the threshold actually configured (a plateau value, not the noisy argmax)
+            "configured": next(
+                (r for r in sweep if conf is not None and abs(r["threshold"] - conf) < 1e-9), None
+            ),
             "sweep": sweep,
+        }
+    # all sources at their own configured thresholds (micro-average)
+    tp = n_att = n_has = 0
+    for src, r in res.items():
+        if src != "ALL" and r["configured"]:
+            c = r["configured"]
+            n_att += c["attached"]
+            n_has += r["with_match"]
+            tp += round(c["recall"] * r["with_match"]) if r["with_match"] else 0
+    if n_att and n_has:
+        p_, r_ = tp / n_att, tp / n_has
+        res["ALL"]["configured"] = {
+            "threshold": None,
+            "precision": p_,
+            "recall": r_,
+            "attached": n_att,
+            "f0.5": 1.25 * p_ * r_ / (0.25 * p_ + r_) if p_ + r_ else float("nan"),
         }
     dump_json(res, resolve(cfg["gold"]["eval_output"]))
     return res
@@ -213,10 +238,14 @@ def main() -> None:
     else:
         res = evaluate(cfg)
         for src, r in res.items():
-            b = r["best"]
+            b, c = r["best"], r["configured"]
+            at = ""
+            if c:
+                t = "per-source" if c["threshold"] is None else f"{c['threshold']:.2f}"
+                at = f" | configured thr={t} P={c['precision']:.3f} R={c['recall']:.3f}"
             print(
                 f"{src:18s} n={r['n']:3d} with_match={r['with_match']:3d} xref={r['xref_best']:3d} "
-                f"best thr={b['threshold']:.2f} P={b['precision']:.3f} R={b['recall']:.3f} F0.5={b['f0.5']:.3f}"
+                f"best thr={b['threshold']:.2f} P={b['precision']:.3f} R={b['recall']:.3f} F0.5={b['f0.5']:.3f}{at}"
             )
 
 
