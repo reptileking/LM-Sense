@@ -43,7 +43,7 @@ from urllib.parse import urlparse
 import polars as pl
 
 from senselm.common import dump_json, load_config, resolve, setup_logging
-from senselm.inventory.judge import OUTPUT_SCHEMA, SYSTEM_PROMPT, user_message
+from senselm.inventory.judge_prompt import OUTPUT_SCHEMA, SYSTEM_PROMPT, user_message
 
 LOG = logging.getLogger("senselm.inventory.judge_local")
 LABELS = ("same", "related", "different")
@@ -429,9 +429,9 @@ def pilot_report(cfg: dict[str, Any], model: str) -> dict[str, Any]:
         .iter_rows()
     }
 
-    def prf(df: pl.DataFrame) -> dict[str, Any]:
-        y = (df["gold_label"] == "same").to_numpy()
-        p = (df["verdict"] == "same").to_numpy()
+    def prf(df: pl.DataFrame) -> dict[str, Any]:  # pure Polars: the judging host has no NumPy
+        y = df["gold_label"] == "same"
+        p = df["verdict"] == "same"
         tp, fp, fn = int((y & p).sum()), int((~y & p).sum()), int((y & ~p).sum())
         return {
             "n": df.height,
@@ -478,7 +478,14 @@ def main() -> None:
         return
     client = LocalLLM(cfg)
     if args.command == "probe":
-        models = client.models()
+        try:
+            models = client.models()
+        except (urllib.error.URLError, OSError) as e:
+            raise SystemExit(
+                f"cannot reach a model server at {client.base} ({e}). Start it (e.g. the Ollama app or "
+                "`ollama serve`), or point --base-url at your server: vLLM http://localhost:8000/v1, "
+                "llama.cpp http://localhost:8080/v1, LM Studio http://localhost:1234/v1"
+            ) from None
         print(json.dumps({"server": client.base, "models": models}, indent=2))
         if not client.model:
             raise SystemExit("set `model` in the config (or --model) to one of the models above")
