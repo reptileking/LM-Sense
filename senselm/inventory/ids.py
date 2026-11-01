@@ -177,34 +177,38 @@ def assign_ids(
     ):
         for m in members or []:
             member_to_tid[m] = tid
-    prev_info = {r["token_id"]: r for r in prev.to_dicts()}
     used_index: dict[int, int] = defaultdict(lambda: -1)  # lemma_id -> max sense_index ever used
     held = reserved["token_id"].to_list() if reserved is not None else []
     for tid in prev["token_id"].to_list() + held:
         lid, si = layout.unpack(tid)
         used_index[lid] = max(used_index[lid], si)
 
-    rows = senses.to_dicts()
+    # column lists, not one dict per row: v1.0 has millions of senses (memory)
+    keys = senses["canonical_key"].to_list()
+    lemmas = senses["lemma"].to_list()
+    members_of = senses["members"].to_list()
+    n = len(keys)
     claim: dict[int, tuple[int, int]] = {}  # tid -> (row idx, strength)
-    proposals: list[list[tuple[int, int]]] = [[] for _ in rows]  # row -> [(tid, strength)]
-    for i, r in enumerate(rows):
-        lid = lemma_ids[r["lemma"]]
+    for i in range(n):
+        lid = lemma_ids[lemmas[i]]
         cand: dict[int, int] = {}
-        if r["canonical_key"] in by_key:
-            cand[by_key[r["canonical_key"]]] = 1_000_000  # anchor match dominates
-        for m in r["members"] or []:
+        if keys[i] in by_key:
+            cand[by_key[keys[i]]] = 1_000_000  # anchor match dominates
+        for m in members_of[i] or []:
             tid = member_to_tid.get(m)
             if tid is not None:
                 cand[tid] = cand.get(tid, 0) + 1
-        for tid, strength in cand.items():
-            if layout.unpack(tid)[0] == lid:  # an id can only continue within its lemma
-                proposals[i].append((tid, strength))
-        proposals[i].sort(key=lambda x: (-x[1], x[0]))
-        for tid, strength in proposals[i]:
+        # an id can only continue within its lemma
+        proposals = sorted(
+            ((tid, st) for tid, st in cand.items() if layout.unpack(tid)[0] == lid),
+            key=lambda x: (-x[1], x[0]),
+        )
+        for tid, strength in proposals:
             best = claim.get(tid)
             # strongest claimant wins an old id; ties go to the earlier (more frequent) row
             if best is None or strength > best[1] or (strength == best[1] and i < best[0]):
                 claim[tid] = (i, strength)
+    del members_of, member_to_tid
     # A row that won several old ids keeps its strongest claim (anchor > member overlap,
     # then lowest id); the other ids it won are deprecated with replaced_by -> the kept id.
     won: dict[int, list[tuple[int, int]]] = defaultdict(list)
@@ -215,63 +219,77 @@ def assign_ids(
     }
     kept = set(tid_of_row.values())
 
-    out: list[dict[str, Any]] = []
-    for i, r in enumerate(rows):
-        lid = lemma_ids[r["lemma"]]
+    # token id of every row: the continued old id, else the lemma's next unused sense index
+    row_tid: list[int] = []
+    for i in range(n):
         if i in tid_of_row:
-            tid = tid_of_row[i]
-            old = prev_info[tid]
-            out.append(
-                {
-                    **old,
-                    "upos": r["upos"],
-                    "canonical_key": old["canonical_key"],
-                    "members": sorted(set(r["members"] or [])),
-                    "gloss": r["gloss"],
-                    "status": "active",
-                    "deprecated_in": None,
-                    "replaced_by": None,
-                }
-            )
-            stats["kept_ids"] += 1
-        else:
-            si = used_index[lid] + 1
-            if si > layout.max_sense_index:
-                raise OverflowError(
-                    f"lemma {r['lemma']!r} exceeds {layout.max_sense_index + 1} senses"
-                )
-            used_index[lid] = si
-            tid = layout.pack(lid, si)
-            out.append(
-                {
-                    "token_id": tid,
-                    "lemma_id": lid,
-                    "sense_index": si,
-                    "lemma": r["lemma"],
-                    "upos": r["upos"],
-                    "canonical_key": r["canonical_key"],
-                    "members": sorted(set(r["members"] or [])),
-                    "gloss": r["gloss"],
-                    "status": "active",
-                    "created_in": build,
-                    "deprecated_in": None,
-                    "replaced_by": None,
-                }
-            )
-            stats["new_ids"] += 1
-    # tombstones: previously issued ids not continued
-    winner_of_claim = {tid: tid_of_row.get(i) for tid, (i, _) in claim.items()}
-    for tid, old in sorted(prev_info.items()):
-        if tid in kept:
+            row_tid.append(tid_of_row[i])
             continue
-        rec = dict(old)
-        if rec["status"] == "active":
-            rec["status"] = "deprecated"
-            rec["deprecated_in"] = build
-            rec["replaced_by"] = winner_of_claim.get(tid)  # merged into another id, if any
-            stats["deprecated_ids"] += 1
-        out.append(rec)
-    reg = pl.DataFrame(out, schema=REGISTRY_SCHEMA).sort("token_id")
+        lid = lemma_ids[lemmas[i]]
+        si = used_index[lid] + 1
+        if si > layout.max_sense_index:
+            raise OverflowError(f"lemma {lemmas[i]!r} exceeds {layout.max_sense_index + 1} senses")
+        used_index[lid] = si
+        row_tid.append(layout.pack(lid, si))
+    is_kept = [i in tid_of_row for i in range(n)]
+    stats["kept_ids"] = sum(is_kept)
+    stats["new_ids"] = n - stats["kept_ids"]
+    cur = senses.select(
+        pl.Series("token_id", row_tid, dtype=pl.UInt32),
+        pl.Series("_kept", is_kept, dtype=pl.Boolean),
+        "lemma",
+        "upos",
+        "canonical_key",
+        pl.col("members").list.unique().list.sort(),
+        "gloss",
+    )
+    del row_tid, is_kept, keys, lemmas
+    old_cols = ["token_id", "lemma_id", "sense_index", "lemma", "canonical_key", "created_in"]
+    kept_rows = (
+        cur.filter(pl.col("_kept"))
+        .select("token_id", "upos", "members", "gloss")
+        .join(prev.select(old_cols), on="token_id", how="left")
+    )
+    new_rows = cur.filter(~pl.col("_kept")).with_columns(
+        (pl.col("token_id").cast(pl.Int64) // (1 << layout.sense_bits))
+        .cast(pl.UInt32)
+        .alias("lemma_id"),
+        (pl.col("token_id").cast(pl.Int64) % (1 << layout.sense_bits))
+        .cast(pl.UInt16)
+        .alias("sense_index"),
+        pl.lit(build).alias("created_in"),
+    )
+    active = pl.lit("active")
+    live = [
+        df.with_columns(
+            status=active,
+            deprecated_in=pl.lit(None, dtype=pl.String),
+            replaced_by=pl.lit(None, dtype=pl.UInt32),
+        ).select(list(REGISTRY_SCHEMA))
+        for df in (kept_rows, new_rows)
+    ]
+    # tombstones: previously issued ids not continued (already deprecated ones stay as they were)
+    winner_of_claim = {tid: tid_of_row.get(i) for tid, (i, _) in claim.items()}
+    tomb = prev.filter(~pl.col("token_id").is_in(sorted(kept)))
+    was_active = pl.col("status") == "active"
+    replaced = pl.col("token_id").replace_strict(
+        {t: w for t, w in winner_of_claim.items() if w is not None},
+        default=None,
+        return_dtype=pl.UInt32,
+    )
+    stats["deprecated_ids"] = int(tomb.filter(was_active).height)
+    tomb = tomb.with_columns(
+        pl.when(was_active).then(pl.lit("deprecated")).otherwise(pl.col("status")).alias("status"),
+        pl.when(was_active)
+        .then(pl.lit(build))
+        .otherwise(pl.col("deprecated_in"))
+        .alias("deprecated_in"),
+        pl.when(was_active).then(replaced).otherwise(pl.col("replaced_by")).alias("replaced_by"),
+    ).select(list(REGISTRY_SCHEMA))
+    for k in ("kept_ids", "new_ids", "deprecated_ids"):
+        if not stats[k]:
+            del stats[k]  # same keys as before: only counts that occurred
+    reg = pl.concat([*live, tomb], how="vertical").cast(REGISTRY_SCHEMA).sort("token_id")
     lem = pl.DataFrame(lemma_rows, schema=LEMMA_SCHEMA).sort("lemma_id")
     stats["max_sense_index"] = int(reg["sense_index"].max() or 0)
     stats["max_lemma_id"] = int(lem["lemma_id"].max() or 0)

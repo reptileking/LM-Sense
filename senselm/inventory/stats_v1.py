@@ -214,7 +214,9 @@ def embedding_estimates(
       lemma differ only through their index and domain (cheap, but too coarse on its own);
     * factorised + low-rank residual: the above plus a per-sense code (V x r) projected by
       (r x d): every sense keeps its own vector at rank r;
-    * low-rank (ALBERT-style): V x r + r x d.
+    * low-rank (ALBERT-style): V x r + r x d;
+    * hybrid: dense rows for the K most frequent senses (frequency known after Phase 4 tagging)
+      plus a low-rank tail: K x d + (V - K) x r + r x d.
     """
     e = cfg["embedding"]
     v = vocab["canonical_senses"] + ids["structural"]["active"]
@@ -239,6 +241,16 @@ def embedding_estimates(
                 )
                 rows.append(
                     {"d": d, "scheme": f"low-rank V x r + r x d (r={r})", "params": v * r + r * d}
+                )
+        hr = int(e.get("hybrid_rank", 64))
+        for k in e.get("dense_top_k", []):
+            if k < v:
+                rows.append(
+                    {
+                        "d": d,
+                        "scheme": f"dense top {k // 1000}k senses + low-rank tail (r={hr})",
+                        "params": k * d + (v - k) * hr + hr * d,
+                    }
                 )
     for r in rows:
         r["params_M"] = round(r["params"] / 1e6, 1)
@@ -275,9 +287,7 @@ def compute(cfg: dict[str, Any]) -> dict[str, Any]:
         "vocabulary": vocab,
         "id_space": ids,
         "storage": storage(cfg),
-        "ledger_files": [
-            {"file": str(p.relative_to(resolve("."))), "bytes": p.stat().st_size} for p in ledger
-        ],
+        "ledger_files": [{"file": p.name, "bytes": p.stat().st_size} for p in ledger],
         "embedding": embedding_estimates(cfg, vocab, ids),
         "total_vocabulary": vocab["canonical_senses"] + ids["structural"]["active"],
     }
@@ -288,6 +298,8 @@ def _fmt(n: float) -> str:
 
 
 def _mb(b: int) -> str:
+    if b < 1e6:
+        return f"{b / 1e3:,.0f} kB"
     return f"{b / 1e6:,.1f} MB" if b < 1e9 else f"{b / 1e9:,.2f} GB"
 
 

@@ -318,6 +318,7 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
             f"{missing.height} senses have no cluster, e.g. {missing['source_id'][:5].to_list()}"
         )
     inv = order_senses(canonical_senses(senses, clusters, cfg))
+    del senses, clusters, pairs, dedupe  # the id assignment below needs the memory
     stats: dict[str, Any] = {
         "policy": cfg["policy"]["name"],
         **pstats,

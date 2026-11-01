@@ -28,6 +28,8 @@ storage:
 embedding:
   dims: [512, 768, 1024, 2048]   # 768 = the ~125M-parameter core model of Phase 5
   ranks: [64, 128, 256]
+  dense_top_k: [100000, 250000]   # hybrid scheme: dense rows for the K most frequent senses
+  hybrid_rank: 64
   bytes_per_param: 2
 output_json: docs/phase2_stats.json
 output_md: docs/phase2_stats.md
