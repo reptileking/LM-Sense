@@ -470,6 +470,12 @@ def main() -> None:
         help="answer budget; reasoning ('thinking') models need ~2048",
     )
     ap.add_argument("--concurrency", type=int, default=None, help="parallel requests")
+    ap.add_argument(
+        "--max-hours",
+        type=float,
+        default=None,
+        help="stop after this many hours (resumable: run again to continue)",
+    )
     args = ap.parse_args()
     setup_logging()
     cfg = load_config(args.config)
@@ -481,6 +487,8 @@ def main() -> None:
         cfg["max_tokens"] = args.max_tokens
     if args.concurrency:
         cfg["concurrency"] = args.concurrency
+    if args.max_hours:
+        cfg["max_hours"] = args.max_hours
     if args.command == "export":
         export(cfg)
         return

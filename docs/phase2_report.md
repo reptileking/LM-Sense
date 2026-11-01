@@ -246,7 +246,9 @@ in v1.0.
    PC (Remote Control cannot use Windows folders): `pilot` on the 300 gold pairs, then the full
    `run` (resumable, progress and ETA every 500 pairs), then you push `judge/verdicts/` and I
    import the verdicts and rebuild. On your GPU the 14B model spilled 65% onto the CPU (32k
-   context window), so the candidate is the 4k-context 7B copy (`qwen2.5-7b-judge`).
+   context window). The first pilot, a 4k-context 7B (`qwen2.5-7b-judge`), reached 82% 3-way
+   accuracy but only **0.82 precision / 0.56 recall in the band** (9 of 11 merges right) at
+   1.3 req/s, so it is not used; the 4k-context 14B is next.
    *Recommendation:* accept a model only if its in-band "same" precision in the pilot is at least
    ~0.9 (the aligner's own precision); run the full set overnight; finish it before Phase 4
    tagging, while no corpus refers to the ids yet (it does not block Phase 3). Merges found later

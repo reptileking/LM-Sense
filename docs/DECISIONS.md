@@ -224,9 +224,14 @@ first and reports accuracy, so a model is accepted only if it beats the cosine b
 `run` writes resumable shards under `judge/verdicts/<model>/` (temperature 0, seed 0, fixed
 prompt version recorded with every verdict); `import` builds `data/interim/judge_cache.parquet`,
 which `align` joins when `judge_verdicts.use: true`. Verdicts are committed, so the judging can run
-on the owner's machine while everything else runs here. Status at Gate 2: the owner's machine was
-not connected (Remote Control), so no verdicts exist yet and the band stays "keep separate" (the
-conservative default of the fine policy).
+on the owner's machine while everything else runs here. The owner's machine is Windows, which
+Remote Control from a cloud session cannot use, so the judge runs there directly with
+`uv run --no-project --with polars --with pyarrow --with pyyaml` (the judge was made NumPy-free
+for this). Pilot 1 (2026-11-01): `qwen2.5-7b-instruct` with a 4k context (the 14B with Ollama's
+32k context spilled 65% onto the CPU): 3-way accuracy 0.817, same-vs-rest P 0.933 / R 0.76 overall
+but **in the band P 0.818 / R 0.562** (9 of 11 merges right, n = 78 band pairs), 1.3 req/s
+(≈ 12 h for the band). Below the ~0.9 acceptance bar, so not used; next candidate: the 14B with a
+4k context. Until a model passes, the band stays "keep separate" (the conservative default).
 
 **D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
 User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`
