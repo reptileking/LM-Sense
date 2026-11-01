@@ -94,6 +94,26 @@ split-off part gets a new id. A fine inventory can always be *mapped* onto a coa
 coarse build gives the cluster of every fine sense); a coarse inventory cannot be split back
 without issuing new ids. This asymmetry is why the fine policy issues the IDs.
 
+## Stage 2: the Phase-2 sources (v1.0)
+
+The policy above (stage 1) decides how OEWN and Wiktionary senses become canonical senses. The
+other sources are then attached to those canonical senses, one source at a time, with the same
+judgement scale (D-037, `configs/attach.yaml`):
+
+* **S1 — same sense, same lemma**: a new-source sense joins an existing canonical sense of the same
+  lemma and POS class if its gloss paraphrases a member's gloss (cosine ≥ the source's threshold)
+  or a cross-reference says they are the same concept (Wikidata Q-id, NCBI / MeSH / ChEBI / GO id);
+* **S2 — one-to-one per source**: a canonical sense receives at most one sense of each source and
+  vice versa, so a source's own distinctions survive (as F3 does for Wiktionary);
+* **S3 — otherwise new**: a sense that does not attach becomes a canonical sense of its own, which
+  later sources may join (MeSH organisms are joined by the NCBI taxa of the same name);
+* **S4 — taxa**: a scientific name never matches a common noun by case-folding ("Mus" ≠ "mus"), and
+  a taxon never joins a sense whose WordNet lexicographer file contradicts its kingdom.
+
+Broader / narrower senses (MeSH *Mice* = genus *Mus* vs "any small rodent") are *related*, not the
+same, and stay apart unless the inventory already has the exact sense (Wiktionary's genus-*Mus*
+subsense, which *Mice* joins).
+
 ## Known limitations
 
 * Cosine similarity is a proxy for "paraphrase". Its errors are measured on the gold set; the
@@ -102,3 +122,8 @@ without issuing new ids. This asymmetry is why the fine policy issues the IDs.
   meaning into transitive and intransitive senses that WordNet keeps as one: only one of them
   merges with the WordNet sense.
 * Within-Wiktionary near-duplicates (not exact) are never merged under the fine policy.
+* Stage 2 compares a new sense with the lemma's existing senses only; a domain term whose lemma
+  differs from the general word (MeSH "Neoplasms" vs "tumor") is not merged — synonyms are kept
+  for alignment but never create or merge senses on their own (D-034).
+* Vague Wikidata lexeme glosses ("chemical compound", "type of paint") attach to the wrong one of
+  several close senses about one time in five (gold-set precision 0.78 for lexemes).

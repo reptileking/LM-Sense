@@ -63,7 +63,22 @@ category, so each can grow without renumbering; append-only registry
 
 | Step | Command | Wall time (4 vCPU) | Output |
 |---|---|---|---|
-TBD_COMMANDS
+| download (Phase-2 files) | `python -m senselm.ingest.download --config configs/download.yaml` | a few minutes | `data/raw/{wikidata,ncbi_taxonomy,go,chebi,mesh}/` (2.5 GB in all) |
+| Wikidata lexemes | `python -m senselm.ingest.wikidata_lexemes --config configs/ingest_wikidata_lexemes.yaml` | 71 s | `senses_raw_wikidata_lexemes.parquet`, `wikidata_lexeme_items.parquet` |
+| Wikidata items, pass | `python -m senselm.ingest.wikidata_items stream --config configs/ingest_wikidata_items.yaml` | TBD_STREAM_TIME (network-bound) | `wikidata_items_superset.parquet` |
+| Wikidata items, filter | `python -m senselm.ingest.wikidata_items select --config configs/ingest_wikidata_items.yaml` | TBD_SELECT_TIME | `senses_raw_wikidata_items.parquet` |
+| NCBI Taxonomy | `python -m senselm.ingest.ncbi_taxonomy --config configs/ingest_ncbi_taxonomy.yaml` | 71 s | `senses_raw_ncbi_taxonomy.parquet` |
+| Gene Ontology | `python -m senselm.ingest.obo --config configs/ingest_go.yaml` | 3 s | `senses_raw_gene_ontology.parquet` |
+| ChEBI | `python -m senselm.ingest.obo --config configs/ingest_chebi.yaml` | 10 s | `senses_raw_chebi.parquet` |
+| MeSH | `python -m senselm.ingest.mesh --config configs/ingest_mesh.yaml` | 80 s | `senses_raw_mesh.parquet` |
+| SNOMED CT UK | `python -m senselm.ingest.snomed --config configs/ingest_snomed.yaml` | — (needs TRUD files) | `senses_raw_snomed.parquet` |
+| combine | `python -m senselm.ingest.combine --config configs/ingest_v1.yaml` | TBD_COMBINE_TIME | `senses_raw_v1.parquet` |
+| normalise | `python -m senselm.inventory.normalise --config configs/normalise_v1.yaml` | TBD_NORM_TIME | `senses_norm_v1`, `forms_v1`, `variants_v1`, `dedupe_map_v1` |
+| stage-2 alignment | `python -m senselm.inventory.attach --config configs/attach.yaml` | TBD_ATTACH_TIME | `attachments_v1.parquet` |
+| build v1.0 + ids | `python -m senselm.inventory.build --config configs/inventory_v1.yaml` | TBD_BUILD_TIME | `inventory_v1_0.parquet`, `id_registry.parquet`, `lemma_registry.parquet`, `registry/` ledger |
+| structural tokens | `python -m senselm.inventory.structural --config configs/structural.yaml` | < 1 s | `structural_registry.parquet`, `docs/STRUCTURAL_TOKENS.md` |
+| statistics | `python -m senselm.inventory.stats_v1 --config configs/stats_v1.yaml` | TBD_STATS_TIME | `docs/phase2_stats.{json,md}` |
+| stage-2 gold evaluation | `python -m senselm.eval.attach_gold evaluate --config configs/attach.yaml` | TBD_EVAL_TIME | `eval/attach_gold_eval.json` |
 
 Tests: `uv run pytest` — 74 tests (73 pass, the local registry-history test skips until a second local registry version exists). New in Phase 2: stage-2 attachment rules (cosine,
 cross-reference, Wikidata bridge, one-to-one per source, case and kingdom rules), MeSH lemma
