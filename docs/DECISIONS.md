@@ -306,8 +306,11 @@ never for taxa) and the POS class (NOUN ≡ PROPN); score = max cosine to the cl
 P685/P486/P683/P686, also bridged through the items superset for items that are not senses) rank
 above every cosine edge; greedy one-to-one per source; a sense that does not attach starts a new
 cluster that later sources can join. Thresholds per source from the plateaus of the precision/
-recall curves of a blind 200-sense gold set (`eval/attach_gold.csv`, 40 per source; MeSH 0.60,
-GO 0.65, ChEBI 0.65, NCBI 0.53, lexemes 0.60). Two rules came from that gold set's errors:
+recall curves of a blind 240-sense gold set (`eval/attach_gold.csv`, 40 per source, labelled
+before any score was looked at; a `match` may name two candidates when a WordNet and a
+Wiktionary cluster that stage 1 kept apart are both the same sense): lexemes 0.60, items 0.58,
+MeSH 0.60, GO 0.65, ChEBI 0.65, NCBI 0.53 — micro-averaged P 0.92 / R 0.90 at these values
+(`eval/attach_gold_eval.json`). Two rules came from that gold set's errors:
 taxa never use the case-insensitive fallback (a genus "Mus" is not the noun "mus"), and a taxon
 may only join a cluster whose WordNet members have a lexicographer file compatible with its
 kingdom (Metazoa → noun.animal, plants and fungi → noun.plant) — NCBI precision 0.84 → 1.00.
