@@ -230,8 +230,13 @@ Remote Control from a cloud session cannot use, so the judge runs there directly
 for this). Pilot 1 (2026-11-01): `qwen2.5-7b-instruct` with a 4k context (the 14B with Ollama's
 32k context spilled 65% onto the CPU): 3-way accuracy 0.817, same-vs-rest P 0.933 / R 0.76 overall
 but **in the band P 0.818 / R 0.562** (9 of 11 merges right, n = 78 band pairs), 1.3 req/s
-(≈ 12 h for the band). Below the ~0.9 acceptance bar, so not used; next candidate: the 14B with a
-4k context. Until a model passes, the band stays "keep separate" (the conservative default).
+(≈ 12 h for the band). Pilot 2: `qwen2.5-14b-instruct`, 4k context (still partly on the CPU):
+3-way accuracy 0.747, overall P 0.895 / R 0.791, **in the band P 0.643 / R 0.562** (9 of 14 merges
+right), 0.26 req/s (≈ 60 h for the band). Neither passes the ~0.9 bar, so **no judge verdicts are
+used**: the band stays "keep separate", the fine policy's conservative default (a missed merge
+leaves a near-duplicate token; a wrong merge would destroy a distinction). Both models confuse
+"same" with "related" most often. Revisit only with a stronger model on hardware that runs it at
+≥ ~1 req/s (the large local MoE models run mostly on the CPU here), judged by the same pilot.
 
 **D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
 User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`

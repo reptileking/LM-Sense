@@ -236,23 +236,26 @@ in v1.0.
     ready (ingest, concept filter, threshold); see decision 2 in section 4.
 12. **The local LLM judge could not run here**: Remote Control from a cloud session cannot use a
     Windows folder, so the judge now runs directly on your PC (only polars, pyarrow and pyyaml
-    needed; it previously pulled in NumPy through the alignment code). Until its verdicts arrive,
-    the 56,565 uncertain OEWN–Wiktionary pairs stay unmerged, the fine policy's conservative
-    default.
+    needed; it previously pulled in NumPy through the alignment code). Its pilots did not pass
+    the precision bar (decision 1), so the 56,565 uncertain pairs stay unmerged, the fine
+    policy's conservative default.
 
 ## 4. Open decisions that need you
 
-1. **Local LLM judge (56,565 uncertain OEWN–Wiktionary pairs).** It now runs directly on your
-   PC (Remote Control cannot use Windows folders): `pilot` on the 300 gold pairs, then the full
-   `run` (resumable, progress and ETA every 500 pairs), then you push `judge/verdicts/` and I
-   import the verdicts and rebuild. On your GPU the 14B model spilled 65% onto the CPU (32k
-   context window). The first pilot, a 4k-context 7B (`qwen2.5-7b-judge`), reached 82% 3-way
-   accuracy but only **0.82 precision / 0.56 recall in the band** (9 of 11 merges right) at
-   1.3 req/s, so it is not used; the 4k-context 14B is next.
-   *Recommendation:* accept a model only if its in-band "same" precision in the pilot is at least
-   ~0.9 (the aligner's own precision); run the full set overnight; finish it before Phase 4
-   tagging, while no corpus refers to the ids yet (it does not block Phase 3). Merges found later
-   retire one of the two ids with `replaced_by`; ids are never reused.
+1. **Local LLM judge (56,565 uncertain OEWN–Wiktionary pairs).** It runs directly on your PC
+   (Remote Control cannot use Windows folders). Two pilots on the 300 gold pairs, both with a 4k
+   context window (Ollama's 32k window pushed the 14B 65% onto the CPU):
+
+   | model | 3-way accuracy | in-band precision / recall | speed (full run) |
+   |---|---|---|---|
+   | qwen2.5 7B instruct | 0.82 | **0.82** / 0.56 (9 of 11 merges right) | 1.3 req/s (≈ 12 h) |
+   | qwen2.5 14B instruct | 0.75 | **0.64** / 0.56 (9 of 14 merges right) | 0.26 req/s (≈ 60 h) |
+
+   Neither reaches the ~0.9 bar (the aligner's own precision), so no verdicts are used and the
+   uncertain pairs stay unmerged, as in v1.0 (D-030). *Recommendation:* close this for now; a
+   missed merge only leaves a near-duplicate token. Revisit if Phase 3/4 evaluation shows those
+   near-duplicates hurting, with a stronger model on hardware that runs it at ≥ ~1 req/s, judged
+   by the same pilot.
 2. **Wikidata items (not in v1.0, D-045).** The ingest, filter and threshold are ready; only the
    ~4.5 h pass over the dump is missing, and it dies if this cloud session sits idle.
    *Recommendation:* run it in the background at the start of Phase 3, while the session is busy
