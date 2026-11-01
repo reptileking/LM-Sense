@@ -168,6 +168,8 @@ def test_attach_rules(tmp_path: Path, monkeypatch: Any) -> None:
         r["source_id"]: r for r in pl.read_parquet(tmp_path / "att.parquet").iter_rows(named=True)
     }
     assert att["L1-S1"]["cluster"] == "o-mouse-1" and att["L1-S1"]["via"] == "cosine"
+    assert 0.6 <= att["L1-S1"]["score"] <= 1.0  # the attached edge's own cosine
+    assert all((r["via"] == "new") == (r["score"] is None) for r in att.values())
     assert att["L1-S2"]["via"] == "new"  # o-mouse-1 already took a sense of this source
     assert att["L1-S3"]["cluster"] == "o-mouse-2"
     assert (

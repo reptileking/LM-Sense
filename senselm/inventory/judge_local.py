@@ -116,7 +116,7 @@ class LocalLLM:
 
     def __init__(self, cfg: dict[str, Any]) -> None:
         self.base = cfg["base_url"].rstrip("/")
-        self.model = cfg.get("model")
+        self.model: str | None = cfg.get("model")
         self.timeout = float(cfg.get("timeout_s", 120))
         self.mode = cfg.get("structured_output", "auto")
         key = os.environ.get(cfg.get("api_key_env", "LOCAL_LLM_API_KEY"), "")
@@ -324,6 +324,8 @@ def import_verdicts(cfg: dict[str, Any]) -> Path:
 def judge_rows(
     cfg: dict[str, Any], rows: list[dict[str, Any]], client: LocalLLM, mode: str
 ) -> dict[str, Any]:
+    if not client.model:
+        raise ValueError("no model configured")
     vdir = verdict_dir(cfg, client.model)
     vdir.mkdir(parents=True, exist_ok=True)
     done = set(load_verdicts(vdir)["job_id"].to_list())
@@ -472,14 +474,14 @@ def main() -> None:
         print(json.dumps({"server": client.base, "models": models}, indent=2))
         if not client.model:
             raise SystemExit("set `model` in the config (or --model) to one of the models above")
-        job = (
+        first = (
             pl.read_parquet(resolve(cfg["job_path"]))
             .filter(pl.col("kind") == "gold")
             .head(1)
             .row(0, named=True)
         )
-        mode = client.detect_mode(job["message"]) if client.mode == "auto" else client.mode
-        r = client.chat(job["message"], mode)
+        mode = client.detect_mode(first["message"]) if client.mode == "auto" else client.mode
+        r = client.chat(first["message"], mode)
         print(
             json.dumps(
                 {
@@ -493,6 +495,9 @@ def main() -> None:
             )
         )
         return
+    if not client.model:
+        raise SystemExit("set `model` in the config (or --model)")
+    model: str = client.model
     job = pl.read_parquet(resolve(cfg["job_path"]))
     kind = "gold" if args.command == "pilot" else "band"
     rows = job.filter(pl.col("kind") == kind).to_dicts()
@@ -502,8 +507,8 @@ def main() -> None:
     summary = judge_rows(cfg, rows, client, mode)
     print(json.dumps(summary, indent=2))
     if args.command == "pilot":
-        rep = pilot_report(cfg, client.model)
-        out = resolve(cfg["pilot_dir"]) / f"judge_pilot_{model_slug(client.model)}.json"
+        rep = pilot_report(cfg, model)
+        out = resolve(cfg["pilot_dir"]) / f"judge_pilot_{model_slug(model)}.json"
         dump_json({**rep, "throughput": summary, "prompt_version": PROMPT_VERSION}, out)
         print(json.dumps(rep, indent=2))
 

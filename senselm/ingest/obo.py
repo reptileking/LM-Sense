@@ -142,10 +142,10 @@ def run(cfg: dict[str, Any]) -> dict[str, Any]:
     except BaseException:
         out.abort()
         raise
-    st = dict(sorted(stats.items()))
-    out.close(stats=st)
-    LOG.info("%s: %s", source, st)
-    return st
+    summary = dict(sorted(stats.items()))
+    out.close(stats=summary)
+    LOG.info("%s: %s", source, summary)
+    return summary
 
 
 def main() -> None:

@@ -232,9 +232,9 @@ def run(cfg: dict[str, Any], *, sample: bool = False) -> dict[str, Any]:
         cand: list[tuple[str, str, bool]] = []  # (sid, cluster, case_fallback)
         fallback_ok = src not in set(cfg.get("no_case_fallback", []))
         for sid, lem, pc in sub.select("source_id", "lemma", "pcls").iter_rows():
-            cs = index.get((lem, pc))
-            if cs:
-                cand += [(sid, c, False) for c in cs]
+            exact = index.get((lem, pc))
+            if exact:
+                cand += [(sid, c, False) for c in exact]
             elif fallback_ok:
                 cand += [(sid, c, True) for c in lower_index.get((lem.lower(), pc), [])]
         if src == "ncbi_taxonomy":
@@ -272,8 +272,8 @@ def run(cfg: dict[str, Any], *, sample: bool = False) -> dict[str, Any]:
         for sid, c, fb in cand:
             score = max(float(vec[sid] @ vec[m]) for m in cl_members[c])
             own = own_key(src, sid)
-            keys = set(identity_keys(src, rel_of[sid], bridge)) | ({own} if own else set())
-            via_x = any(c in key_cluster.get(k, ()) for k in keys)
+            id_keys = set(identity_keys(src, rel_of[sid], bridge)) | ({own} if own else set())
+            via_x = any(c in key_cluster.get(k, ()) for k in id_keys)
             if via_x or score >= thr:
                 edges.append(
                     (
@@ -289,7 +289,7 @@ def run(cfg: dict[str, Any], *, sample: bool = False) -> dict[str, Any]:
         edges.sort(key=lambda e: (-e[0], e[1], e[2]))
         used_s: set[str] = set()
         used_c: set[str] = set()
-        attached: dict[str, tuple[str, float, str]] = {}
+        attached: dict[str, tuple[str, float | None, str]] = {}
         for _, sid, c, via, _fb, score in edges:
             if sid in used_s or c in used_c:
                 continue
@@ -297,11 +297,12 @@ def run(cfg: dict[str, Any], *, sample: bool = False) -> dict[str, Any]:
             used_c.add(c)
             attached[sid] = (c, round(score, 4), via)
         for sid, lem, pc in sub.select("source_id", "lemma", "pcls").iter_rows():
+            score_out: float | None
             if sid in attached:
-                c, score, via = attached[sid]
+                c, score_out, via = attached[sid]
                 stats[f"{src}:attached_{via}"] += 1
             else:
-                c, score, via = sid, None, "new"
+                c, score_out, via = sid, None, "new"
                 index[(lem, pc)].append(c)
                 lower_index[(lem.lower(), pc)].append(c)
                 stats[f"{src}:new"] += 1
@@ -314,7 +315,7 @@ def run(cfg: dict[str, Any], *, sample: bool = False) -> dict[str, Any]:
                 ("source", src),
                 ("source_id", sid),
                 ("cluster", c),
-                ("score", score),
+                ("score", score_out),
                 ("via", via),
             ):
                 out[k].append(v)

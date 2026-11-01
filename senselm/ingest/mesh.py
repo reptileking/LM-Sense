@@ -357,7 +357,7 @@ def concept_terms(record: Any) -> list[tuple[str, str, bool]]:
     concept = record.find("ConceptList/Concept[@PreferredConceptYN='Y']")
     if concept is None:
         return []
-    out = []
+    out: list[tuple[str, str, bool]] = []
     for t in concept.findall("TermList/Term"):
         s = t.findtext("String")
         if not s:

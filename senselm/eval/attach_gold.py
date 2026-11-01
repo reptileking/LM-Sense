@@ -158,23 +158,22 @@ def evaluate(cfg: dict[str, Any]) -> dict[str, Any]:
                 }
             )
             continue
-        keys = set(identity_keys(src, rows[sid]["relations"], bridge)) | (
-            {own_key(src, sid)} if own_key(src, sid) else set()
-        )
+        own = own_key(src, sid)
+        keys = set(identity_keys(src, rows[sid]["relations"], bridge)) | ({own} if own else set())
         scored = []
         for i, c in enumerate(cands):
             if c is None:
                 continue
             score = max(float(vec[sid] @ vec[m]) for m in members[c])
             scored.append((score, any(c in key_cluster.get(k, ()) for k in keys), i + 1))
-        best = max(scored, key=lambda t: (t[1], t[0]))
+        top = max(scored, key=lambda t: (t[1], t[0]))
         recs.append(
             {
                 "source": src,
                 "match": g["match"],
-                "best_score": best[0],
-                "best_xref": best[1],
-                "best_idx": str(best[2]),
+                "best_score": top[0],
+                "best_xref": top[1],
+                "best_idx": str(top[2]),
                 "ambiguous": g["ambiguous"] == "1",
             }
         )
