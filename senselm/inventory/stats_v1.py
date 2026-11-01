@@ -10,6 +10,7 @@ naive dense table versus factorised / low-rank schemes.
 
 from __future__ import annotations
 
+import glob
 import json
 import logging
 from pathlib import Path
@@ -50,8 +51,9 @@ def _size(paths: list[Path]) -> int:
 
 
 def _glob(pattern: str) -> list[Path]:
-    root = resolve(".")
-    return sorted(root.glob(pattern))
+    if Path(pattern).is_absolute():
+        return sorted(Path(x) for x in glob.glob(pattern))
+    return sorted(resolve(".").glob(pattern))
 
 
 def tier_of(inv: pl.DataFrame) -> pl.Expr:
