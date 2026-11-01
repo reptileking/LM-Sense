@@ -96,6 +96,14 @@ def evaluate(cfg: dict[str, Any]) -> dict[str, Any]:
         pl.col("match").is_not_null()
     )
     senses = pl.read_parquet(resolve(cfg["senses"]), columns=COLS)
+    absent = gold.filter(~pl.col("source_id").is_in(senses["source_id"].implode()))
+    if absent.height:  # e.g. items a later version of the selection filter no longer keeps
+        LOG.info(
+            "%d gold senses are not in this build and are skipped: %s",
+            absent.height,
+            absent["source_id"].to_list(),
+        )
+        gold = gold.join(absent.select("source_id"), on="source_id", how="anti")
     members = _cluster_members(cfg, senses)
     tcfg = {**cfg["embedding"].get("text", {}), "include_example": False}
     cand_clusters = {x["cluster"] for c in gold["candidates"] for x in json.loads(c)}

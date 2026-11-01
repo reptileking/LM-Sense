@@ -15,6 +15,7 @@ select:
   # have an English Wikipedia article (notability) and are not of an excluded type.
   # Items linked from an English lexeme sense are always kept.
   require_enwiki: true
+  require_lowercase_label: true   # common nouns (Wikidata lower-cases them); D-038
   min_sitelinks: 1
   exclude_p31:
     - Q13442814   # scholarly article

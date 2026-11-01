@@ -321,12 +321,16 @@ columns in Polars and loads only the cached vectors a query needs.
 filter can change without re-streaming): English label AND (linked from an English lexeme sense
 via P5137 OR has "subclass of" P279 OR carries a domain cross-reference: P685 NCBI, P486/P6694
 MeSH, P683 ChEBI, P686 GO, P5806 SNOMED, P8814 WordNet 3.1). Senses: items linked from lexeme
-senses, plus *concepts*: P279 (a class, i.e. a common noun), an English description (the gloss),
-an English Wikipedia article (notability) and no excluded type (scholarly article, human,
-Wikimedia category / disambiguation / template, and taxon / gene / protein / chemical compound,
-whose dedicated sources are NCBI, GO, ChEBI and MeSH). Named entities (people, places, works,
-organisations) are out of scope for v1.0: their surface names are not senses of English words
-and the byte fallback spells them.
+senses, plus *concepts*: P279 (a class), a **lower-case English label** (Wikidata's convention
+for common nouns), an English description (the gloss), an English Wikipedia article
+(notability) and no excluded type (scholarly article, human, Wikimedia category / disambiguation
+/ template, and taxon / gene / protein / chemical compound, whose dedicated sources are NCBI, GO,
+ChEBI and MeSH). The lower-case rule was added after reviewing a trial on the first 100 MB of the
+dump: 559 of 1,548 selected items were capitalised classes that are really names (languages,
+rocket and aircraft models, championships, dog breeds, a 2011 film). Named entities (people,
+places, works, organisations) are out of scope for v1.0: their surface names are not senses of
+English words, they would consume lemma ids (see the Gate-2 decisions) and the byte fallback
+spells them; those linked from English lexemes are kept.
 
 **D-039 NCBI Taxonomy filter.** Formal ranks domain … species only; names must have the form the
 rank requires (one capitalised word above species; a strict binomial or a virus-style name for

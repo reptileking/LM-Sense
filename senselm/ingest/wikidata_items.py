@@ -354,6 +354,10 @@ def select(cfg: dict[str, Any]) -> dict[str, Any]:
     )
     if scfg.get("require_enwiki", True):
         concept = concept & pl.col("enwiki").is_not_null()
+    if scfg.get("require_lowercase_label", False):
+        # Wikidata labels common nouns in lower case; capitalised classes are mostly proper names
+        # (languages, products, recurring events, breeds); items linked from lexemes are kept anyway
+        concept = concept & ~pl.col("label").str.contains(r"^\p{Lu}")
     keep = pl.col("linked") | concept
     sel = sup.with_columns(concept.alias("concept")).filter(
         keep & pl.col("description").is_not_null()
