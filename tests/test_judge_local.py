@@ -159,3 +159,67 @@ def test_run_is_resumable_and_pilot_scores(tmp_path: Path, server: str) -> None:
     assert cache.height == 6
     assert dict(zip(cache["wikt_id"], cache["verdict"], strict=True))["w3"] == "same"
     assert set(cache.columns) >= {"oewn_id", "wikt_id", "verdict", "model", "prompt_version"}
+
+
+def test_evaluate_band_and_filtered_import(tmp_path: Path) -> None:
+    """Fresh band gold set: precision/recall by confidence and two-model agreement; the import
+    keeps only accepted 'same' verdicts (others become 'uncertain')."""
+    from senselm.inventory import judge_local as jl
+
+    jobs = pl.DataFrame(
+        {
+            "job_id": [f"j{i}" for i in range(6)],
+            "kind": ["band"] * 6,
+            "oewn_id": [f"o{i}" for i in range(6)],
+            "wikt_id": [f"w{i}" for i in range(6)],
+            "cosine": [0.56, 0.57, 0.60, 0.63, 0.66, 0.68],
+        }
+    )
+    jobs.write_parquet(tmp_path / "job.parquet")
+    pl.DataFrame(
+        {
+            "job_id": [f"j{i}" for i in range(6)],
+            "label": ["same", "related", "same", "different", "same", "same"],
+            "ambiguous": ["0"] * 6,
+        }
+    ).write_csv(tmp_path / "gold.csv")
+    cfg = {
+        "job_path": str(tmp_path / "job.parquet"),
+        "band_gold_path": str(tmp_path / "gold.csv"),
+        "verdicts_dir": str(tmp_path / "verdicts"),
+        "cache_path": str(tmp_path / "cache.parquet"),
+        "band_strata": [0.55, 0.585, 0.62, 0.655, 0.69],
+        "eval_confidences": [0.0, 0.9],
+    }
+
+    def shard(model: str, verdicts: list[str], conf: list[float]) -> None:
+        d = jl.verdict_dir(cfg, model)
+        d.mkdir(parents=True)
+        pl.DataFrame(
+            {
+                "job_id": [f"j{i}" for i in range(6)],
+                "verdict": verdicts,
+                "confidence": conf,
+                "model": model,
+                "prompt_version": "t",
+            }
+        ).write_parquet(d / "part-00000.parquet")
+
+    shard(
+        "big", ["same", "same", "same", "same", "related", "same"], [0.95, 0.8, 0.9, 0.7, 0.9, 0.99]
+    )
+    shard("small", ["same", "related", "same", "same", "same", "different"], [0.9] * 6)
+    res = jl.evaluate_band(cfg, "big")
+    r0, r9 = res["rows"]
+    assert (
+        (r0["tp"], r0["fp"], r0["fn"]) == (3, 2, 1)
+        and r0["fp_related"] == 1
+        and r0["fp_different"] == 1
+    )
+    assert (r9["tp"], r9["fp"], r9["fn"]) == (3, 0, 1) and r9["precision"] == 1.0
+    agree = jl.evaluate_band(cfg, "big", agree_with="small")["rows"][0]
+    assert (agree["tp"], agree["fp"]) == (2, 1)  # j0, j2 right; j3 wrong in both
+    cfg["model"] = "big"
+    out = jl.import_verdicts(cfg, min_confidence=0.9)
+    imp = pl.read_parquet(out).sort("oewn_id")
+    assert imp["verdict"].to_list() == ["same", "uncertain", "same", "uncertain", "related", "same"]

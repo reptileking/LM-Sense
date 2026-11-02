@@ -302,10 +302,38 @@ def load_verdicts(directory: Path) -> pl.DataFrame:
     )
 
 
-def import_verdicts(cfg: dict[str, Any]) -> Path:
-    """Collect verdict shards of the configured model into the align stage's verdict cache."""
+def accepted_same(
+    v: pl.DataFrame, cfg: dict[str, Any], min_confidence: float = 0.0, agree_with: str | None = None
+) -> pl.Series:
+    """Which "same" verdicts pass the acceptance rule: confidence >= ``min_confidence`` and, with
+    ``agree_with``, the other model's verdict on the same pair is "same" as well."""
+    ok = (pl.col("verdict") == "same") & (pl.col("confidence").fill_null(0.0) >= min_confidence)
+    if agree_with:
+        other = load_verdicts(verdict_dir(cfg, agree_with))
+        other = (
+            other.select("job_id", pl.col("verdict").alias("_other"))
+            if other.height
+            else (pl.DataFrame(schema={"job_id": pl.String, "_other": pl.String}))
+        )
+        v = v.join(other, on="job_id", how="left")
+        ok = ok & (pl.col("_other") == "same").fill_null(False)
+    return v.select(ok.alias("ok"))["ok"]
+
+
+def import_verdicts(
+    cfg: dict[str, Any], min_confidence: float = 0.0, agree_with: str | None = None
+) -> Path:
+    """Collect verdict shards of the configured model into the align stage's verdict cache. A
+    "same" verdict that fails the acceptance rule (see :func:`accepted_same`) is imported as
+    "uncertain", which the fine policy does not merge."""
     vdir = verdict_dir(cfg, cfg["model"])
     v = load_verdicts(vdir)
+    v = v.with_columns(
+        pl.when((pl.col("verdict") == "same") & ~accepted_same(v, cfg, min_confidence, agree_with))
+        .then(pl.lit("uncertain"))
+        .otherwise(pl.col("verdict"))
+        .alias("verdict")
+    )
     job = pl.read_parquet(resolve(cfg["job_path"]), columns=["job_id", "oewn_id", "wikt_id"])
     v = (
         v.join(job, on="job_id", how="inner")
@@ -314,8 +342,85 @@ def import_verdicts(cfg: dict[str, Any]) -> Path:
     )
     out = resolve(cfg["cache_path"])
     v.write_parquet(out)
-    LOG.info("imported %d verdicts from %s -> %s", v.height, vdir, out)
+    LOG.info(
+        "imported %d verdicts from %s -> %s (%s)",
+        v.height,
+        vdir,
+        out,
+        dict(v.group_by("verdict").len().iter_rows()),
+    )
     return out
+
+
+def evaluate_band(cfg: dict[str, Any], model: str, agree_with: str | None = None) -> dict[str, Any]:
+    """Precision / recall of accepted "same" verdicts on the fresh band gold set
+    (``band_gold_path``: band job rows, 50 per cosine stratum, labelled blind), per confidence
+    threshold, raw and re-weighted to the band's real stratum sizes."""
+    gold = pl.read_csv(resolve(cfg["band_gold_path"]), infer_schema_length=0).select(
+        "job_id", "label", "ambiguous"
+    )
+    band = pl.read_parquet(resolve(cfg["job_path"]), columns=["job_id", "kind", "cosine"]).filter(
+        pl.col("kind") == "band"
+    )
+    edges = [float(x) for x in cfg.get("band_strata", [0.55, 0.585, 0.62, 0.655, 0.69])]
+    inner = edges[1:-1]  # stratum k = number of inner edges strictly below the cosine
+    band = band.with_columns(
+        pl.sum_horizontal([(pl.col("cosine") > e).cast(pl.Int32) for e in inner]).alias("stratum")
+    )
+    sizes = dict(band.group_by("stratum").len().iter_rows())
+    v = load_verdicts(verdict_dir(cfg, model))
+    v = (
+        v.select("job_id", "verdict", "confidence")
+        if v.height
+        else pl.DataFrame(
+            schema={"job_id": pl.String, "verdict": pl.String, "confidence": pl.Float64}
+        )
+    )
+    g = gold.join(band.select("job_id", "stratum"), on="job_id").join(v, on="job_id", how="inner")
+    res: dict[str, Any] = {
+        "model": model,
+        "agree_with": agree_with,
+        "gold": gold.height,
+        "judged": g.height,
+        "band_pairs": band.height,
+        "rows": [],
+    }
+    if not g.height:
+        return res
+    sample = dict(g.group_by("stratum").len().iter_rows())
+    g = g.with_columns(
+        pl.col("stratum")
+        .replace_strict({k: sizes[k] / n for k, n in sample.items()}, return_dtype=pl.Float64)
+        .alias("w")
+    )
+    truth = pl.col("label") == "same"
+    for c in [float(x) for x in cfg.get("eval_confidences", [0.0, 0.7, 0.8, 0.85, 0.9, 0.95])]:
+        d = g.with_columns(accepted_same(g, cfg, c, agree_with).alias("pred"))
+        tp = d.filter(pl.col("pred") & truth)
+        fp = d.filter(pl.col("pred") & ~truth)
+        fn = d.filter(~pl.col("pred") & truth)
+        wtp, wfp, wfn = (float(x["w"].sum()) for x in (tp, fp, fn))
+        res["rows"].append(
+            {
+                "min_confidence": c,
+                "accepted": tp.height + fp.height,
+                "tp": tp.height,
+                "fp": fp.height,
+                "fn": fn.height,
+                "fp_related": int((fp["label"] == "related").sum()),
+                "fp_different": int((fp["label"] == "different").sum()),
+                "precision": round(tp.height / (tp.height + fp.height), 3)
+                if tp.height + fp.height
+                else None,
+                "recall": round(tp.height / (tp.height + fn.height), 3)
+                if tp.height + fn.height
+                else None,
+                "precision_weighted": round(wtp / (wtp + wfp), 3) if wtp + wfp else None,
+                "recall_weighted": round(wtp / (wtp + wfn), 3) if wtp + wfn else None,
+                "est_merges_in_band": round(wtp + wfp),
+            }
+        )
+    return res
 
 
 # --------------------------------------------------------------------------- judging
@@ -454,7 +559,7 @@ def pilot_report(cfg: dict[str, Any], model: str) -> dict[str, Any]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Local-LLM judge for uncertain alignment pairs")
-    ap.add_argument("command", choices=["export", "probe", "pilot", "run", "import"])
+    ap.add_argument("command", choices=["export", "probe", "pilot", "run", "evaluate", "import"])
     ap.add_argument("--config", required=True, type=Path)
     ap.add_argument("--model", default=None, help="override the configured model name")
     ap.add_argument(
@@ -470,6 +575,17 @@ def main() -> None:
         help="answer budget; reasoning ('thinking') models need ~2048",
     )
     ap.add_argument("--concurrency", type=int, default=None, help="parallel requests")
+    ap.add_argument(
+        "--agree-with",
+        default=None,
+        help="evaluate/import: accept 'same' only if this model also said 'same'",
+    )
+    ap.add_argument(
+        "--min-confidence",
+        type=float,
+        default=0.0,
+        help="import: accept 'same' only at or above this confidence",
+    )
     ap.add_argument(
         "--max-hours",
         type=float,
@@ -493,7 +609,25 @@ def main() -> None:
         export(cfg)
         return
     if args.command == "import":
-        import_verdicts(cfg)
+        import_verdicts(cfg, args.min_confidence, args.agree_with)
+        return
+    if args.command == "evaluate":
+        if not cfg.get("model"):
+            raise SystemExit("set --model")
+        res = evaluate_band(cfg, cfg["model"], args.agree_with)
+        suffix = f"_and_{model_slug(args.agree_with)}" if args.agree_with else ""
+        name = f"judge_band_eval_{model_slug(cfg['model'])}{suffix}.json"
+        dump_json(res, resolve(cfg["pilot_dir"]) / name)
+        both = f" (agreeing with {args.agree_with})" if args.agree_with else ""
+        print(f"{res['judged']} of {res['gold']} fresh band pairs judged by {res['model']}{both}")
+        print("min_conf accepted  P     R     P(w)  R(w)  fp_rel fp_diff est_merges")
+        for r in res["rows"]:
+            print(
+                f"{r['min_confidence']:8.2f} {r['accepted']:8d}  {r['precision'] or 0:.3f} "
+                f"{r['recall'] or 0:.3f} {r['precision_weighted'] or 0:.3f} "
+                f"{r['recall_weighted'] or 0:.3f} {r['fp_related']:6d} {r['fp_different']:7d} "
+                f"{r['est_merges_in_band']:10d}"
+            )
         return
     client = LocalLLM(cfg)
     if args.command == "probe":

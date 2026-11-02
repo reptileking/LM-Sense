@@ -1,0 +1,846 @@
+job_id,lemma,upos,message,label,ambiguous,note
+6befbec296dd14e534d9,luster,NOUN,"Word: luster (NOUN)
+A (WordNet): a quality that outshines the usual
+B (Wiktionary): Any shining body or thing.
+  (parent sense: A thing exhibiting luster, particularly)",different,0,quality vs shining thing
+04ae599a80bad9ee21fc,lift,VERB,"Word: lift (VERB)
+A (WordNet): make off with belongings of others
+B (Wiktionary): To disperse, to break up.
+  Example: ""About three o'clock in the mornin', the company began to lift, and the room to get thinner and thinner.""",different,0,
+9960d7b3a28c0f9a73b1,Chimborazo,PROPN,"Word: Chimborazo (PROPN)
+A (WordNet): a mountain peak in the Andes in Ecuador (20,560 feet high)
+B (Wiktionary): An inactive volcano in central Ecuador, whose peak is the highest in the country and the furthest point from the centre of the Earth.",same,0,
+48f267dae78a6bcf29b6,drape,VERB,"Word: drape (VERB)
+A (WordNet): arrange in a particular way
+  Example: ""drape a cloth""
+B (Wiktionary): To make cloth.",different,0,
+535530d2ef7389c55c31,lean,VERB,"Word: lean (VERB)
+A (WordNet): cause to lean to the side
+  Example: ""Erosion listed the old tree""
+B (Wiktionary): To rest or rely, for support, comfort, to use as a hard surface for writing, etc.
+  Example: ""He lean'd not on his fathers but himself.""",different,0,
+afc29d67b513f771508b,schmuck,NOUN,"Word: schmuck (NOUN)
+A (WordNet): (Yiddish) a jerk
+B (Wiktionary): A jerk; a person who is unlikable, detestable, or contemptible because they are stupid, foolish, clumsy, oafish, inept, malicious, or unpleasant.
+  Example: ""One day my girlfriend, her boyfriend and I were sunbathing topless because that's Barbados - you can wear nothing if you want. And the Pepsi guy walks up and with my agent to meet us for lunch. I wond""",same,0,
+40d0430855f21e4d3504,old,NOUN,"Word: old (NOUN)
+A (WordNet): past times
+B (Wiktionary): People who are old; old beings; the older generation, taken as a group.
+  Example: ""A civilised society should always look after the old in the community.""",different,0,
+7231fa2de46175b9e103,private,ADJ,"Word: private (ADJ)
+A (WordNet): concerning things deeply private and personal
+  Example: ""intimate correspondence""
+B (Wiktionary): Not publicly known or divulged; secret, confidential; (of a message) intended only for a specific person or group.
+  Example: ""The identity of the beneficiaries of the trust is private.""",related,1,intimate vs secret/confidential
+21d166c7f6a259e977aa,true,NOUN,"Word: true (NOUN)
+A (WordNet): proper alignment; the property possessed by something that is in correct or proper alignment
+  Example: ""out of true""
+B (Wiktionary): The state of being in alignment.
+  Example: ""Some toolmakers are very careless when drilling the first hole through work that is to be bored, claiming that if the drilled hole comes out of true somewhat it can be brought true with the boring too""",same,0,
+431e6801d7db0189bc29,hand-to-mouth,ADJ,"Word: hand-to-mouth (ADJ)
+A (WordNet): providing only bare essentials
+  Example: ""a hand-to-mouth existence""
+B (Wiktionary): Involving immediate consumption (especially of food) with no provision for the future; having barely enough to survive, in poverty
+  Example: ""She has been a widow these six or eight years, and has lived, I imagine, in rather a hand-to-mouth fashion.""",same,0,
+b7f6ed1173d219120411,Salicornia,NOUN,"Word: Salicornia (NOUN)
+A (WordNet): glassworts
+B (Wiktionary): samphire (of the genus Salicornia)",related,1,genus vs plant of the genus
+052c1082395a7d47475a,peso,NOUN,"Word: peso (NOUN)
+A (WordNet): the basic unit of money in the Dominican Republic; equal to 100 centavos
+B (Wiktionary): The circulating currency of various Spanish-speaking American countries (Argentina, Chile, Colombia, Cuba, the Dominican Republic, Mexico, and Uruguay) and the Philippines.
+  Example: ""The value of the peso has plummeted 858% against the US dollar over the past five years as the central bank printed more of the currency to help the country’s spendthrift government avoid defaulting o""",related,0,one country's peso vs the currency in general
+a741bafc565986927426,projector,NOUN,"Word: projector (NOUN)
+A (WordNet): an optical instrument that projects an enlarged image onto a screen
+B (Wiktionary): An operator that forms a projection.",different,0,
+44dc9d36d64713d8e771,specialize,VERB,"Word: specialize (VERB)
+A (WordNet): suit to a special purpose
+  Example: ""specialize one's research""
+B (Wiktionary): To narrow in scope.
+  (parent sense: To make distinct or separate from what is common)
+  Example: ""He is at moſt a confuſed and wild Chriſtian, not ſpecialized by any form, but capable of all.""",related,1,suit to a purpose vs narrow in scope
+ec6e1a7ef595b0841062,unchecked,ADJ,"Word: unchecked (ADJ)
+A (WordNet): not restrained or controlled
+  Example: ""unbridled rage""
+B (Wiktionary): Of a check box: not checked (ticked or enabled).
+  Example: ""This pseudocode is unambiguous if we know that the previous state of all the boxes is ""unchecked."" Because we can't be sure of that in buggy code, a better model might be: […]""",different,0,
+8ec99838c74b2bfed768,square,NOUN,"Word: square (NOUN)
+A (WordNet): the product of two equal terms
+  Example: ""nine is the second power of three""
+B (Wiktionary): Ellipsis of square meal.
+  Example: ""Even when times were tough, we got three squares a day.""",different,0,
+42155bce06b1d340dccc,supernaturalism,NOUN,"Word: supernaturalism (NOUN)
+A (WordNet): a belief in forces beyond ordinary human understanding
+B (Wiktionary): A belief in the doctrine of supernatural or divine agency as manifested in the world, in human events, religious revelation, miracles, etc.",same,0,
+48b264e9a672e7d516a5,giveaway,NOUN,"Word: giveaway (NOUN)
+A (WordNet): a television or radio program in which contestants compete for awards
+B (Wiktionary): An event at which things are given away for free.
+  Example: ""In this giveaway a person who has had something special happen to him gives gifts to others around him, so that they can share in his feelings.""",different,0,
+0ec0d74843f64658622b,clayey,ADJ,"Word: clayey (ADJ)
+A (WordNet): (used of soil) compact and fine-grained
+  Example: ""the clayey soil was heavy and easily saturated""
+B (Wiktionary): Covered or dirtied with clay.
+  Example: ""Wheat-fields, one would think, cannot come to grow untilled; no man made clayey, or made weary thereby;—unless machinery will do it?""",different,0,
+f81a531be05750fd934a,positivity,NOUN,"Word: positivity (NOUN)
+A (WordNet): the quality of being undeniable and not worth arguing about
+B (Wiktionary): The condition of being positive (in all senses); positivism; optimism.",related,0,catch-all sense includes certainty
+237aa7a0a69f56544671,recommend,VERB,"Word: recommend (VERB)
+A (WordNet): express a good opinion of
+B (Wiktionary): To commit, to confide to another's care, confidence or acceptance, with favoring representations.
+  Example: ""A medieval oblate's parents recommended the boy for life to God and the monastery.""",different,0,
+05d284c20c0e5c9bb987,normal,ADJ,"Word: normal (ADJ)
+A (WordNet): forming a right angle
+B (Wiktionary): Perpendicular to a tangent of a curve or tangent plane of a surface.
+  Example: ""The interior normal vector of a perfect sphere always point toward the center, and the exterior normal vector directly away, and both are always collinear with the ray whose tip ends at the point of i""",same,1,perpendicular; B geometry-specific wording
+9c6b4b692f8251fb3932,ballet,NOUN,"Word: ballet (NOUN)
+A (WordNet): music written for a ballet
+B (Wiktionary): A light part song, frequently with a fa-la-la chorus, common among Elizabethan and Italian Renaissance composers.",different,0,
+180525f56dfa39d93d58,Alaska,PROPN,"Word: Alaska (PROPN)
+A (WordNet): a state in northwestern North America; the 49th state admitted to the union
+  Example: ""Alaska is the largest state in the United States""
+B (Wiktionary): An unincorporated community in Jefferson County, Pennsylvania.
+  (parent sense: Several places in the United States, named for the state or territory.)",different,0,
+8b2a7735a506cde74850,pet,NOUN,"Word: pet (NOUN)
+A (WordNet): a special loved one
+B (Wiktionary): Something kept as a companion, including inanimate objects.
+  Example: ""pet plant, pet rock""",different,0,
+bb2bce33fc36455e02cd,open,VERB,"Word: open (VERB)
+A (WordNet): make the opening move
+  Example: ""Kasparov opened with a standard opening""
+B (Wiktionary): To bring up, broach.
+  (parent sense: To start or begin.)
+  Example: ""I don't want to open that subject.""",different,0,
+0db723c13fe7a46c973b,wear away,VERB,"Word: wear away (VERB)
+A (WordNet): diminish, as by friction
+  Example: ""Erosion wore away the surface""
+B (Wiktionary): To erode gradually and progressively.
+  Example: ""As the sensitiveness which greeted my new position wore away, I began to rather like the freedom of my new character.""",same,0,
+8ca9580732a4d0f41793,format,NOUN,"Word: format (NOUN)
+A (WordNet): the organization of information according to preset specifications (usually for computer processing)
+B (Wiktionary): The form of presentation of something.",related,0,computing-specific vs general form of presentation
+ae9f5c9376da05b88478,lepidopteron,NOUN,"Word: lepidopteron (NOUN)
+A (WordNet): insect that in the adult state has four wings more or less covered with tiny scales
+B (Wiktionary): Any insect of the order Lepidoptera.",same,0,
+60bcebeb08edcc2975fa,sunchoke,NOUN,"Word: sunchoke (NOUN)
+A (WordNet): sunflower tuber eaten raw or boiled or sliced thin and fried as Saratoga chips
+B (Wiktionary): Synonym of Jerusalem artichoke (plant or species).",related,0,tuber vs plant
+6d73b61cfe0b9c0a40d7,keep going,VERB,"Word: keep going (VERB)
+A (WordNet): be a regular customer or client of
+  Example: ""We patronize this store""
+B (Wiktionary): To continue functioning; to maintain.
+  Example: ""The grandfather clock keeps going for over a week without winding.""",different,0,
+86d42e3e9682d054298e,very well,ADV,"Word: very well (ADV)
+A (WordNet): quite well
+  Example: ""she doesn't feel first-rate today""
+B (Wiktionary): Used other than figuratively or idiomatically: see very, well.
+  Example: ""She plays very well almost any instrument that you can think of.""",same,0,literal very + well
+cdd27875e27f87bb0d49,psi,NOUN,"Word: psi (NOUN)
+A (WordNet): a unit of pressure
+B (Wiktionary): A form of psychic energy.
+  Example: ""‘Come, lad,’ he said. ‘We will take tea together and speak of the noumenon, the psi and other more heterogenous phenomena.’""",different,0,
+8d686e6fd103e92f0605,iridescent,ADJ,"Word: iridescent (ADJ)
+A (WordNet): varying in color when seen in different lights or from different angles
+  Example: ""changeable taffeta""
+B (Wiktionary): Brilliant, lustrous, or colorful.
+  Example: ""iridescent sheen""",related,0,technical colour-changing vs loose brilliant
+01394c04254c43016451,rounder,NOUN,"Word: rounder (NOUN)
+A (WordNet): a dissolute person; usually a man who is morally unrestrained
+B (Wiktionary): One who rounds; one who comes about frequently or regularly.
+  Example: ""[…] itt is order'd that 18 Souldiers, 1 Corporall & 1 Rounder goe upon the Sloop […]""",different,0,
+5d3a643e3acb32e9fdf6,china clay,NOUN,"Word: china clay (NOUN)
+A (WordNet): a fine usually white clay formed by the weathering of aluminous minerals (as feldspar); used in ceramics and as an absorbent and as a filler (e.g., in paper)
+B (Wiktionary): Synonym of kaolin.
+  Example: ""Particularly engaging management's attention is the expanding market for china clay, which is mined in a sector of the Cornwall peninsula between St Austell in the south and Newquay in the north.""",same,0,
+c1ce64f84abe3b59026b,bumble,VERB,"Word: bumble (VERB)
+A (WordNet): speak haltingly
+  Example: ""The speaker faltered when he saw his opponent enter the room""
+B (Wiktionary): To speak in a rambling, incoherent, or indistinct manner, especially at tedious length.",same,1,speak haltingly vs ramblingly
+94c2feb96780d5fa42b1,relentless,ADJ,"Word: relentless (ADJ)
+A (WordNet): not to be placated or appeased or moved by entreaty
+  Example: ""grim determination""
+B (Wiktionary): Unrelenting or unyielding in severity.
+  Example: ""She sniffed, too, comprehendingly, and fixed her son with a relentless eye.""",same,0,
+0baad270ef720682994c,curve,NOUN,"Word: curve (NOUN)
+A (WordNet): the trace of a point whose direction of motion changes
+B (Wiktionary): A one-dimensional continuum.",same,1,"same mathematical curve, different definitions"
+13845ee81659d8a95ac5,pie,NOUN,"Word: pie (NOUN)
+A (WordNet): dish baked in pastry-lined pan often with a pastry top
+B (Wiktionary): Any of various other, non-pastry dishes that maintain the general concept of a shell with a filling.
+  Example: ""Shepherd's pie is made of mince covered with mashed potato.""",related,0,pastry pie vs non-pastry extension
+3f294410604d006928b4,city,NOUN,"Word: city (NOUN)
+A (WordNet): people living in a large densely populated municipality
+  Example: ""the city voted for Republicans in 1994""
+B (Wiktionary): A large amount of something (used after the noun).
+  Example: ""It’s video game city in here!""",different,0,
+1233ee258e3887a09c4e,strain,VERB,"Word: strain (VERB)
+A (WordNet): alter the shape of (something) by stress
+  Example: ""His body was deformed by leprosy""
+B (Wiktionary): To hold tightly, to clasp.
+  Example: ""So hauing said, her twixt her armes twaine / She straightly straynd, and colled tenderly […]""",different,0,
+e36eb69571ec9d19c63a,fowl,NOUN,"Word: fowl (NOUN)
+A (WordNet): a domesticated gallinaceous bird thought to be descended from the red jungle fowl
+B (Wiktionary): A bird hunted or kept for food, grouped into landfowl (order Galliformes), also called gamefowl, and waterfowl (order Anseriformes: ducks, geese, swans, etc.), which together form the clade Galloanserae.",related,0,domestic fowl vs any food bird
+b09d9105a4699ed92081,heavily,ADV,"Word: heavily (ADV)
+A (WordNet): slowly as if burdened by much weight
+  Example: ""time hung heavy on their hands""
+B (Wiktionary): Sadly.
+  Example: """"It was all my fault,"" he replied heavily.""",different,0,
+d355760c1c2edd1df6f8,search,VERB,"Word: search (VERB)
+A (WordNet): subject to a search
+  Example: ""The police searched the suspect""
+B (Wiktionary): To examine; to try; to put to the test.",different,0,
+18c62f1b8b6bd021484d,follow,VERB,"Word: follow (VERB)
+A (WordNet): to be the product or result
+  Example: ""Melons come from a vine""
+B (Wiktionary): To be a supporter of (a sports team).
+  Example: """"Sometimes I wonder what you do take any notice of—except the whistle and short skirts,"" speculated his superior. ""But no doubt ideas are germinating.""
+""I follow Chelsea,"" maintained Horace.""",different,0,
+3c21be9b8977025040e5,tablespoon,NOUN,"Word: tablespoon (NOUN)
+A (WordNet): as much as a tablespoon will hold
+B (Wiktionary): A large spoon, used for eating food from a bowl.
+  Example: ""Their eggs were deposited on a few bits of straw, and great caution was necessary in attempting to procure them, as the slightest touch crumbled their frail tenement into dust. By means of a tablespoo""",related,0,measure vs spoon
+e6bc68e1b1cbe1534ea6,fettle,NOUN,"Word: fettle (NOUN)
+A (WordNet): a state of fitness and good health
+  Example: ""in fine fettle""
+B (Wiktionary): One's mental state; spirits.",related,1,physical vs mental condition
+7411c4fc83846da9191b,bum,NOUN,"Word: bum (NOUN)
+A (WordNet): the fleshy part of the human body that you sit on
+  Example: ""he deserves a good kick in the butt""
+B (Wiktionary): A bumbailiff.
+  Example: ""About her Chariot, and behind, / Were Sergeants, Bums of every kind, / Tip-staffs, and all those Officers, / That squeeze a Living out of Tears.""",different,0,
+b4bbcd06a16d8cccabc4,death camas,NOUN,"Word: death camas (NOUN)
+A (WordNet): any of various plants of the genus Zigadenus having glaucous leaves and terminal racemes of mostly white flowers; all are poisonous
+B (Wiktionary): A member of any of various similar species, also called star lilies, of tribe Melanthieae in family Melanthiaceae, and formerly grouped into the genus Zigadenus (only Zigadenus glaberrimus remains there).",same,0,
+424e8917dfc92a737ca0,pampering,NOUN,"Word: pampering (NOUN)
+A (WordNet): the act of indulging or gratifying a desire
+B (Wiktionary): The act by which somebody is pampered.
+  Example: ""After all, hospitality is natural to man. Amid the ten thousand pamperings that attend upon wealth, it is forgotten, because we have not need for it; but it is only suspended, and the moment it is nec""",same,0,
+3b0b83cede713fbeccdd,impregnable,ADJ,"Word: impregnable (ADJ)
+A (WordNet): immune to attack; incapable of being tampered with
+  Example: ""an impregnable fortress""
+B (Wiktionary): Of a fortress or other fortified place: able to withstand all attacks; impenetrable, inconquerable, unvanquishable.
+  Example: ""Unerringly impelling this dead, impregnable, uninjurable wall, and this most buoyant thing within; there swims behind it all a mass of tremendous life, only to be adequately estimated as piled wood is""",same,1,"B restricted to fortresses, A's example is a fortress"
+1c829757bfb73107a38a,xenogeneic,ADJ,"Word: xenogeneic (ADJ)
+A (WordNet): denoting or relating to cells or tissues from individuals belonging to different species
+B (Wiktionary): Derived from a different species and therefore genetically and immunologically incompatible
+  Example: ""Among the types of xenografts that might be undertaken are extracorporeal ""xenoperfusion"" or perfusion of devices containing xenogeneic hepatocytes, auxiliary liver transplants, bridge liver transplan""",same,0,
+a653c5bd33b59bec9e6e,soothe,VERB,"Word: soothe (VERB)
+A (WordNet): give moral or emotional strength to
+B (Wiktionary): To assent to; yield to; humour by agreement or concession.
+  Example: ""To be ſhort, a wretched and curſed generation they be; hypocrites, pretending friendſhip, but they can not skill of plaine dealing and franke ſpeech. Rich men they claw, ſooth up and flatter: the poor""",different,0,
+bf3383e289a67f7a7332,Salafism,NOUN,"Word: Salafism (NOUN)
+A (WordNet): a militant group of extremist Sunnis who believe themselves the only correct interpreters of the Koran and consider moderate Muslims to be infidels; seek to convert all Muslims and to insure that its own fundamentalist version of Islam will dominate the world
+B (Wiktionary): A movement comparing itself to Sunni Islam, claiming to taking the pious ancestors, the salaf of the patristic period of early Islam, as exemplary models.",related,1,militant group vs the movement
+447d4fcd17aeb5cbab86,train,VERB,"Word: train (VERB)
+A (WordNet): drag loosely along a surface; allow to sweep the ground
+  Example: ""The toddler was trailing his pants""
+B (Wiktionary): To move (a gun) laterally so that it points in a different direction.
+  Example: ""The assassin had trained his gun on the minister.""",different,0,
+341df35cf6dd4b9c77c8,fowl,NOUN,"Word: fowl (NOUN)
+A (WordNet): the flesh of a bird or fowl (wild or domestic) used as food
+B (Wiktionary): A bird hunted or kept for food, grouped into landfowl (order Galliformes), also called gamefowl, and waterfowl (order Anseriformes: ducks, geese, swans, etc.), which together form the clade Galloanserae.",related,0,meat vs bird
+a4a8110e0e3398c52db2,calycle,NOUN,"Word: calycle (NOUN)
+A (WordNet): a group of bracts simulating a calyx as in a carnation or hibiscus
+B (Wiktionary): calyculus",same,0,
+bb2b3462e00fcc7d9599,spiller,NOUN,"Word: spiller (NOUN)
+A (WordNet): a long fishing line with many shorter lines and hooks attached to it (usually suspended between buoys)
+B (Wiktionary): A party who is liable for spillage, particularly of oil or waste, in a body of water.",different,0,
+b672170b3bfb95b2d804,wireless,NOUN,"Word: wireless (NOUN)
+A (WordNet): an electronic receiver that detects and demodulates and amplifies transmitted signals
+B (Wiktionary): A wireless connectivity to a computer network.
+  Example: ""If your wireless stops working, try restarting the router.""",different,0,
+607a09f6735d5712bd02,LF,NOUN,"Word: LF (NOUN)
+A (WordNet): 30 to 300 kilohertz
+B (Wiktionary): Abbreviation of light field.",different,0,
+28142a32a9566087034f,presentment,NOUN,"Word: presentment (NOUN)
+A (WordNet): a document that must be accepted and paid by another person
+B (Wiktionary): The official notice (formerly required to be given in court) of the surrender of a copyhold estate.
+  Example: ""As to the presentment: that, by the general custom of manors, is to be made at the next court baron immediately after the surrender""",different,0,
+0dde5cd0423a6d021d61,jewfish,NOUN,"Word: jewfish (NOUN)
+A (WordNet): large dark grouper with a thick head and rough scales
+B (Wiktionary): Tandanus tandanus (eel-tailed catfish, freshwater jewfish, dewfish)
+  (parent sense: Any of several fish species, principally groupers and similar-appearing fish)",different,0,
+1f123f7b7c823b6b1c97,surge,VERB,"Word: surge (VERB)
+A (WordNet): rise and move, as in waves or billows
+  Example: ""The army surged forward""
+B (Wiktionary): To accelerate forwards, particularly suddenly.
+  Example: ""A ship surges forwards, sways sideways and heaves up.""",related,1,wave-like movement vs nautical sudden acceleration
+91be4f545ff9b5a9f6b0,activist,NOUN,"Word: activist (NOUN)
+A (WordNet): a militant reformer
+B (Wiktionary): One who is politically active in the role of a citizen; especially, one who campaigns for change.
+  Example: ""It has jailed environmental activists and is planning to limit the power of judicial oversight by handing a state-approved body a monopoly over bringing environmental lawsuits.""",same,0,
+23512e7494de743e271b,catch,VERB,"Word: catch (VERB)
+A (WordNet): apprehend and reproduce accurately
+  Example: ""She really caught the spirit of the place in her drawings""
+B (Wiktionary): To record, for example on film or tape.
+  (parent sense: To capture, overtake.)
+  Example: ""It's the very first time such an elusive bird has been caught on film.""",related,1,depict accurately vs record on film
+34936aeceab74044f55a,save,VERB,"Word: save (VERB)
+A (WordNet): save from sins
+B (Wiktionary): To spare (somebody) (from effort, or from something undesirable).
+  (parent sense: To prevent harm or difficulty.)
+  Example: ""I'll save you / That labour, sir. All's now done.""",different,0,
+1f38e0adbd2607d69746,pocked,ADJ,"Word: pocked (ADJ)
+A (WordNet): marked by or as if by smallpox or acne or other eruptive skin disease
+B (Wiktionary): pockmarked
+  Example: ""Similar to an extended deposition he gave in 2015 to Kentucky state lawyers, Dr. Sackler offered testimony largely pocked with faint or absent recollections, terse statements and deflections to his le""",same,0,
+8c7ae3eff23cf76c2cf8,issue,VERB,"Word: issue (VERB)
+A (WordNet): circulate or distribute or equip with
+  Example: ""issue a new uniform to the children""
+B (Wiktionary): To send out; to put into circulation.
+  Example: ""The Federal Reserve issues US dollars.""",related,1,distribute/equip vs put into circulation
+01db4e6fa44c70a4890c,apple,NOUN,"Word: apple (NOUN)
+A (WordNet): native Eurasian tree widely cultivated in many varieties for its firm rounded edible fruits
+B (Wiktionary): Synonym of pome (“a type of fruit in which the often edible flesh arises from the swollen base of the flower and not from the carpels”).
+  (parent sense: A common, firm, round fruit produced by a tree of the genus Malus.)",different,0,tree vs pome fruit type
+15b72d3098e7b64c13c7,arctic skua,NOUN,"Word: arctic skua (NOUN)
+A (WordNet): a variety of jaeger
+B (Wiktionary): A seabird (Stercorarius parasiticus), of the skua family (Stercorariidae)
+  Example: ""There are fast soaring streamlined Arctic skuas with pointed double tail feathers extending behind them like the flights on a dart.""",same,0,
+3bc5174fb40d297f6272,antisepsis,NOUN,"Word: antisepsis (NOUN)
+A (WordNet): (of non-living objects) the state of being free of pathogenic organisms
+B (Wiktionary): Any antiseptic agent.
+  Example: ""Pastes made with ordinary wheat flour are very liable to mould and while this tendency may be counteracted by addition of chemical preservatives, there is danger that such antisepses may not be health""",different,0,state vs agent
+0d3a0ac17db98cc749c0,head,NOUN,"Word: head (NOUN)
+A (WordNet): that part of a skeletal muscle that is away from the bone that it moves
+B (Wiktionary): The end of a rectangular table furthest from the entrance; traditionally considered a seat of honor.
+  (parent sense: The end of a table.)
+  Example: ""During meetings, the supervisor usually sits at the head of the table.""",different,0,
+1ccce677033a274e94d3,visitation,NOUN,"Word: visitation (NOUN)
+A (WordNet): an annoying or frustrating or catastrophic event
+  Example: ""his mother-in-law's visits were a great trial for him""
+B (Wiktionary): An unusual and extensive irruption of a species of animals into another region.",different,0,
+954a23ef46346de8f3d1,draft,NOUN,"Word: draft (NOUN)
+A (WordNet): a large and hurried swallow
+  Example: ""he finished it at a single gulp""
+B (Wiktionary): That which is drawn in; a catch; a haul.
+  (parent sense: Senses relating to pulling:)
+  Example: ""He cast his net, which brought him a very great draft.""",different,0,
+2946a8e567e477b4a257,mystifying,ADJ,"Word: mystifying (ADJ)
+A (WordNet): of an obscure nature
+  Example: ""the new insurance policy is written without cryptic or mysterious terms""
+B (Wiktionary): Very hard to understand; baffling.",same,0,
+2395448bf06c403ae80e,take,VERB,"Word: take (VERB)
+A (WordNet): take as an undesirable consequence of some event or state of affairs
+  Example: ""the accident claimed three lives""
+B (Wiktionary): To submit to; to endure (without ill humor, resentment, or physical failure).
+  Example: ""took a pay cut""",different,0,
+7fb528dfe2e03b703308,torch,NOUN,"Word: torch (NOUN)
+A (WordNet): a burner that mixes air and gas to produce a very hot flame
+B (Wiktionary): A similarly shaped implement with a replaceable supply of flammable material; specifically, a pole with a lamp at one end.
+  (parent sense: A stick of wood or plant fibres twisted together, with one end soaked in a flammable substance such as resin or tallow and set on fire, which is held in the hand, put into a wall bracket, or stuck into the ground, and used chiefly as a light source.)
+  Example: ""Eleven days before the start of the [modern Olympic] Games, a flaming torch is ignited by the sun in Olympia at the ruins of the ancient Temple of Zeus. With that flame, relay runners lighted torches """,different,0,
+bcf02e8728ad8bfbc83f,company,NOUN,"Word: company (NOUN)
+A (WordNet): an institution created to conduct business
+  Example: ""he only invests in large well-established companies""
+B (Wiktionary): Any business, whether incorporated or not, that manufactures or sells products (also known as goods), or provides services as a commercial venture.
+  (parent sense: An entity having legal personality, and thus able to own property and to sue and be sued in its own name; a corporation.)
+  Example: ""Marconi set up the company who made the first radios.""",same,0,
+2f57602073e4f089b08b,Orthodox Judaism,PROPN,"Word: Orthodox Judaism (PROPN)
+A (WordNet): beliefs and practices of a Judaic sect that strictly observes Mosaic law
+B (Wiktionary): The most traditional Rabbinic branch of Judaism, characterized by the belief in the continued relevance and binding nature of the Rabbinic interpretation of Jewish law.",same,0,
+09c2dd229d6a12420c77,Abies,NOUN,"Word: Abies (NOUN)
+A (WordNet): true firs
+B (Wiktionary): A tannin made from the barks of firs and spruces.",different,0,
+016c0679df60e95a1fd2,fox,VERB,"Word: fox (VERB)
+A (WordNet): deceive somebody
+  Example: ""We tricked the teacher into thinking that class would be cancelled next week""
+B (Wiktionary): To cheat or rob.
+  Example: ""Have you any news of Miriam? As I have had no reply to my delicately worded epistle, I can only presume that you foxed me with the wrong address, and that you are yourself already engaged to be marrie""",same,1,deceive vs cheat or rob
+46254874d93a93df651e,chain,NOUN,"Word: chain (NOUN)
+A (WordNet): a series of hills or mountains
+  Example: ""the valley was between two ranges of hills""
+B (Wiktionary): A bicycle chain.
+  (parent sense: A series of interconnected rings or links usually made of metal.)
+  Example: ""My bike needs a chain.""",different,0,
+75cff87121c932e7d658,cyclops,NOUN,"Word: cyclops (NOUN)
+A (WordNet): minute free-swimming freshwater copepod having a large median eye and pear-shaped body and long antennae used in swimming; important in some food chains and as intermediate hosts of parasitic worms that affect man e.g. Guinea worms
+B (Wiktionary): A one-eyed creature of any species.
+  Example: ""Look at just about any vertebrate and you’ll see two eyes looking back at you. Falcons circling overhead have two eyes, just like hammerhead sharks roving through the ocean. Scientists have long puzzl""",different,0,
+f67a42e7776b53dae05b,puddle,VERB,"Word: puddle (VERB)
+A (WordNet): work a wet mixture, such as concrete or mud
+B (Wiktionary): To line a canal with puddle (clay).",related,0,specific use of puddling
+24c215484a19578343b8,production,NOUN,"Word: production (NOUN)
+A (WordNet): (economics) manufacturing or mining or growing something (usually in large quantities) for sale
+  Example: ""he introduced more efficient methods of production""
+B (Wiktionary): An extension or protrusion.",different,0,
+aba8365a625b440e435d,charge,VERB,"Word: charge (VERB)
+A (WordNet): give over to another for care or safekeeping
+  Example: ""consign your baggage""
+B (Wiktionary): To mortgage (a property).",different,0,
+806c6d49b8e4e3d8ee06,load,NOUN,"Word: load (NOUN)
+A (WordNet): an amount of alcohol sufficient to intoxicate
+  Example: ""he got a load on and started a brawl""
+B (Wiktionary): A unit of measure for various quantities.
+  Example: ""If this load equals its modern representative, it contains 18 cwt. of dry, 19 of new hay.""",different,0,
+278b0386229d92a451b8,slip away,VERB,"Word: slip away (VERB)
+A (WordNet): for time to move forward
+  Example: ""three years elapsed""
+B (Wiktionary): To pass quickly, almost unnoticed.
+  Example: ""The months slipped away and became years.""",same,0,
+c3a9d829dcff99f49548,Pallas,PROPN,"Word: Pallas (PROPN)
+A (WordNet): (Greek mythology) goddess of wisdom and useful arts and prudent warfare; guardian of Athens; identified with Roman Minerva
+B (Wiktionary): A female given name from Ancient Greek of mythological origin; rare in English.",different,0,
+0ce0b3b4c476938b9a20,fix,VERB,"Word: fix (VERB)
+A (WordNet): to be about to do something
+B (Wiktionary): To shoot up; to inject a drug.
+  Example: ""She doesn't have to worry about stool pigeons because every law in the Federal District knows that Lupita sells junk. She keeps outfits in glasses of alcohol so the junkies can fix in the joint and wa""",different,0,
+511e1d6bea8ebb263f18,rare,ADJ,"Word: rare (ADJ)
+A (WordNet): marked by an uncommon quality; especially superlative or extreme of its kind
+  Example: ""what is so rare as a day in June""
+B (Wiktionary): Cool; excellent.
+  Example: ""I whistled for a cab and when it came near / The license plate said ‘fresh’ and it had dice in the mirror. / If anything I could say that this cab was rare.""",related,1,superlative of its kind vs slang excellent
+799525bda28a60bfcb60,unconstraint,NOUN,"Word: unconstraint (NOUN)
+A (WordNet): the trait of lacking restraint or control; reckless freedom from inhibition or worry
+  Example: ""she danced with abandon""
+B (Wiktionary): Freedom from constraint.
+  Example: ""It is calculated to inspire unconstraint and confidence into every breast.""",related,1,reckless abandon vs neutral freedom
+806cc89002dd20e69463,keep down,VERB,"Word: keep down (VERB)
+A (WordNet): place a limit on the number of
+B (Wiktionary): To cause not to increase or rise.
+  Example: ""It is essential to keep the numbers down to avoid overcrowding.""",same,0,
+0b6a4d93c4f80d10554d,civet bean,NOUN,"Word: civet bean (NOUN)
+A (WordNet): small flat green bean similar to lima beans
+B (Wiktionary): Synonym of butter bean (“a lima bean, Phaseolus lunatus, especially when yellow or yellowish-white in color.”)",same,1,"same species, bean vs butter-bean synonym"
+c601e655c043cbcd5888,powder,NOUN,"Word: powder (NOUN)
+A (WordNet): any of various cosmetic or medical preparations dispensed in the form of a pulverized powder
+B (Wiktionary): A mixture of fine dry, sweet-smelling particles applied to the face or other body parts, to reduce shine or to alleviate chaffing.
+  Example: ""She was redolent of violet sachet powder, and had warm, soft, white hands, but she danced divinely, moving as smoothly as the tide coming in.""",related,0,cosmetic or medical powder vs face powder
+6e5035ab93cb530f2c6a,stake,NOUN,"Word: stake (NOUN)
+A (WordNet): a pole or stake set up to mark something (as the start or end of a race track)
+  Example: ""a pair of posts marked the goal""
+B (Wiktionary): A piece of wood driven in the ground, placed in the middle of the court, that is used as the finishing point after scoring 12 hoops in croquet.",related,0,marker stake vs croquet stake
+6b9006ad40a959aeabf6,atavistic,ADJ,"Word: atavistic (ADJ)
+A (WordNet): characteristic of an atavist
+B (Wiktionary): Relating to earlier, more primitive behavior that returns after an absence.",same,0,
+392ecaf8870b0b4b0f75,push,VERB,"Word: push (VERB)
+A (WordNet): sell or promote the sale of (illegal goods such as drugs)
+  Example: ""The guy hanging around the school is pushing drugs""
+B (Wiktionary): To publish (an update, etc.) by transmitting it to other computers.
+  Example: ""Because this version of the Windows Installer is aware of the GAC, it has the capability to publish components into it. […] You can manually or programmatically push an assembly into the GAC by using """,different,0,
+37cfbfe8f3f0d733621a,cyclic,ADJ,"Word: cyclic (ADJ)
+A (WordNet): marked by repeated cycles
+B (Wiktionary): Firing at its full cyclic rate.
+  Example: ""On it came, closer and closer, and as it did so it became clear that the pilot, if he was alive, had terminal intentions. Though the torpedo somehow missed, the plane itself did not. To those watching""",different,0,
+54c5b050a0048e80b87b,etna,NOUN,"Word: etna (NOUN)
+A (WordNet): a gas burner used in laboratories; has an air valve to regulate the mixture of gas and air
+B (Wiktionary): Any of several kind of spirit burners, lamps or stoves, especially portable; (later chiefly in attributive use).
+  Example: ""There should certainly be an etna for getting a hot cup of coffee in a hurry.""",related,1,lab gas burner vs spirit burner
+d03df2ab0df3e0055284,inconsideration,NOUN,"Word: inconsideration (NOUN)
+A (WordNet): the quality of failing to be considerate of others
+B (Wiktionary): Lack of due consideration; inattention to consequences, thoughtlessness.
+  Example: ""new trained Souldiers, and such as are but novices in the trade, doe often headlong, and hand over head cast themselves into dangers, with more inconsideration, than afterward when they have seene and""",related,1,inconsiderate to others vs thoughtless of consequences
+e7d5dbdc80d681a1afb4,back,ADV,"Word: back (ADV)
+A (WordNet): in or to or toward a former location
+  Example: ""she went back to her parents' house""
+B (Wiktionary): In a direction opposite to the usual or desired direction of movement or progress, physically or figuratively.
+  Example: ""Wind the film back a few frames.""",different,0,returning vs reverse direction
+d151ea990fb271d202b7,depute,VERB,"Word: depute (VERB)
+A (WordNet): transfer power to someone
+B (Wiktionary): To delegate (a task, etc.) to a subordinate.
+  Example: ""Will Wyatt having moved up a notch, the project was deputed to a second team of producers whose judgement I didn't trust.""",same,1,transfer power vs delegate a task
+1ac676351926c0a256c6,come to hand,VERB,"Word: come to hand (VERB)
+A (WordNet): be revealed or disclosed
+  Example: ""The truth finally came to light""
+B (Wiktionary): To perform well, to come under control.
+  Example: ""The horse came to hand, and won first prize.""",different,0,
+385832dd0d1890e57e1d,Eureka,PROPN,"Word: Eureka (PROPN)
+A (WordNet): a town in northwest California on an arm of the Pacific Ocean
+B (Wiktionary): A small research base in Fosheim Peninsula, Ellesmere Island, Qikiqtaaluk Region, Nunavut, Canada.",different,0,
+cae51396d1eccfb6d39b,Pandion,PROPN,"Word: Pandion (PROPN)
+A (WordNet): type genus of the Pandionidae
+B (Wiktionary): The name of two kings of Athens (Pandion I and Pandion II).",different,0,
+5b9d4a99b8a58e4f59ca,babble,VERB,"Word: babble (VERB)
+A (WordNet): flow in an irregular current with a bubbling noise
+  Example: ""babbling brooks""
+B (Wiktionary): To make a continuous murmuring noise, like shallow water running over stones.
+  Example: ""Hounds are said to babble, or to be babbling, when they are too noisy after having found a good scent.""",same,1,water flowing with bubbling noise vs murmuring like water
+af1959aaced5aeb84abf,Wb,NOUN,"Word: Wb (NOUN)
+A (WordNet): a unit of magnetic flux equal to 100,000,000 maxwells
+B (Wiktionary): Initialism of whole blood.",different,0,
+dc17ed732becf1c7d59a,drugging,NOUN,"Word: drugging (NOUN)
+A (WordNet): the administration of a sedative agent or drug
+B (Wiktionary): The habit of using drugs; drug use.
+  Example: ""She finally quit all that drinking and drugging that was ruining her life.""",different,0,administering vs habitual use
+05f875bc349a8b4f22ba,stool,NOUN,"Word: stool (NOUN)
+A (WordNet): (forestry) the stump of a tree that has been felled or headed for the production of saplings
+B (Wiktionary): A production of feces or excrement; an act of defecation, stooling.
+  (parent sense: Feces; excrement.)
+  Example: ""Normal stooling is widely variant. Some infants only have one stool per day, especially those on formula feeding. Others may stool with each feeding. Such frequent stooling is common in breast-fed inf""",different,0,
+271e39e4ea97e8de7792,bold,ADJ,"Word: bold (ADJ)
+A (WordNet): clear and distinct
+  Example: ""bold handwriting""
+B (Wiktionary): Visually striking; conspicuous.
+  Example: ""the painter's bold use of colour and outline""",same,1,clear and distinct vs visually striking
+58a703c893a4d3d26bb2,cessation,NOUN,"Word: cessation (NOUN)
+A (WordNet): a stopping
+  Example: ""a cessation of the thunder""
+B (Wiktionary): A ceasing or discontinuance, for example of an action, whether temporary or final.
+  Example: ""it might be advisable to permit the temporary cessation of the papal inquisition""",same,0,
+ed641f1ecabafab5bfca,pattern,VERB,"Word: pattern (VERB)
+A (WordNet): plan or create according to a model or models
+B (Wiktionary): To assault.
+  (parent sense: To arrange, to organise, to fix.)
+  Example: ""Pattern gang, who they patterning? Pull up, skrr, have them panicking.""",different,0,
+93d43315be2ed1f3bf60,no doubt,ADV,"Word: no doubt (ADV)
+A (WordNet): admittedly
+  Example: ""to be sure, he is no Einstein""
+B (Wiktionary): without a doubt; surely.
+  Example: ""No doubt you can provide a better definition//that is, there's no doubt that you can.""",related,1,concessive admittedly vs assertive surely
+2416649d809d70eb656d,clear,VERB,"Word: clear (VERB)
+A (WordNet): earn on some commercial or business transaction; earn as salary or wages
+  Example: ""How much do you make a month in your new job?""
+B (Wiktionary): Of a check or financial transaction, to go through as payment; to be processed so that the money is transferred.
+  Example: ""The check might not clear for a couple of days.""",different,0,
+d8ed56db23d8953b70ea,converse,NOUN,"Word: converse (NOUN)
+A (WordNet): a proposition obtained by conversion
+B (Wiktionary): The opposite or reverse.",related,0,logic converse vs general opposite
+04110257479d83f912af,industriousness,NOUN,"Word: industriousness (NOUN)
+A (WordNet): persevering determination to perform a task
+  Example: ""his diligence won him quick promotions""
+B (Wiktionary): The quality of being industrious.",same,0,
+0097abab9778e1519853,retrench,VERB,"Word: retrench (VERB)
+A (WordNet): tighten one's belt; use resources carefully
+B (Wiktionary): To abridge; to curtail.
+  Example: ""But this thy glory ſhall be ſoon retrench'd; / No more ſhalt thou by oracling abuſe / The Gentiles; henceforth Oracles are ceaſt, / And thou no more with Pomp and Sacrifice / Shalt by enquir'd at Delp""",related,0,economise vs curtail something
+b2ab0b00770d97d4d693,break down,VERB,"Word: break down (VERB)
+A (WordNet): lose control of one's emotions
+  Example: ""When she heard that she had not passed the exam, she lost it completely""
+B (Wiktionary): To give in or give up: relent, concede, surrender.
+  Example: ""Is it worth taking it to a repair shop, or should I just break down and buy a new one?""",different,0,
+f2b6f4361942b6dfccb2,only,ADV,"Word: only (ADV)
+A (WordNet): in the final outcome
+  Example: ""These news will only make you more upset""
+B (Wiktionary): Introduces a disappointing or surprising outcome that renders futile something previously mentioned.
+  Example: ""They rallied from a three-goal deficit only to lose in the final two minutes of play.""",same,1,final-outcome only
+c04e4fbaba0856380f1c,silver fir,NOUN,"Word: silver fir (NOUN)
+A (WordNet): any of various true firs having leaves white or silvery white beneath
+B (Wiktionary): A Pindrow fir (Abies pindrow), native to Asia
+  (parent sense: Any of several species large evergreen coniferous trees of genus Abies (firs):)",related,0,silver firs in general vs one species
+6d4cdba20c2a9c797754,duffel,NOUN,"Word: duffel (NOUN)
+A (WordNet): a large cylindrical bag of heavy cloth; for carrying personal belongings
+B (Wiktionary): Outfit or supplies, collectively; kit.",related,1,bag vs its kit
+b83b5b48ccb386d3548f,philosophy,NOUN,"Word: philosophy (NOUN)
+A (WordNet): any personal belief about how to live or how to deal with a situation
+  Example: ""self-indulgence was his only philosophy""
+B (Wiktionary): A general principle (usually moral).
+  Example: ""As a matter of fact the Enlightment culture was based on a philosophy inspired to an ethical laicism whose aim was to create a better society based on principles such as solidarity, equality of rights""",same,1,personal belief vs general principle
+dd90b056d15b2f05e17b,tee,VERB,"Word: tee (VERB)
+A (WordNet): connect with a tee
+  Example: ""tee two pipes""
+B (Wiktionary): To redirect output to multiple destinations.
+  Example: ""[…] teeing via multiple redirects (ls > file1 > file2) […]""",different,0,
+c89c91cd10d9efe60e47,garganey,NOUN,"Word: garganey (NOUN)
+A (WordNet): small Eurasian teal
+B (Wiktionary): A small dabbling duck, Anas querquedula, that breeds in much of Europe and western Asia, and winters in Africa.",same,0,
+a068b9bfe67b3f2b7ab5,hog,NOUN,"Word: hog (NOUN)
+A (WordNet): domestic swine
+B (Wiktionary): An adult swine, at or above a certain body weight.
+  (parent sense: Any animal belonging to the Suidae family of mammals, especially the pig, the warthog, and the boar.)
+  Example: ""Weanlings grow into feeder pigs, and feeder pigs grow into slaughter hogs. […] Ultimately the end use for virtually all pigs and hogs is to be slaughtered for the production of pork and other products""",related,0,domestic swine vs heavy adult swine
+631a42fd10ef76fe7e61,loge,NOUN,"Word: loge (NOUN)
+A (WordNet): balcony consisting of the forward section of a theater mezzanine
+B (Wiktionary): The lodge of a concierge.
+  Example: ""About three in the morning, Nora knocked at the little glass door of the concierge's loge, asking if the doctor was in.""",different,0,
+a4981fda92fa7277ac72,waver,VERB,"Word: waver (VERB)
+A (WordNet): be unsure or weak
+  Example: ""Their enthusiasm is faltering""
+B (Wiktionary): Chiefly of a quality or thing: to change, to fluctuate, to vary.
+  Example: ""[T]he Englyſhe affaires (as you haue heard) within yͤ realme began to wauer, and waxe variable, whyche cauſed the Engliſhe capitaines, to be of diuerſe opinions.""",related,1,falter vs fluctuate
+fb0c330fc603a5ee13b7,addict,NOUN,"Word: addict (NOUN)
+A (WordNet): someone who is physiologically dependent on a substance or activity
+B (Wiktionary): An adherent or fan (of something).",different,0,
+f78ee2925b75be14b225,TB,NOUN,"Word: TB (NOUN)
+A (WordNet): a unit of information equal to 1024 gibibytes or 2^40 (1,099,511,627,776) bytes
+B (Wiktionary): Initialism of total bases.",different,0,
+97373b6293331a09774f,discharge,NOUN,"Word: discharge (NOUN)
+A (WordNet): the termination of someone's employment (leaving them free to depart)
+B (Wiktionary): The act of releasing an inpatient from hospital.
+  (parent sense: The act of expelling or letting go.)
+  Example: ""care transition after discharge""",different,0,
+ca102d03283e2ae35217,huddle,VERB,"Word: huddle (VERB)
+A (WordNet): crouch or curl up
+  Example: ""They huddled outside in the rain""
+B (Wiktionary): To form a huddle.",related,1,crouch vs gather in a huddle
+56eb70d48c422a4c921f,deterrence,NOUN,"Word: deterrence (NOUN)
+A (WordNet): a negative motivational influence
+B (Wiktionary): The art of producing in one's enemy the fear of attacking.",related,0,general negative influence vs military deterrence
+76a0712e14fadf362607,rolled,ADJ,"Word: rolled (ADJ)
+A (WordNet): rolled up and secured
+  Example: ""furled sails bound securely to the spar""
+B (Wiktionary): rolled dough
+  Example: ""rolled joint""",related,1,rolled up and secured vs formed by rolling
+be06b3e4608f4f7acef3,curtailment,NOUN,"Word: curtailment (NOUN)
+A (WordNet): the temporal property of being cut short
+B (Wiktionary): The act of curtailing.
+  Example: ""The railways are fully alive to the position, and are sparing neither effort nor expense to provide more attractive trains and to effect economies, but in such circumstances some curtailment of servic""",related,0,property vs act
+3232e64a3fdbe3455f12,retract,VERB,"Word: retract (VERB)
+A (WordNet): pull away from a source of disgust or fear
+B (Wiktionary): To draw back; to draw up; to withdraw.
+  Example: ""The bus was stuck at the stop as its wheelchair ramp wouldn’t retract after use.""",related,0,recoil from disgust vs draw back physically
+87de88d2bb4b256f37b9,Usuli,NOUN,"Word: Usuli (NOUN)
+A (WordNet): a religious movement by Persian Shiite Muslims in 17th century Iran that is opposed to the Akhbari
+  Example: ""Usuli Shiism produced the politically active caste of priests that is a distinctive feature of Iranian Shiism""
+B (Wiktionary): An adherent to Usulism, the majority branch of Twelver Shia Islam.",related,0,movement vs adherent
+af75e23877aaebfed553,stolidness,NOUN,"Word: stolidness (NOUN)
+A (WordNet): an indifference to pleasure or pain
+B (Wiktionary): The quality of being stolid.
+  Example: ""She got so she received all things with the stolidness of the earth which soaks up urine and perfume with the same indifference.""",same,0,
+04cdd0a11ae921099c8f,broomcorn millet,NOUN,"Word: broomcorn millet (NOUN)
+A (WordNet): extensively cultivated in Europe and Asia for its grain and in United States sometimes for forage
+B (Wiktionary): Proso millet (Panicum miliaceum).",same,0,
+cf80f5bead9069b4d1a4,red spider,NOUN,"Word: red spider (NOUN)
+A (WordNet): small web-spinning mite; a serious orchard pest
+B (Wiktionary): Synonym of red spider mite",same,0,
+ab6112a99d4d2076e1fa,thoroughbred,ADJ,"Word: thoroughbred (ADJ)
+A (WordNet): having a list of ancestors as proof of being a purebred animal
+B (Wiktionary): Well-bred and properly educated.",different,0,
+840356c170911e6bddee,manifest,VERB,"Word: manifest (VERB)
+A (WordNet): provide evidence for; stand as proof of; show by one's behavior, attitude, or external attributes
+  Example: ""His high fever attested to his illness""
+B (Wiktionary): To will something to exist.
+  Example: ""The process of creating your treasure map is a powerful step toward manifesting your goal. Now just spend a few minutes each day looking at it[…]""",different,0,
+88a037be07d81b9ed94b,specialty,NOUN,"Word: specialty (NOUN)
+A (WordNet): an asset of special worth or utility
+  Example: ""cooking is his forte""
+B (Wiktionary): Particularity.
+  Example: ""The specialty of rule hath been neglected:
+And, look, how many Grecian tents do stand
+Hollow upon this plain, so many hollow factions.""",different,0,
+4ac9fbdb2827dbba3b63,wingback,NOUN,"Word: wingback (NOUN)
+A (WordNet): (American football) the position of the offensive back who lines up behind or outside the end
+B (Wiktionary): A player who doubles on either side of the center as a defender when their team is defending, and a winger when they are attacking.",different,0,
+e3e84f0d30fdc0ada1c5,American centaury,NOUN,"Word: American centaury (NOUN)
+A (WordNet): any of several pink-flowered marsh plant of the eastern United States resembling a true centaury
+B (Wiktionary): The plant Sabbatia angularis.",related,1,several Sabbatia species vs one
+49e8cca61e827a0de158,service,NOUN,"Word: service (NOUN)
+A (WordNet): periodic maintenance on a car or machine
+  Example: ""it was time for an overhaul on the tractor""
+B (Wiktionary): Service tree.",different,0,
+22cd68a871b1d21e5aa2,cleanliness,NOUN,"Word: cleanliness (NOUN)
+A (WordNet): the habit of keeping free of superficial imperfections
+B (Wiktionary): Ritual purity.",different,0,
+961f7d2f13c9f0517a53,lead,VERB,"Word: lead (VERB)
+A (WordNet): be in charge of
+  Example: ""Who is heading this project?""
+B (Wiktionary): To conduct or direct with authority; to have direction or charge of; to command, especially a military or business unit.
+  (parent sense: To guide or conduct.)
+  Example: ""to lead a political party""",same,0,
+b41cfdeca9229e602329,newsy,ADJ,"Word: newsy (ADJ)
+A (WordNet): prone to friendly informal communication
+B (Wiktionary): Chatty, gossipy.",same,0,
+da5cdb8a70392afdf322,telex,NOUN,"Word: telex (NOUN)
+A (WordNet): a character printer connected to a telegraph that operates like a typewriter
+B (Wiktionary): A teletype message sent through such a network.",related,0,device vs message
+7e11d73c564795ce6573,yoke,NOUN,"Word: yoke (NOUN)
+A (WordNet): fabric comprising a fitted part at the top of a garment
+B (Wiktionary): A fitting placed across the head of the rudder with a line attached at each end by which a boat may be steered; in modern use it is primarily found in sailing canoes and kayaks.
+  (parent sense: Any of various linking or supporting objects that resembles a yoke (sense 1.1); a crosspiece, a curved bar, etc.)
+  Example: ""A light whale-boat, handsomely painted, and fitted out with stern seats, yoke, tiller-ropes, &c. hung on the starboard quarter, and was used as the gig. […] The bow-man had charge of the boat-hook and""",different,0,
+2bd9660e70f206bfde07,bottom out,VERB,"Word: bottom out (VERB)
+A (WordNet): hit the ground
+  Example: ""the car bottomed out where the driveway meets the road""
+B (Wiktionary): Of a vessel, to touch the bottom of a water body.",related,1,vehicle hits ground vs vessel touches bottom
+31d57272a1682af59b07,combine,NOUN,"Word: combine (NOUN)
+A (WordNet): a consortium of independent organizations formed to limit competition by controlling the production and distribution of a product or service
+  Example: ""they set up the trust in the hope of gaining a monopoly""
+B (Wiktionary): Especially, a joint enterprise of whatever legal form for a purpose of business or in any way promoting the interests of the participants, sometimes with monopolistic or fraudulent intentions.
+  (parent sense: A combination.)
+  Example: ""The telecom companies were accused of having formed an illegal combine in order to hike up the network charges.""",related,1,anticompetitive consortium vs joint enterprise in general
+0ea6781e39dbdb11dc8c,economy,NOUN,"Word: economy (NOUN)
+A (WordNet): an act of economizing; reduction in cost
+  Example: ""it was a small economy to walk to work every day""
+B (Wiktionary): Management of one’s residency.",different,0,
+aaa1f80898124c2f9755,unkind,ADJ,"Word: unkind (ADJ)
+A (WordNet): deficient in humane and kindly feelings
+B (Wiktionary): Having no race or kindred; childless.
+  Example: ""O, had thy mother borne so hard a mind,
+She had not brought forth thee, but died unkind.""",different,0,
+b240276d408dee105ef1,go,VERB,"Word: go (VERB)
+A (WordNet): be spent
+  Example: ""All my money went for food and rent""
+B (Wiktionary): To be sold.
+  Example: ""The car went for five thousand dollars.""",different,0,
+8df5c91d2c5cd898a93a,rake,VERB,"Word: rake (VERB)
+A (WordNet): level or smooth with a rake
+  Example: ""rake gravel""
+B (Wiktionary): To incline (something) from a perpendicular direction.
+  Example: ""A mast rakes aft.""",different,0,
+7e48b650b46d4bb117f7,tryst,NOUN,"Word: tryst (NOUN)
+A (WordNet): a secret rendezvous (especially between lovers)
+B (Wiktionary): A mutual agreement, a covenant.",different,0,
+88ead2c6b763907d8542,discreet,ADJ,"Word: discreet (ADJ)
+A (WordNet): unobtrusively perceptive and sympathetic
+  Example: ""a discerning editor""
+B (Wiktionary): Not drawing attention, anger or challenge; inconspicuous.",different,0,
+e62924da648e26b44624,errant,ADJ,"Word: errant (ADJ)
+A (WordNet): uncontrolled motion that is irregular or unpredictable
+  Example: ""an errant breeze""
+B (Wiktionary): Prone to erring or making errors; misbehaving.
+  Example: ""We ran down the street in pursuit of the errant dog.""",related,1,wandering irregularly vs prone to erring
+02abac59a9d8f36d1e0b,tormented,ADJ,"Word: tormented (ADJ)
+A (WordNet): tormented or harassed by nightmares or unreasonable fears
+  Example: ""hagridden … by visions of an imminent heaven or hell upon earth""
+B (Wiktionary): Miserable or anguished, especially with anxiety or guilt.",related,1,by nightmares and fears vs anguished in general
+62d1bfab3b2dcb331c17,smut,VERB,"Word: smut (VERB)
+A (WordNet): affect with smut or mildew, as of a crop such as corn
+B (Wiktionary): To taint (grain, etc.) with the smut fungus.
+  Example: ""Mildew also falls upon Corn, and smuts it""",same,0,
+ac92e6bc74fe2907bc19,surf,VERB,"Word: surf (VERB)
+A (WordNet): switch channels, on television
+B (Wiktionary): To browse the Internet, television, etc.",related,0,channel surfing vs browsing in general
+9921ad2645acc7f42b72,muster,VERB,"Word: muster (VERB)
+A (WordNet): call to duty, military service, jury duty, etc.
+B (Wiktionary): To gather or round up livestock.",different,0,
+2752fcd4b317702e886f,outgoing,ADJ,"Word: outgoing (ADJ)
+A (WordNet): retiring from a position or office
+  Example: ""the outgoing president""
+B (Wiktionary): Being replaced in office (while still in office but after election has determined that he/she will be replaced).
+  Example: ""The outgoing politician wasn't too disappointed he'd lost the election; he was tired of political infighting.""",same,0,
+cbc776af2994767492df,grassfinch,NOUN,"Word: grassfinch (NOUN)
+A (WordNet): usually brightly-colored Australian weaverbirds; often kept as cage birds
+B (Wiktionary): Any Australian finch of the genus Poephila.",same,0,
+e2873333b5ac14b8020e,assert,VERB,"Word: assert (VERB)
+A (WordNet): state categorically
+B (Wiktionary): To use or exercise and thereby prove the existence of.
+  Example: ""to assert one's authority""",different,0,
+515750dfcf7f6c4f9b32,traverse,NOUN,"Word: traverse (NOUN)
+A (WordNet): a horizontal crosspiece across a window or separating a door from a window over it
+B (Wiktionary): A screen or partition.
+  Example: ""Than sholde ye see there pressynge in a pace / Of one and other that wolde this lady see, / Whiche sat behynde a traves of sylke fyne, / Of golde of tessew the fynest that myghte be […]""",different,0,
+b1781acab6926e3d02aa,mo,NOUN,"Word: mo (NOUN)
+A (WordNet): an indefinitely short time
+  Example: ""wait just a moment""
+B (Wiktionary): A molester.
+  Example: ""The Idaho prison is full of cho-mos (child molesters), mos (molesters), and all types of sexual predators that have engaged in some type of abnormal sexual acts.""",different,0,
+2737b8952485e08ace62,tap,VERB,"Word: tap (VERB)
+A (WordNet): draw from or dip into to get something
+  Example: ""tap one's memory""
+B (Wiktionary): To deplete (something); to tap out.
+  Example: ""At the range of a couple of hundred yards we emptied our magazines, firing bullet after bullet into the beasts, but with no more effect than if we were pelting them with pellets of paper. Their slow r""",related,1,draw from vs deplete
+9835f4babe87fb557fda,willing,ADJ,"Word: willing (ADJ)
+A (WordNet): disposed or inclined toward
+  Example: ""a willing participant""
+B (Wiktionary): Ready to do something, particularly something that requires change or effort; not objecting.
+  Example: ""If my boyfriend isn't willing to change his drinking habits, I will split up with him.""",same,0,
+5391594ef1887722c870,halftone,NOUN,"Word: halftone (NOUN)
+A (WordNet): an engraving used to reproduce an illustration
+B (Wiktionary): An intermediate or middle tone in a painting, engraving, photograph, etc.; a middle tint, neither very dark nor very light.
+  Example: ""“No, I cannot enjoy it,” Cecilia said to Mrs. Devereux; “I don't mind the grey light; cloud and water, and half-tones of colour, are homely English and pleasant, and that opal where the sun should be """,different,0,
+1a000d5812ced5f106db,honor,NOUN,"Word: honor (NOUN)
+A (WordNet): a tangible symbol signifying approval or distinction
+  Example: ""an award for bravery""
+B (Wiktionary): A token of praise or respect; something that represents praiseworthiness or respect, such as a prize or award given by the state to a citizen.
+  Example: ""Honors are normally awarded twice a year: on The Queen's Birthday in June and at the New Year.""",same,0,
+5e46ce630086ccbeb84f,quake,VERB,"Word: quake (VERB)
+A (WordNet): shake with fast, tremulous movements
+  Example: ""His nostrils palpitated""
+B (Wiktionary): To be in a state of fear, shock, amazement, etc., such as might cause one to tremble.
+  Example: ""Turning back, then, toward the basement staircase, she began to grope her way through blinding darkness, but had taken only a few uncertain steps when, of a sudden, she stopped short and for a little """,related,0,physical shaking vs fearful state
+c1e3a456889206fe98b8,animal starch,NOUN,"Word: animal starch (NOUN)
+A (WordNet): one form in which body fuel is stored; stored primarily in the liver and broken down into glucose when needed by the body
+B (Wiktionary): Synonym of glycogen.",same,0,
+a025ddfa5af850485ae8,shine,VERB,"Word: shine (VERB)
+A (WordNet): experience a feeling of well-being or happiness, as from good health or an intense emotion
+  Example: ""She was beaming with joy""
+B (Wiktionary): To distinguish oneself; to excel.
+  Example: ""My nephew tried other sports before deciding on football, which he shone at right away, quickly becoming the star of his school team.""",different,0,
+8a294bca83ae99c4d512,corpuscle,NOUN,"Word: corpuscle (NOUN)
+A (WordNet): either of two types of cells (erythrocytes and leukocytes) and sometimes including platelets
+B (Wiktionary): A protoplasmic animal cell; especially, such as float free, like blood, lymph, and pus corpuscles; or such as are embedded in an intercellular matrix, like connective tissue and cartilage corpuscles.
+  Example: ""They gave me blood tests, of course. All kinds of blood tests testing my white corpuscles, testing my red corpuscles, testing one against the other.""",related,0,blood cells vs free animal cells in general
+d0b9cc5f182f109166a9,scratch race,NOUN,"Word: scratch race (NOUN)
+A (WordNet): a race in which all contestants start from scratch (on equal terms)
+B (Wiktionary): Any race where the winner is the first to cross the finish line.",same,1,"same race type, different defining feature"
+c78bb137a31b4d0a2955,vaunt,VERB,"Word: vaunt (VERB)
+A (WordNet): show off
+B (Wiktionary): To speak boastfully.
+  Example: """"The number,"" said he, ""is great, but what can be expected from mere citizen soldiers? They vaunt and menace in time of safety; none are so arrogant when the enemy is at a distance; but when the din o""",same,0,
+5ff5a48693c92037a90a,isothiocyanate,NOUN,"Word: isothiocyanate (NOUN)
+A (WordNet): a family of compounds derived from horseradish and radishes and onions and mustards; source of the hotness of those plants and preparations
+B (Wiktionary): any salt or ester of the hypothetical isothiocyanic acid; or the -NCS radical or the NCS⁻¹ anion; isomeric with thiocyanate",same,1,natural compound family vs chemical definition
+954b8cca7ced3ed73c76,booby prize,NOUN,"Word: booby prize (NOUN)
+A (WordNet): a prize given to one who finishes last in a contest
+B (Wiktionary): A prize or status, often unwelcome, awarded as a joke or disincentive to the loser of a contest or for poor performance.
+  Example: ""At the end of the conference, they awarded him with a rubber chicken as a booby prize for complaining the loudest.""",same,0,
+f2ac64da08e0b50f770a,resurrection plant,NOUN,"Word: resurrection plant (NOUN)
+A (WordNet): small grey Asiatic desert plant bearing minute white flowers that rolls up when dry and expands when moist
+B (Wiktionary): Ice plants (Mesembryanthemum spp.), which can revive within a short period of time after a drought
+  (parent sense: Any plant that can survive periods of extreme dehydration for which resurrection plant is a secondary name, including species:)",different,0,
+f2370dcba0c3149d895b,straight,ADJ,"Word: straight (ADJ)
+A (WordNet): erect in posture
+  Example: ""sit straight""
+B (Wiktionary): Related to conventional sexual intercourse.
+  Example: ""“That coffee-an’ mac you got,” a French girl would crack to a straight one, and then it was on—hair came out by the handful, some bleached and some unbleached.""",different,0,
+b460e5375bd3c1c8dad9,encrust,VERB,"Word: encrust (VERB)
+A (WordNet): decorate or cover lavishly (as with gems)
+B (Wiktionary): To inset or affix decorative materials upon (a surface); to inlay into, as a piece of carving or other ornamental object.
+  Example: ""The jeweller encrusted the ring with gems.""",same,0,
+6450b872b437fb884aa4,record,VERB,"Word: record (VERB)
+A (WordNet): indicate a certain reading; of gauges and instruments
+  Example: ""The thermometer showed thirteen degrees below zero""
+B (Wiktionary): To sing or repeat a tune.
+  Example: ""1595, George Peele, The Old Wives’ Tale, The Malone Society Reprints, 1908, lines 741-742,
+Come Berecynthia, let vs in likewise,
+And heare the Nightingale record hir notes.""",different,0,
+d8da9ae558da69a3127c,concentration,NOUN,"Word: concentration (NOUN)
+A (WordNet): the spatial property of being crowded together
+B (Wiktionary): The matching game pelmanism.",different,0,
+2d235d1d16fcb90b087e,sink,VERB,"Word: sink (VERB)
+A (WordNet): embed deeply
+  Example: ""She sank her fingers into the soft sand""
+B (Wiktionary): To make by digging or delving.
+  (parent sense: To move or be moved into something.)
+  Example: ""to sink a well in the ground""",different,0,
+179cbb18061e53a8052f,chapter,NOUN,"Word: chapter (NOUN)
+A (WordNet): any distinct period in history or in a person's life
+  Example: ""the industrial revolution opened a new chapter in British history""
+B (Wiktionary): An administrative division of an organization, usually local to a specific area.
+  (parent sense: A section of a social body.)",different,0,
+df334ed606c146afdb90,moonflower,NOUN,"Word: moonflower (NOUN)
+A (WordNet): pantropical climber having white fragrant nocturnal flowers
+B (Wiktionary): Any member of certain species of the genus Ipomoea of morning-glory vines ,
+  (parent sense: Any of certain plants that flower at night:)
+  Example: ""Hôtel Saint-George […] through whose exotic gardens of giant contorted euphorbia and sweet-smelling moonflowers Churchill and the titans of the Second World War strolled, laying plans for a world in w""",related,0,one Ipomoea species vs several
+ff794a0bcd795beceed0,counter,NOUN,"Word: counter (NOUN)
+A (WordNet): a piece of furniture that stands at the side of a dining room; has shelves and drawers
+B (Wiktionary): In a kitchen, a surface, often built into the wall and above a cabinet, designed to be used for food preparation.",different,0,
+85e82296773e59f60bb1,cost,VERB,"Word: cost (VERB)
+A (WordNet): be priced at
+  Example: ""These shoes cost $100""
+B (Wiktionary): To cost (a person) a great deal of money or suffering.
+  Example: ""I can give you the names, but it'll cost you.""",related,1,be priced at vs cost someone dearly
+2388bd75bb28929f4d22,scrimp,VERB,"Word: scrimp (VERB)
+A (WordNet): subsist on a meager allowance
+  Example: ""scratch and scrimp""
+B (Wiktionary): To make too small or short; to shortchange.
+  Example: ""to scrimp the pattern of a coat""",different,0,
+3de36f0b2854b42ee70b,indentured,ADJ,"Word: indentured (ADJ)
+A (WordNet): bound by contract
+B (Wiktionary): Subject to an indenture.
+  Example: ""indentured servant""",same,0,
+cbfeadb9913e7f893620,Krishna,PROPN,"Word: Krishna (PROPN)
+A (WordNet): 8th and most important avatar of Vishnu; incarnated as a handsome young man playing a flute
+B (Wiktionary): A deity worshiped across many traditions of Hinduism.
+  Example: ""The carpenter had disappeared, leaving half-finished not one but three images, as they are still today, identified as Krishna, Balarama and their sistier Subhadra.""",same,0,
+992b890b054d3836bbbe,conscious,ADJ,"Word: conscious (ADJ)
+A (WordNet): (followed by ‘of’) showing realization or recognition of something
+  Example: ""few voters seem conscious of the issue's importance""
+B (Wiktionary): Known or felt personally, internally by a person.
+  Example: ""conscious guilt""",different,0,
+c0c46d57a18601562372,waver,VERB,"Word: waver (VERB)
+A (WordNet): move hesitatingly, as if about to give way
+B (Wiktionary): To move without purpose or a specified destination; to roam, to wander.
+  Example: ""[T]here vvere tvvo Channels, one on the North, another on the South, vvhere through the fiſher-men did vvander and vvauer vp to Norvvitch, and diuers parts of Suffolke and Norfolke, […]""",different,0,
+72f7f18670748fffdaa9,pulse,NOUN,"Word: pulse (NOUN)
+A (WordNet): the rhythmic contraction and expansion of the arteries with each beat of the heart
+  Example: ""he could feel the beat of her heart""
+B (Wiktionary): A brief increase in the strength of an electrical signal; an impulse.",different,0,
+725dd4d8714dde256c14,flirt,VERB,"Word: flirt (VERB)
+A (WordNet): talk or behave amorously, without serious intentions
+  Example: ""The guys always try to chat up the new secretaries""
+B (Wiktionary): To play at courtship; to talk with light affection, to imply sexual attraction in a playful (especially conversational) way.
+  Example: ""Of course, the young people flirted, for that diversion is apparently irradicable even in the ""best society"".""",same,0,
+f225ed4c4cb3abc73dab,staff officer,NOUN,"Word: staff officer (NOUN)
+A (WordNet): a commissioned officer assigned to a military commander's staff
+B (Wiktionary): An officer who fulfills a non-combat support function, often in a headquarters or planning office.
+  Example: ""Holonym: general staff""",same,1,commander's staff vs non-combat HQ role

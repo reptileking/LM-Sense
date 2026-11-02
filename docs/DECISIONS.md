@@ -237,6 +237,19 @@ used**: the band stays "keep separate", the fine policy's conservative default (
 leaves a near-duplicate token; a wrong merge would destroy a distinction). Both models confuse
 "same" with "related" most often. Revisit only with a stronger model on hardware that runs it at
 ≥ ~1 req/s (the large local MoE models run mostly on the CPU here), judged by the same pilot.
+Pilot 3: `qwen2.5-32b-instruct`, 4k context, fully on the GPU: 3-way accuracy 0.85, overall
+P 0.911 / R 0.868, **in the band P 0.737 / R 0.875** (14 of 19 merges right; its errors are mostly
+"related" called "same"), 1.29 req/s (≈ 12 h for the band). Too eager to use raw, but close
+enough that an acceptance rule (minimum confidence, or agreement with a second model) might
+reach the bar. Such a rule cannot be tuned and tested on the same 78 pilot pairs, so a **fresh
+blind validation set** was labelled: `eval/judge_band_gold.csv`, 200 pairs drawn from the band
+job rows themselves (50 per cosine stratum 0.55/0.585/0.62/0.655/0.69, gold pairs excluded;
+57 same, 49 related, 94 different, 38 flagged ambiguous). The full 32B run judges those pairs as
+part of the band, so `judge_local evaluate --model … [--agree-with …]` measures every rule on
+them (raw and re-weighted to the band's stratum sizes, with an estimate of the merges it would
+make), and `judge_local import --min-confidence … [--agree-with …]` imports only accepted "same"
+verdicts (the rest become "uncertain", which the fine policy does not merge). Verdicts are
+imported only if a rule reaches ~0.9 precision on the fresh set.
 
 **D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
 User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`
