@@ -1,0 +1,86 @@
+{
+  "agreement_with_fresh_gold": {
+    "agree": 0,
+    "agree_same_vs_not": 0,
+    "pairs": 2
+  },
+  "by_cosine": [
+    {
+      "ci95": [
+        0.413,
+        0.8269
+      ],
+      "cosine": [
+        0.55,
+        0.585
+      ],
+      "precision": 0.6471,
+      "reviewed": 17,
+      "same": 11,
+      "unsure": 0
+    },
+    {
+      "ci95": [
+        0.5789,
+        0.8778
+      ],
+      "cosine": [
+        0.585,
+        0.62
+      ],
+      "precision": 0.7586,
+      "reviewed": 29,
+      "same": 22,
+      "unsure": 0
+    },
+    {
+      "ci95": [
+        0.5717,
+        0.8086
+      ],
+      "cosine": [
+        0.62,
+        0.655
+      ],
+      "precision": 0.7037,
+      "reviewed": 55,
+      "same": 38,
+      "unsure": 1
+    },
+    {
+      "ci95": [
+        0.6465,
+        0.836
+      ],
+      "cosine": [
+        0.655,
+        0.69
+      ],
+      "precision": 0.7532,
+      "reviewed": 77,
+      "same": 58,
+      "unsure": 0
+    }
+  ],
+  "contiguous_prefix": 178,
+  "decisions": {
+    "different": 33,
+    "related": 15,
+    "same": 129,
+    "unsure": 1
+  },
+  "first_pass_same": {
+    "ci95": [
+      0.659,
+      0.7889
+    ],
+    "precision": 0.7288,
+    "reviewed": 178,
+    "same": 129,
+    "unsure": 1
+  },
+  "median_seconds_per_pair": 16.66,
+  "pairs": 17751,
+  "reviewed": 178,
+  "unknown_job_ids": 0
+}
