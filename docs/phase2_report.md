@@ -236,26 +236,31 @@ in v1.0.
     ready (ingest, concept filter, threshold); see decision 2 in section 4.
 12. **The local LLM judge could not run here**: Remote Control from a cloud session cannot use a
     Windows folder, so the judge now runs directly on your PC (only polars, pyarrow and pyyaml
-    needed; it previously pulled in NumPy through the alignment code). Its pilots did not pass
-    the precision bar (decision 1), so the 56,565 uncertain pairs stay unmerged, the fine
-    policy's conservative default.
+    needed; it previously pulled in NumPy through the alignment code). Three models were piloted
+    and the 32B judged the whole band (~12 h), but no rule passed the precision bar on a fresh
+    validation set (decision 1), so the 56,565 uncertain pairs stay unmerged.
 
 ## 4. Open decisions that need you
 
 1. **Local LLM judge (56,565 uncertain OEWN–Wiktionary pairs).** It runs directly on your PC
-   (Remote Control cannot use Windows folders). Two pilots on the 300 gold pairs, both with a 4k
-   context window (Ollama's 32k window pushed the 14B 65% onto the CPU):
+   (Remote Control cannot use Windows folders). Pilots on the 300 gold pairs (4k context window;
+   Ollama's 32k window had pushed the 14B onto the CPU), then a full run with the best model,
+   checked against 200 *fresh* uncertain pairs labelled blind (`eval/judge_band_gold.csv`):
 
-   | model | 3-way accuracy | in-band precision / recall | speed (full run) |
+   | model | 3-way accuracy (pilot) | in-band precision / recall | speed |
    |---|---|---|---|
-   | qwen2.5 7B instruct | 0.82 | **0.82** / 0.56 (9 of 11 merges right) | 1.3 req/s (≈ 12 h) |
-   | qwen2.5 14B instruct | 0.75 | **0.64** / 0.56 (9 of 14 merges right) | 0.26 req/s (≈ 60 h) |
+   | qwen2.5 7B | 0.82 | 0.82 / 0.56 (pilot, 11 merges) | 1.3 req/s |
+   | qwen2.5 14B | 0.75 | 0.64 / 0.56 (pilot, 14 merges) | 0.26 req/s |
+   | **qwen2.5 32B** | **0.85** | 0.74 / 0.88 (pilot); **0.79 / 0.67 on the fresh 200** (48 merges) | 1.3 req/s, full run ≈ 12 h |
 
-   Neither reaches the ~0.9 bar (the aligner's own precision), so no verdicts are used and the
-   uncertain pairs stay unmerged, as in v1.0 (D-030). *Recommendation:* close this for now; a
-   missed merge only leaves a near-duplicate token. Revisit if Phase 3/4 evaluation shows those
-   near-duplicates hurting, with a stronger model on hardware that runs it at ≥ ~1 req/s, judged
-   by the same pilot.
+   No acceptance rule reaches the ~0.9 bar: the 32B's confidences are coarse and don't separate
+   its errors, precision doesn't rise with gloss similarity, and requiring the 7B to agree adds
+   nothing. Its mistakes are never unrelated senses: all 10 false merges are broader / narrower
+   pairs, 7 of them pairs flagged as genuinely ambiguous (0.92 on the unambiguous ones). So **no
+   ids were merged** (D-030). *Recommendation:* keep it that way, and keep the 32B verdicts as a
+   *soft* near-duplicate table — pairs of token ids judged "same", ~79% precise — that Phase 3
+   evaluation can treat as interchangeable and Phase 5 can use to share embeddings, without
+   retiring any id.
 2. **Wikidata items (not in v1.0, D-045).** The ingest, filter and threshold are ready; only the
    ~4.5 h pass over the dump is missing, and it dies if this cloud session sits idle.
    *Recommendation:* run it in the background at the start of Phase 3, while the session is busy

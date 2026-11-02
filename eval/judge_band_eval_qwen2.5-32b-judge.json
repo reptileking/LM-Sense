@@ -1,0 +1,93 @@
+{
+  "agree_with": null,
+  "band_pairs": 56265,
+  "gold": 200,
+  "judged": 200,
+  "model": "qwen2.5-32b-judge",
+  "rows": [
+    {
+      "accepted": 48,
+      "est_merges_in_band": 13729,
+      "fn": 19,
+      "fp": 10,
+      "fp_different": 0,
+      "fp_related": 10,
+      "min_confidence": 0.0,
+      "precision": 0.792,
+      "precision_weighted": 0.792,
+      "recall": 0.667,
+      "recall_weighted": 0.666,
+      "tp": 38
+    },
+    {
+      "accepted": 48,
+      "est_merges_in_band": 13729,
+      "fn": 19,
+      "fp": 10,
+      "fp_different": 0,
+      "fp_related": 10,
+      "min_confidence": 0.7,
+      "precision": 0.792,
+      "precision_weighted": 0.792,
+      "recall": 0.667,
+      "recall_weighted": 0.666,
+      "tp": 38
+    },
+    {
+      "accepted": 48,
+      "est_merges_in_band": 13729,
+      "fn": 19,
+      "fp": 10,
+      "fp_different": 0,
+      "fp_related": 10,
+      "min_confidence": 0.8,
+      "precision": 0.792,
+      "precision_weighted": 0.792,
+      "recall": 0.667,
+      "recall_weighted": 0.666,
+      "tp": 38
+    },
+    {
+      "accepted": 47,
+      "est_merges_in_band": 13444,
+      "fn": 20,
+      "fp": 10,
+      "fp_different": 0,
+      "fp_related": 10,
+      "min_confidence": 0.85,
+      "precision": 0.787,
+      "precision_weighted": 0.788,
+      "recall": 0.649,
+      "recall_weighted": 0.648,
+      "tp": 37
+    },
+    {
+      "accepted": 46,
+      "est_merges_in_band": 13150,
+      "fn": 21,
+      "fp": 10,
+      "fp_different": 0,
+      "fp_related": 10,
+      "min_confidence": 0.9,
+      "precision": 0.783,
+      "precision_weighted": 0.783,
+      "recall": 0.632,
+      "recall_weighted": 0.63,
+      "tp": 36
+    },
+    {
+      "accepted": 33,
+      "est_merges_in_band": 9486,
+      "fn": 31,
+      "fp": 7,
+      "fp_different": 0,
+      "fp_related": 7,
+      "min_confidence": 0.95,
+      "precision": 0.788,
+      "precision_weighted": 0.791,
+      "recall": 0.456,
+      "recall_weighted": 0.459,
+      "tp": 26
+    }
+  ]
+}

@@ -250,6 +250,17 @@ them (raw and re-weighted to the band's stratum sizes, with an estimate of the m
 make), and `judge_local import --min-confidence … [--agree-with …]` imports only accepted "same"
 verdicts (the rest become "uncertain", which the fine policy does not merge). Verdicts are
 imported only if a rule reaches ~0.9 precision on the fresh set.
+**Outcome (2026-11-02).** The full 32B run judged all 56,265 band pairs (17,874 "same", ~12 h).
+On the fresh set its "same" verdicts are 0.79 precise (38 of 48) at 0.67 recall; its confidences
+are coarse (0.85 / 0.9 / 0.95) and no threshold helps (0.79 at ≥ 0.95, recall 0.46); precision does
+not rise with cosine (0.80 / 0.89 / 0.92 / 0.67 by stratum, the top stratum worst); requiring the
+7B to agree gives exactly the 7B's set on the pilot band pairs (0.82). All 10 false merges are
+"related" pairs (broader / narrower), none "different", and 7 of them are pairs flagged ambiguous
+when labelling (on the 162 unambiguous pairs: 0.92). No rule meets the bar, so **no verdicts are
+imported** and v1.0's ids stay as built. The verdicts stay in the repository
+(`judge/verdicts/qwen2.5-32b-judge/`, evaluation in `eval/judge_band_eval_qwen2.5-32b-judge.json`):
+they can serve as a *soft* near-duplicate table (pairs of token ids judged "same", ~79% precise)
+for evaluation and for sharing embeddings later, without merging any ids.
 
 **D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
 User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`
