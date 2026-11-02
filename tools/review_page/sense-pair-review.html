@@ -1,0 +1,878 @@
+<title>Sense Pair Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: a one-screen review desk. A slim progress strip on top, one dictionary entry in the
+   middle (headword, then the WordNet and Wiktionary senses side by side), and the answer bar
+   pinned to the bottom as the last grid row. */
+:root {
+  --paper: #f2f4f7;
+  --sheet: #ffffff;
+  --ink: #18202c;
+  --muted: #5a6575;
+  --rule: #dbe0e7;
+  --accent: #2b4996;
+  --accent-soft: #e5ebf7;
+  --same: #1d7547;
+  --same-soft: #e2f2e9;
+  --related: #935d00;
+  --related-soft: #faeed6;
+  --different: #ab2c45;
+  --different-soft: #f8e3e7;
+  --unsure: #5c6172;
+  --unsure-soft: #eaecf1;
+  --display: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --ui: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10141a;
+    --sheet: #171c24;
+    --ink: #e4e8ee;
+    --muted: #9aa3b1;
+    --rule: #29303b;
+    --accent: #9fb4f0;
+    --accent-soft: #212b42;
+    --same: #6dcc95;
+    --same-soft: #15301f;
+    --related: #e6b65e;
+    --related-soft: #33280e;
+    --different: #f08b9d;
+    --different-soft: #3a1920;
+    --unsure: #aab0bf;
+    --unsure-soft: #252a33;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10141a;
+  --sheet: #171c24;
+  --ink: #e4e8ee;
+  --muted: #9aa3b1;
+  --rule: #29303b;
+  --accent: #9fb4f0;
+  --accent-soft: #212b42;
+  --same: #6dcc95;
+  --same-soft: #15301f;
+  --related: #e6b65e;
+  --related-soft: #33280e;
+  --different: #f08b9d;
+  --different-soft: #3a1920;
+  --unsure: #aab0bf;
+  --unsure-soft: #252a33;
+  color-scheme: dark;
+}
+
+html { height: 100%; box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+[hidden] { display: none !important; }
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+.wrap {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* progress strip */
+.strip { background: var(--sheet); border-bottom: 1px solid var(--rule); }
+.strip-inner { padding-block: 10px; display: grid; gap: 8px; }
+.strip-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.brand { font-family: var(--display); font-weight: 600; font-size: 1.05rem; letter-spacing: 0.01em; }
+.count { font-variant-numeric: tabular-nums; color: var(--muted); }
+.count strong { color: var(--ink); font-weight: 600; }
+.meter { height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; display: flex; }
+.meter span { display: block; height: 100%; transition: width 0.3s ease; }
+.meter .m-s { background: var(--same); }
+.meter .m-r { background: var(--related); }
+.meter .m-d { background: var(--different); }
+.meter .m-u { background: var(--unsure); }
+.stats {
+  display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none;
+  font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.stats b { color: var(--ink); font-weight: 600; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+.dot.s { background: var(--same); } .dot.r { background: var(--related); }
+.dot.d { background: var(--different); } .dot.u { background: var(--unsure); }
+
+/* desk */
+.desk { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.desk-inner { padding-block: 18px 24px; display: grid; gap: 14px; align-content: start; }
+.banner {
+  border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px;
+  background: var(--accent-soft); color: var(--ink); font-size: 0.9rem;
+  display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+}
+.banner.bad { background: var(--different-soft); border-color: var(--different); }
+.banner button { font: inherit; }
+
+.entry { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.entry-head { padding: 16px 22px 14px; border-bottom: 1px solid var(--rule); display: grid; gap: 6px; }
+.entry-meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;
+  font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.entry-meta code { font-family: var(--mono); font-size: 0.75rem; }
+.entry-meta .spacer { flex: 1 1 auto; }
+.headword {
+  margin: 0; font-family: var(--display); font-weight: 600;
+  font-size: clamp(1.8rem, 1.2rem + 2.4vw, 2.6rem); line-height: 1.1;
+  overflow-wrap: anywhere; text-wrap: balance;
+}
+.headword .pos {
+  font-weight: 400; font-style: italic; font-size: 0.55em; color: var(--muted);
+  margin-left: 0.35em; white-space: nowrap;
+}
+.answered {
+  display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 600; border: 1px solid currentColor;
+}
+.answered.s { color: var(--same); background: var(--same-soft); }
+.answered.r { color: var(--related); background: var(--related-soft); }
+.answered.d { color: var(--different); background: var(--different-soft); }
+.answered.u { color: var(--unsure); background: var(--unsure-soft); }
+.linkish {
+  font: inherit; font-size: 0.8rem; color: var(--accent); background: none; border: 0; padding: 0;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+}
+
+.senses { display: grid; grid-template-columns: 1fr 1fr; }
+.sense { padding: 16px 22px 20px; display: grid; gap: 9px; align-content: start; min-width: 0; }
+.sense + .sense { border-left: 1px solid var(--rule); }
+.src { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.src-name {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.src-name i {
+  font-style: normal; font-family: var(--display); font-size: 0.95rem; letter-spacing: 0; text-transform: none;
+  width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent);
+}
+.tag {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+  border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; overflow-wrap: anywhere;
+}
+.parent { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.parent span { font-family: var(--display); font-style: italic; }
+.gloss { margin: 0; font-family: var(--display); font-size: 1.2rem; line-height: 1.45; overflow-wrap: anywhere; }
+.syn { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.syn span { color: var(--ink); }
+.ex {
+  margin: 0; font-family: var(--display); font-style: italic; font-size: 0.98rem; color: var(--muted);
+  border-left: 2px solid var(--rule); padding-left: 10px; overflow-wrap: anywhere;
+}
+.rule-line { margin: 0; padding: 10px 22px 12px; border-top: 1px solid var(--rule); font-size: 0.84rem; color: var(--muted); }
+.rule-line b { color: var(--ink); font-weight: 600; }
+
+.placeholder { padding: 40px 22px; text-align: center; color: var(--muted); display: grid; gap: 10px; justify-items: center; }
+.placeholder h2 { margin: 0; font-family: var(--display); font-weight: 600; color: var(--ink); font-size: 1.4rem; text-wrap: balance; }
+.placeholder p { margin: 0; max-width: 52ch; }
+
+details.guide { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; }
+details.guide summary {
+  cursor: pointer; padding: 11px 16px; font-weight: 600; font-size: 0.9rem; list-style-position: inside;
+}
+.guide-body { padding: 0 18px 16px; display: grid; gap: 12px; font-size: 0.9rem; }
+.guide dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; }
+.guide dt { font-weight: 600; }
+.guide dt.s { color: var(--same); } .guide dt.r { color: var(--related); }
+.guide dt.d { color: var(--different); } .guide dt.u { color: var(--unsure); }
+.guide dd { margin: 0; max-width: 70ch; }
+.guide p { margin: 0; max-width: 72ch; color: var(--muted); }
+.keys { color: var(--muted); }
+
+kbd {
+  font-family: var(--mono); font-size: 0.72rem; line-height: 1; padding: 3px 5px; border-radius: 4px;
+  border: 1px solid var(--rule); border-bottom-width: 2px; background: var(--paper); color: var(--muted);
+}
+
+/* answer bar */
+.bar { background: var(--sheet); border-top: 1px solid var(--rule); }
+.bar-inner { padding-block: 10px 12px; display: grid; gap: 6px; }
+.answers { display: grid; grid-template-columns: auto repeat(4, minmax(0, 1fr)); gap: 8px; }
+.btn {
+  font: inherit; font-weight: 600; font-size: 0.98rem; min-height: 52px; border-radius: 7px; cursor: pointer;
+  border: 1.5px solid var(--rule); background: var(--sheet); color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 12px;
+  transition: background-color 0.12s ease, transform 0.08s ease;
+}
+.btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.back { font-weight: 500; color: var(--muted); padding: 0 14px; }
+.btn.a-s { color: var(--same); border-color: var(--same); }
+.btn.a-r { color: var(--related); border-color: var(--related); }
+.btn.a-d { color: var(--different); border-color: var(--different); }
+.btn.a-u { color: var(--unsure); border-color: var(--unsure); }
+@media (hover: hover) {
+  .btn.a-s:not(:disabled):hover { background: var(--same-soft); }
+  .btn.a-r:not(:disabled):hover { background: var(--related-soft); }
+  .btn.a-d:not(:disabled):hover { background: var(--different-soft); }
+  .btn.a-u:not(:disabled):hover { background: var(--unsure-soft); }
+  .btn.back:not(:disabled):hover { background: var(--paper); }
+}
+.btn[aria-pressed="true"].a-s, .btn.flash.a-s { background: var(--same-soft); }
+.btn[aria-pressed="true"].a-r, .btn.flash.a-r { background: var(--related-soft); }
+.btn[aria-pressed="true"].a-d, .btn.flash.a-d { background: var(--different-soft); }
+.btn[aria-pressed="true"].a-u, .btn.flash.a-u { background: var(--unsure-soft); }
+.btn[aria-pressed="true"] { border-width: 3px; }
+.btn.flash { transform: scale(0.97); }
+.bar-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: 0.78rem; color: var(--muted); }
+.save.bad { color: var(--different); font-weight: 600; }
+
+@media (max-width: 720px) {
+  .senses { grid-template-columns: minmax(0, 1fr); }
+  .sense + .sense { border-left: 0; border-top: 1px solid var(--rule); }
+  .entry-head, .sense { padding-left: 16px; padding-right: 16px; }
+  .rule-line { padding-left: 16px; padding-right: 16px; }
+  .gloss { font-size: 1.1rem; }
+  .answers { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .btn.back { grid-column: 1 / -1; min-height: 38px; order: 2; }
+  .btn { font-size: 0.92rem; padding: 0 6px; }
+  .brand { display: none; }
+}
+@media (hover: none) { .btn kbd, .keys { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .meter span, .btn { transition: none; }
+  .btn.flash { transform: none; }
+}
+</style>
+
+<div class="app">
+  <header class="strip">
+    <div class="wrap strip-inner">
+      <div class="strip-top">
+        <span class="brand">Sense Pair Review</span>
+        <span class="count" id="count">Loading pairs…</span>
+      </div>
+      <div class="meter" id="meter" role="img" aria-label="Review progress">
+        <span class="m-s" id="m-s" style="width:0"></span>
+        <span class="m-r" id="m-r" style="width:0"></span>
+        <span class="m-d" id="m-d" style="width:0"></span>
+        <span class="m-u" id="m-u" style="width:0"></span>
+      </div>
+      <ul class="stats" id="stats"></ul>
+    </div>
+  </header>
+
+  <main class="desk" id="desk">
+    <div class="wrap desk-inner">
+      <div class="banner" id="banner" role="status" hidden></div>
+
+      <article class="entry" id="entry" aria-live="polite">
+        <div class="placeholder" id="placeholder">
+          <h2 id="ph-title">Loading the first pair</h2>
+          <p id="ph-text">Each pair is one WordNet sense and one Wiktionary sense of the same word that the judge model called the same meaning. You decide whether it was right.</p>
+          <button class="btn back" id="ph-action" type="button" hidden></button>
+        </div>
+        <div id="card" hidden>
+          <div class="entry-head">
+            <div class="entry-meta">
+              <span id="where">Pair 1</span>
+              <span class="answered" id="answered" hidden></span>
+              <button class="linkish" id="to-frontier" type="button" hidden>Go to first unanswered</button>
+              <span class="spacer"></span>
+              <code id="jobid" title="Pair id"></code>
+            </div>
+            <h1 class="headword"><span id="lemma"></span><span class="pos" id="pos"></span></h1>
+          </div>
+          <div class="senses">
+            <section class="sense" aria-label="Sense A, from WordNet">
+              <div class="src">
+                <span class="src-name"><i>A</i>WordNet</span>
+                <span class="tag" id="a-class" title="WordNet lexicographer file" hidden></span>
+              </div>
+              <p class="gloss" id="a-gloss"></p>
+              <p class="syn" id="a-syn" hidden>Also: <span id="a-syn-text"></span></p>
+              <p class="ex" id="a-ex" hidden></p>
+            </section>
+            <section class="sense" aria-label="Sense B, from Wiktionary">
+              <div class="src">
+                <span class="src-name"><i>B</i>Wiktionary</span>
+                <span class="tag" id="b-labels" title="Wiktionary labels" hidden></span>
+              </div>
+              <p class="parent" id="b-parent" hidden>Subsense of: <span id="b-parent-text"></span></p>
+              <p class="gloss" id="b-gloss"></p>
+              <p class="ex" id="b-ex" hidden></p>
+            </section>
+          </div>
+          <p class="rule-line"><b>Same</b> means every use of A is a use of B, and every use of B is a use of A.</p>
+        </div>
+      </article>
+
+      <details class="guide" id="guide">
+        <summary>How to judge</summary>
+        <div class="guide-body">
+          <dl>
+            <dt class="s">Same</dt>
+            <dd>One meaning, described twice. Different wording, a spelling variant, or “abbreviation of …” still counts if the meaning matches.</dd>
+            <dt class="r">Related</dt>
+            <dd>Close but not interchangeable: one is broader or narrower, a plant and its fruit, a container and its contents, a process and its result, a group and a member, a literal use and a figurative one, a general sense and a technical one.</dd>
+            <dt class="d">Different</dt>
+            <dd>Unrelated meanings that happen to share the word.</dd>
+            <dt class="u">Unsure</dt>
+            <dd>You can't tell from what's shown. Use it sparingly; it counts as reviewed.</dd>
+          </dl>
+          <p>Pairs come in a fixed random order, so the answers so far are a fair sample of all 17,751. You can stop at any point and the estimate in the top bar still holds. Every answer saves as you go, and you can pick up on any device.</p>
+          <p class="keys">Keys: <kbd>1</kbd> or <kbd>S</kbd> Same, <kbd>2</kbd> or <kbd>R</kbd> Related, <kbd>3</kbd> or <kbd>D</kbd> Different, <kbd>4</kbd> or <kbd>U</kbd> Unsure, <kbd>←</kbd> or <kbd>Backspace</kbd> back one pair, <kbd>→</kbd> forward through answered pairs, <kbd>?</kbd> this guide.</p>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <footer class="bar">
+    <div class="wrap bar-inner">
+      <div class="answers">
+        <button class="btn back" id="back" type="button" title="Back one pair (← or Backspace)">← Back</button>
+        <button class="btn a-s" id="a-same" type="button" data-label="same" aria-pressed="false"><kbd>1</kbd>Same</button>
+        <button class="btn a-r" id="a-related" type="button" data-label="related" aria-pressed="false"><kbd>2</kbd>Related</button>
+        <button class="btn a-d" id="a-different" type="button" data-label="different" aria-pressed="false"><kbd>3</kbd>Different</button>
+        <button class="btn a-u" id="a-unsure" type="button" data-label="unsure" aria-pressed="false"><kbd>4</kbd>Unsure</button>
+      </div>
+      <div class="bar-foot">
+        <span class="save" id="save" role="status"></span>
+        <span class="keys">Press <kbd>?</kbd> for the guide</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const LETTER = { same: "s", related: "r", different: "d", unsure: "u" };
+  const NAME = { s: "Same", r: "Related", d: "Different", u: "Unsure" };
+  const KEYS = { "1": "same", s: "same", "2": "related", r: "related", "3": "different", d: "different", "4": "unsure", u: "unsure" };
+  const POS = {
+    NOUN: ["n.", "noun"], VERB: ["v.", "verb"], ADJ: ["adj.", "adjective"], ADV: ["adv.", "adverb"],
+    PROPN: ["prop. n.", "proper noun"], INTJ: ["interj.", "interjection"], ADP: ["prep.", "preposition"],
+    PRON: ["pron.", "pronoun"], NUM: ["num.", "numeral"], DET: ["det.", "determiner"],
+    CCONJ: ["conj.", "conjunction"], SCONJ: ["conj.", "conjunction"], PART: ["part.", "particle"],
+  };
+  const $ = (id) => document.getElementById(id);
+  const nf = new Intl.NumberFormat("en-GB");
+  const pct = (x) => Math.round(x * 100) + "%";
+
+  const S = {
+    index: null, BS: 500, total: 0,
+    blocks: new Map(), loading: new Map(),
+    server: new Map(),   // block -> { job_id: [letter, ms] } as stored
+    overlay: new Map(),  // job_id -> { l, t, b } answers not yet seen in a snapshot
+    queues: new Map(),   // block -> { pending: Map, inflight: null | object, tries, timer }
+    pos: 0, wanted: null, started: false,
+    db: null, dbState: "connecting", readOnly: false, fatal: null, slow: false, confirmed: false,
+    dataError: null, stats: null, sessionCount: 0, everSaved: false,
+  };
+
+  // ---------- data files ----------
+  function blockId(b) { return "b" + String(b).padStart(3, "0"); }
+  function blockOf(id) { const m = /^b(\d{3})$/.exec(id); return m ? Number(m[1]) : null; }
+  function blockSize(b) { return Math.min(S.BS, S.total - b * S.BS); }
+
+  async function loadIndex() {
+    try {
+      const r = await fetch("pairs/index.json", { cache: "no-cache" });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const idx = await r.json();
+      S.index = idx; S.BS = idx.block_size; S.total = idx.total;
+      S.dataError = null;
+      recomputeStats();
+      if (S.started) await jumpToFrontier(); else await loadBlock(0);
+      render();
+    } catch (e) {
+      S.dataError = { file: "pairs/index.json", retry: loadIndex };
+      render();
+    }
+  }
+
+  function loadBlock(b) {
+    if (S.blocks.has(b)) return Promise.resolve(S.blocks.get(b));
+    if (S.loading.has(b)) return S.loading.get(b);
+    const name = "pairs/p" + String(b).padStart(3, "0") + ".json";
+    const p = fetch(name).then((r) => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then((body) => {
+      S.blocks.set(b, body.pairs);
+      S.loading.delete(b);
+      if (S.dataError && S.dataError.file === name) S.dataError = null;
+      return body.pairs;
+    }).catch((e) => {
+      S.loading.delete(b);
+      S.dataError = { file: name, retry: () => loadBlock(b).then(render) };
+      render();
+      throw e;
+    });
+    S.loading.set(b, p);
+    return p;
+  }
+
+  function pairAt(pos) {
+    if (pos < 0 || pos >= S.total) return null;
+    const pairs = S.blocks.get(Math.floor(pos / S.BS));
+    return pairs ? pairs[pos % S.BS] : null;
+  }
+
+  // ---------- decisions ----------
+  function decisionOf(job, b) {
+    const o = S.overlay.get(job);
+    const s = (S.server.get(b) || {})[job];
+    const sv = Array.isArray(s) && NAME[s[0]] ? s : null;
+    if (o && (!sv || o.t >= sv[1])) return o.l;
+    return sv ? sv[0] : null;
+  }
+  function decisionAt(pos) {
+    const p = pairAt(pos);
+    return p ? decisionOf(p[0], Math.floor(pos / S.BS)) : undefined;
+  }
+
+  function decidedInBlock(b) {
+    const obj = S.server.get(b) || {};
+    let n = 0;
+    for (const job in obj) if (Array.isArray(obj[job]) && NAME[obj[job][0]]) n++;
+    for (const [job, o] of S.overlay) if (o.b === b && !(job in obj)) n++;
+    return n;
+  }
+
+  async function jumpToFrontier() {
+    if (!S.index) return;
+    for (let b = 0; b * S.BS < S.total; b++) {
+      if (decidedInBlock(b) >= blockSize(b)) continue;
+      let pairs;
+      try { pairs = await loadBlock(b); } catch (e) { return; }
+      for (let i = 0; i < pairs.length; i++) {
+        if (!decisionOf(pairs[i][0], b)) { S.pos = b * S.BS + i; render(); prefetch(); return; }
+      }
+    }
+    S.pos = S.total;
+    render();
+  }
+
+  function recomputeStats() {
+    const c = { s: 0, r: 0, d: 0, u: 0 };
+    const times = [];
+    for (const [b, obj] of S.server) {
+      for (const job in obj) {
+        const l = decisionOf(job, b);
+        if (!l) continue;
+        c[l]++;
+        const o = S.overlay.get(job);
+        times.push(o && o.b === b ? o.t : obj[job][1]);
+      }
+    }
+    for (const [job, o] of S.overlay) {
+      if (!(job in (S.server.get(o.b) || {}))) { c[o.l]++; times.push(o.t); }
+    }
+    times.sort((x, y) => x - y);
+    const gaps = [];
+    for (let i = Math.max(1, times.length - 400); i < times.length; i++) {
+      const g = times[i] - times[i - 1];
+      if (g >= 300 && g <= 120000) gaps.push(g);   // ignore key bursts and breaks
+    }
+    gaps.sort((x, y) => x - y);
+    const pace = gaps.length >= 5 ? gaps[Math.floor(gaps.length / 2)] : null;
+    const n = c.s + c.r + c.d + c.u;
+    S.stats = { c, n, pace };
+  }
+
+  function wilson(k, n) {
+    if (!n) return null;
+    const z = 1.96, p = k / n, d = 1 + z * z / n;
+    const mid = (p + z * z / (2 * n)) / d;
+    const h = (z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / d;
+    return [Math.max(0, mid - h), Math.min(1, mid + h)];
+  }
+
+  // ---------- saving: one write at a time per block document, bursts coalesced ----------
+  function unsavedCount() {
+    let n = 0;
+    for (const q of S.queues.values()) n += q.pending.size + (q.inflight ? Object.keys(q.inflight).length : 0);
+    return n;
+  }
+  function retrying() { for (const q of S.queues.values()) if (q.timer) return true; return false; }
+
+  function record(job, b, letter) {
+    const t = Date.now();
+    S.overlay.set(job, { l: letter, t, b });
+    let q = S.queues.get(b);
+    if (!q) { q = { pending: new Map(), inflight: null, tries: 0, timer: null }; S.queues.set(b, q); }
+    q.pending.set(job, [letter, t]);
+    flush(b);
+  }
+
+  async function writeBlock(ref, batch) {
+    try {
+      await ref.update(batch);
+    } catch (e) {
+      if (!e || e.code !== "invalid_argument") throw e;
+      const snap = await ref.get();             // update needs the document to exist
+      if (!snap.exists) await ref.set(batch);
+      else await ref.update(batch);
+    }
+  }
+
+  async function flush(b) {
+    const q = S.queues.get(b);
+    if (!q || q.inflight || q.timer || !q.pending.size || S.fatal || !S.db) return;
+    const batch = Object.fromEntries(q.pending);
+    q.pending.clear();
+    q.inflight = batch;
+    renderSave();
+    try {
+      await writeBlock(S.db.doc("reviews/" + blockId(b)), batch);
+      q.tries = 0;
+      S.everSaved = true;
+    } catch (e) {
+      for (const [job, v] of Object.entries(batch)) {
+        if (!q.pending.has(job)) q.pending.set(job, v);
+        const o = S.overlay.get(job);
+        if (!o || o.t <= v[1]) S.overlay.set(job, { l: v[0], t: v[1], b });
+      }
+      const code = (e && e.code) || "unavailable";
+      if (["invalid_argument", "quota_exceeded", "revoked", "not_granted", "capability_disabled", "capability_removed", "transform_error"].includes(code)) {
+        S.fatal = { code, message: (e && e.message) || "" };
+      } else {
+        q.tries++;
+        const delay = Math.min(30000, 800 * 2 ** Math.min(q.tries, 6)) * (0.75 + Math.random() * 0.5);
+        q.timer = setTimeout(() => { q.timer = null; flush(b); }, delay);
+      }
+    } finally {
+      q.inflight = null;
+    }
+    recomputeStats();
+    render();
+    if (q.pending.size && !q.timer && !S.fatal) flush(b);
+  }
+
+  // ---------- store connection ----------
+  async function connect() {
+    const c = window.claude;
+    if (!c || typeof c.use !== "function") { S.dbState = "absent"; render(); return; }
+    let db = null;
+    try { db = await c.use("db"); } catch (e) { db = null; }
+    if (!db) { S.dbState = "absent"; render(); return; }
+    S.db = db;
+    try {
+      const user = await c.use("user");
+      if (user && typeof user.can === "function" && (await user.can("data.write")) === false) S.readOnly = true;
+    } catch (e) { /* not told: let a refused write decide */ }
+    // Start at the first unanswered pair once the store has confirmed the saved answers, or
+    // after 10 s with whatever copy arrived, so a stale cached copy can't set the position.
+    let haveSnap = false;
+    const maybeStart = () => {
+      if (S.started || !haveSnap || !(S.confirmed || S.slow)) return;
+      S.started = true;
+      S.dbState = "ready";
+      if (Number.isInteger(S.wanted) && S.wanted >= 0 && S.wanted <= S.total) go(S.wanted);
+      else jumpToFrontier();
+    };
+    const timer = setTimeout(() => { if (!S.confirmed) { S.slow = true; maybeStart(); render(); } }, 10000);
+    db.collection("reviews").onSnapshot((snap) => {
+      const before = S.started ? decisionAt(S.pos) : undefined;
+      for (const ch of snap.docChanges()) {
+        const b = blockOf(ch.doc.id);
+        if (b === null) continue;
+        if (ch.type === "removed") S.server.delete(b);
+        else S.server.set(b, ch.doc.data() || {});
+      }
+      for (const [job, o] of S.overlay) {
+        const s = (S.server.get(o.b) || {})[job];
+        if (Array.isArray(s) && s[1] >= o.t) S.overlay.delete(job);
+      }
+      haveSnap = true;
+      if (!snap.metadata.fromCache) { S.confirmed = true; S.slow = false; clearTimeout(timer); }
+      recomputeStats();
+      if (!S.started) {
+        maybeStart();
+      } else if (before === null && decisionAt(S.pos)) {
+        jumpToFrontier();   // answered on another device while open here
+      }
+      render();
+    }, (err) => {
+      clearTimeout(timer);
+      S.fatal = { code: (err && err.code) || "unavailable", message: (err && err.message) || "", listener: true };
+      render();
+    });
+    render();
+  }
+
+  // ---------- navigation and answers ----------
+  function canAnswer() {
+    return S.dbState === "ready" && !S.readOnly && !S.fatal && !!pairAt(S.pos);
+  }
+
+  function prefetch() {
+    const b = Math.floor(S.pos / S.BS);
+    if (S.pos % S.BS > S.BS - 60 && (b + 1) * S.BS < S.total) loadBlock(b + 1).catch(() => {});
+  }
+
+  async function go(pos) {
+    if (!S.index) return;
+    S.pos = Math.max(0, Math.min(S.total, pos));
+    if (S.pos < S.total && !pairAt(S.pos)) {
+      render();
+      try { await loadBlock(Math.floor(S.pos / S.BS)); } catch (e) { return; }
+    }
+    prefetch();
+    render();
+    $("desk").scrollTop = 0;
+  }
+
+  function answer(label) {
+    if (!canAnswer()) return;
+    const p = pairAt(S.pos);
+    const b = Math.floor(S.pos / S.BS);
+    const prev = decisionOf(p[0], b);
+    const letter = LETTER[label];
+    if (prev !== letter) record(p[0], b, letter);
+    if (!prev) S.sessionCount++;
+    flash(label);
+    recomputeStats();
+    go(S.pos + 1);
+  }
+
+  function back() { if (S.pos > 0) go(S.pos - 1); }
+  function forward() { if (S.pos < S.total && decisionAt(S.pos)) go(S.pos + 1); }
+
+  function flash(label) {
+    const el = $("a-" + label);
+    el.classList.add("flash");
+    setTimeout(() => el.classList.remove("flash"), 160);
+  }
+
+  // ---------- rendering ----------
+  function setText(id, text) { const el = $(id); el.textContent = text || ""; return el; }
+  function showIf(id, text, inner) {
+    const el = $(id);
+    el.hidden = !text;
+    if (text) (inner ? $(inner) : el).textContent = text;
+  }
+
+  function render() { renderStrip(); renderBanner(); renderEntry(); renderBar(); }
+
+  function renderStrip() {
+    if (!S.index) return;
+    const st = S.stats || { c: { s: 0, r: 0, d: 0, u: 0 }, n: 0, pace: null };
+    const c = st.c;
+    $("count").innerHTML = "";
+    const strong = document.createElement("strong");
+    strong.textContent = nf.format(st.n);
+    $("count").append(strong, " of " + nf.format(S.total) + " pairs reviewed (" + (S.total ? (st.n / S.total * 100).toFixed(1) : "0") + "%)");
+    for (const k of ["s", "r", "d", "u"]) $("m-" + k).style.width = (S.total ? c[k] / S.total * 100 : 0) + "%";
+    $("meter").setAttribute("aria-label", nf.format(st.n) + " of " + nf.format(S.total) + " reviewed");
+    const items = [];
+    const judged = c.s + c.r + c.d;
+    if (judged >= 20) {
+      const ci = wilson(c.s, judged);
+      items.push(["Judge right ", pct(c.s / judged), " (95% range " + pct(ci[0]) + "–" + pct(ci[1]) + ")"]);
+    } else if (st.n) {
+      items.push(["Judge right ", "–", " (shown after 20 answers)"]);
+    }
+    if (st.n) {
+      items.push([null, null, null, [["s", "Same", c.s], ["r", "Related", c.r], ["d", "Different", c.d], ["u", "Unsure", c.u]]]);
+    }
+    if (st.pace) {
+      const left = (S.total - st.n) * st.pace / 3600000;
+      items.push(["Pace ", (st.pace / 1000).toFixed(1) + " s", " per pair, about " + (left >= 1 ? left.toFixed(left < 10 ? 1 : 0) + " h" : Math.max(1, Math.round(left * 60)) + " min") + " left"]);
+    }
+    if (S.sessionCount) items.push(["This visit ", nf.format(S.sessionCount), ""]);
+    const ul = $("stats");
+    ul.replaceChildren();
+    for (const [pre, val, post, dots] of items) {
+      const li = document.createElement("li");
+      if (dots) {
+        for (const [k, name, v] of dots) {
+          const span = document.createElement("span");
+          span.style.marginRight = "12px";
+          const d = document.createElement("i"); d.className = "dot " + k;
+          span.append(d, name + " " + nf.format(v));
+          li.append(span);
+        }
+      } else {
+        const b = document.createElement("b"); b.textContent = val;
+        li.append(pre, b, post);
+      }
+      ul.append(li);
+    }
+  }
+
+  function renderBanner() {
+    const el = $("banner");
+    el.replaceChildren();
+    el.classList.remove("bad");
+    let msg = null, bad = false, action = null;
+    if (S.dataError) {
+      msg = "The pair file " + S.dataError.file + " didn't load.";
+      bad = true;
+      action = ["Try again", () => { const r = S.dataError && S.dataError.retry; S.dataError = null; render(); if (r) r(); }];
+    } else if (S.fatal) {
+      bad = true;
+      const m = {
+        quota_exceeded: "The page's storage is full, so new answers aren't being saved. Tell Claude in the chat.",
+        revoked: "This page lost access to the saved answers. Open it again from claude.ai.",
+        invalid_argument: "Storage refused the last answer, so answers aren't being saved. If you only have view access, ask the owner for edit access; otherwise tell Claude in the chat.",
+      };
+      msg = m[S.fatal.code] || (S.fatal.listener
+        ? "The connection to the saved answers stopped. Open the page again from claude.ai to continue."
+        : "Answers aren't being saved right now (" + S.fatal.code + "). Open the page again from claude.ai.");
+      const n = unsavedCount();
+      if (n) msg += " " + nf.format(n) + " recent answer" + (n === 1 ? " is" : "s are") + " not saved.";
+    } else if (S.dbState === "absent") {
+      msg = "Answers can't be saved in this view. Open the page on claude.ai while signed in to record answers.";
+    } else if (S.readOnly) {
+      msg = "You have view access, so you can read the pairs but not record answers.";
+    } else if (S.slow) {
+      msg = S.started
+        ? "The saved answers may be out of date. The page keeps trying to reach them."
+        : "Your saved answers haven't loaded yet. The page keeps trying to reach them.";
+    }
+    el.hidden = !msg;
+    if (!msg) return;
+    if (bad) el.classList.add("bad");
+    const span = document.createElement("span");
+    span.textContent = msg;
+    el.append(span);
+    if (action) {
+      const b = document.createElement("button");
+      b.className = "linkish"; b.type = "button"; b.textContent = action[0];
+      b.addEventListener("click", action[1]);
+      el.append(b);
+    }
+  }
+
+  function placeholder(title, text, action) {
+    $("card").hidden = true;
+    $("placeholder").hidden = false;
+    setText("ph-title", title);
+    setText("ph-text", text);
+    const a = $("ph-action");
+    a.hidden = !action;
+    if (action) { a.textContent = action[0]; a.onclick = action[1]; }
+  }
+
+  function renderEntry() {
+    if (!S.index) { placeholder("Loading the pairs", "Fetching the list of 17,751 pairs."); return; }
+    if (S.pos >= S.total) {
+      const n = S.stats ? S.stats.n : 0;
+      if (n >= S.total) {
+        placeholder("All " + nf.format(S.total) + " pairs reviewed", "Every answer is saved. Tell Claude in the chat and it will read them back and apply them.", ["← Back to the last pair", back]);
+      } else {
+        placeholder("End of the list", nf.format(S.total - n) + " pairs earlier in the list have no answer yet.", ["Go to the first unanswered pair", jumpToFrontier]);
+      }
+      return;
+    }
+    const p = pairAt(S.pos);
+    if (!p) { placeholder("Loading pair " + nf.format(S.pos + 1), "Fetching the next block of 500 pairs."); return; }
+    if (!S.started && S.dbState === "connecting") {
+      placeholder("Loading your saved answers", "The page opens at the first pair you haven't answered yet.");
+      return;
+    }
+    $("placeholder").hidden = true;
+    $("card").hidden = false;
+    const [job, lemma, upos, aGloss, aEx, aSyn, aClass, bGloss, bParent, bEx, bLabels] = p;
+    setText("where", "Pair " + nf.format(S.pos + 1) + " of " + nf.format(S.total));
+    setText("jobid", job.slice(0, 10));
+    $("jobid").title = "Pair id " + job;
+    setText("lemma", lemma);
+    const pos = POS[upos] || [upos.toLowerCase(), upos];
+    setText("pos", pos[0]);
+    $("pos").title = pos[1];
+    showIf("a-class", aClass);
+    setText("a-gloss", aGloss);
+    showIf("a-syn", aSyn, "a-syn-text");
+    showIf("a-ex", aEx ? "“" + aEx + "”" : "");
+    showIf("b-labels", bLabels);
+    showIf("b-parent", bParent, "b-parent-text");
+    setText("b-gloss", bGloss);
+    showIf("b-ex", bEx ? "“" + bEx + "”" : "");
+    const d = decisionOf(job, Math.floor(S.pos / S.BS));
+    const ans = $("answered");
+    ans.hidden = !d;
+    ans.className = "answered " + (d || "");
+    if (d) ans.textContent = "Your answer: " + NAME[d];
+    $("to-frontier").hidden = !d || !S.started;
+  }
+
+  function renderBar() {
+    const d = S.pos < S.total ? decisionAt(S.pos) : null;
+    const ok = canAnswer();
+    for (const label of ["same", "related", "different", "unsure"]) {
+      const b = $("a-" + label);
+      b.disabled = !ok;
+      b.setAttribute("aria-pressed", String(d === LETTER[label]));
+    }
+    $("back").disabled = !S.index || S.pos === 0 || (!S.started && S.dbState === "connecting");
+    renderSave();
+  }
+
+  function renderSave() {
+    const el = $("save");
+    el.classList.remove("bad");
+    const n = unsavedCount();
+    let t = "";
+    if (S.fatal) { t = "Not saving"; el.classList.add("bad"); }
+    else if (n && retrying()) { t = nf.format(n) + " answer" + (n === 1 ? "" : "s") + " waiting to save, retrying"; el.classList.add("bad"); }
+    else if (n) t = "Saving…";
+    else if (S.everSaved) t = "All answers saved";
+    else if (S.dbState === "ready" && !S.readOnly) t = "Answers save as you go";
+    el.textContent = t;
+  }
+
+  // ---------- input ----------
+  function bindUi() {
+    for (const label of ["same", "related", "different", "unsure"]) {
+      $("a-" + label).addEventListener("click", () => answer(label));
+    }
+    $("back").addEventListener("click", back);
+    $("to-frontier").addEventListener("click", () => jumpToFrontier());
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const tag = (e.target && e.target.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if (KEYS[k]) {
+        e.preventDefault();
+        if (!e.repeat) answer(KEYS[k]);
+      } else if (k === "ArrowLeft" || k === "Backspace" || k === "z") {
+        e.preventDefault(); back();
+      } else if (k === "ArrowRight") {
+        e.preventDefault(); forward();
+      } else if (k === "?" || k === "h") {
+        e.preventDefault();
+        const g = $("guide"); g.open = !g.open;
+        if (g.open) g.scrollIntoView({ block: "nearest" });
+      }
+    });
+    window.addEventListener("beforeunload", (e) => {
+      if (unsavedCount()) { e.preventDefault(); e.returnValue = ""; }
+    });
+  }
+
+  function start(data) {
+    if (data && Number.isInteger(data.pos)) S.wanted = data.pos;
+    bindUi();
+    render();
+    loadIndex();
+    connect();
+  }
+
+  const hot = window.claude && window.claude.hot;
+  if (hot && typeof hot.snapshot === "function") hot.snapshot(() => ({ pos: S.pos }));
+  if (hot && typeof hot.ready === "function") hot.ready(start);
+  else start((hot && hot.data) || {});
+})();
+</script>

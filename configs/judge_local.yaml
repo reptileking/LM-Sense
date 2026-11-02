@@ -31,3 +31,12 @@ concurrency: 4                                # vLLM / llama.cpp (-np N) gain fr
 flush_every: 500
 max_requests: null                            # optional cap per run
 max_hours: null                               # optional time budget per run (resumable)
+
+# Owner review of the first-pass "same" band pairs (D-030, option 3): senselm.inventory.review
+review:
+  seed: senselm-review-v1          # order = sha256(seed:job_id); any reviewed prefix is a random sample
+  block_size: 500                  # pairs per page data file and per decision document
+  example_chars: 240
+  export_dir: data/review/pairs    # page data (derived, not committed)
+  decisions_path: judge/review/human_v0_1.parquet
+  report_path: eval/judge_human_review.json

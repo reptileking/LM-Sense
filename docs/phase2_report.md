@@ -261,6 +261,14 @@ in v1.0.
    *soft* near-duplicate table — pairs of token ids judged "same", ~79% precise — that Phase 3
    evaluation can treat as interchangeable and Phase 5 can use to share embeddings, without
    retiring any id.
+
+   *Update (2026-11-02):* a focused second pass with the same 32B (`--task verify`) barely
+   discriminates (0.776 → 0.790, losing 3 true matches), so you are reviewing the 17,751
+   first-pass "same" pairs yourself on the review page
+   (https://claude.ai/artifact/54CBaU4K9oq4aZznxKANe5). The pairs come in a fixed random order,
+   so a partial review already gives the true precision with a confidence interval; answers save
+   as you go and `python -m senselm.inventory.review ingest` reads them back. Nothing is merged
+   until you decide what to do with the pairs you confirm.
 2. **Wikidata items (not in v1.0, D-045).** The ingest, filter and threshold are ready; only the
    ~4.5 h pass over the dump is missing, and it dies if this cloud session sits idle.
    *Recommendation:* run it in the background at the start of Phase 3, while the session is busy

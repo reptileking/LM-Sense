@@ -269,7 +269,16 @@ whether a first-pass "same" is exactly the same meaning or a near miss — broad
 object / contents, literal / figurative ...; invented examples) was tested on the 171 labelled
 first-pass "same" verdicts: it confirmed 163 and, on the 67 band pairs, moved precision from
 0.776 (52 / 67) to 0.790 (49 / 62) while dropping 3 true matches, i.e. it barely discriminates
-(0.82 req/s). Not pursued; the owner reviews the first-pass "same" pairs by hand instead.
+(0.82 req/s). Not pursued; the owner reviews the first-pass "same" pairs by hand instead
+(2026-11-02). `senselm.inventory.review export` writes the 17,751 pairs in a fixed random order
+(`sha256(seed:job_id)`), so any reviewed prefix is a uniform sample and the running share of
+"same" answers estimates the 32B's precision with a Wilson interval. The review page (a private
+claude.ai artifact, https://claude.ai/artifact/54CBaU4K9oq4aZznxKANe5; source in
+`tools/review_page/`) shows each pair with more context than the judge had (WordNet synonyms and
+lexicographer file, Wiktionary labels and parent sense) and stores answers per block of 500
+(`reviews/bNNN`: `job_id -> [s|r|d|u, epoch ms]`). `review ingest` reads a dump of that collection
+into `judge/review/human_v0_1.parquet` and `eval/judge_human_review.json`. No id changes until the
+owner approves what to do with the confirmed pairs (merge, or soft links only).
 
 **D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
 User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`
