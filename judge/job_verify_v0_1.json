@@ -1,0 +1,6 @@
+{
+  "band": 17751,
+  "first_pass_model": "qwen2.5-32b-judge",
+  "gold_fresh": 48,
+  "gold_phase1": 123
+}

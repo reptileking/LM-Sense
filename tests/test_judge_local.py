@@ -223,3 +223,57 @@ def test_evaluate_band_and_filtered_import(tmp_path: Path) -> None:
     out = jl.import_verdicts(cfg, min_confidence=0.9)
     imp = pl.read_parquet(out).sort("oewn_id")
     assert imp["verdict"].to_list() == ["same", "uncertain", "same", "uncertain", "related", "same"]
+
+
+def test_verify_task_parsing_and_job(tmp_path: Path) -> None:
+    """Second pass: binary labels, its own verdict folder, and a job built from first-pass 'same'."""
+    from senselm.inventory import judge_local as jl
+
+    assert jl.parse_verdict(
+        '{"label": "different", "relation": "broader_narrower", "confidence": 0.9}',
+        ("same", "different"),
+    ) == ("different", 0.9)
+    assert jl.parse_verdict('{"label": "related", "confidence": 0.9}', ("same", "different")) == (
+        None,
+        None,
+    )
+    jobs = pl.DataFrame(
+        {
+            "job_id": ["g1", "g2", "b1", "b2", "b3"],
+            "kind": ["gold", "gold", "band", "band", "band"],
+            "oewn_id": ["o1", "o2", "o3", "o4", "o5"],
+            "wikt_id": ["w1", "w2", "w3", "w4", "w5"],
+            "lemma": ["x"] * 5,
+            "upos": ["NOUN"] * 5,
+            "cosine": [0.8, 0.6, 0.6, 0.65, 0.67],
+            "gold_label": ["same", "related", None, None, None],
+            "message": ["m"] * 5,
+        }
+    )
+    jobs.write_parquet(tmp_path / "job.parquet")
+    pl.DataFrame(
+        {"job_id": ["b1", "b2"], "label": ["related", "same"], "ambiguous": ["0", "0"]}
+    ).write_csv(tmp_path / "fresh.csv")
+    cfg = {
+        "job_path": str(tmp_path / "job.parquet"),
+        "verify_job_path": str(tmp_path / "verify.parquet"),
+        "verdicts_dir": str(tmp_path / "verdicts"),
+        "band_gold_path": str(tmp_path / "fresh.csv"),
+    }
+    d = jl.verdict_dir(cfg, "big")
+    d.mkdir(parents=True)
+    pl.DataFrame(
+        {
+            "job_id": ["g1", "g2", "b1", "b2", "b3"],
+            "verdict": ["same", "related", "same", "same", "different"],
+            "confidence": [0.9] * 5,
+        }
+    ).write_parquet(d / "part-00000.parquet")
+    out = pl.read_parquet(jl.export_verify(cfg, "big"))
+    assert sorted(out.filter(pl.col("kind") == "band")["job_id"].to_list()) == ["b1", "b2"]
+    gold = {
+        r["job_id"]: r["gold_label"]
+        for r in out.filter(pl.col("kind") == "gold").iter_rows(named=True)
+    }
+    assert gold == {"g1": "same", "b1": "related", "b2": "same"}
+    assert jl.verdict_dir({**cfg, "task": "verify"}, "big").name == "big__verify"

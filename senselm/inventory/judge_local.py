@@ -80,6 +80,99 @@ LOCAL_SYSTEM_PROMPT = (
 )
 PROMPT_VERSION = hashlib.blake2b(LOCAL_SYSTEM_PROMPT.encode(), digest_size=6).hexdigest()
 
+# Second pass ("verify", D-030): only for pairs the first pass called "same". It targets the first
+# pass's actual error (broader / narrower and other related senses called "same"); its examples
+# are invented, none comes from the labelled pairs it is tested on.
+VERIFY_SYSTEM_PROMPT = """You are a meticulous lexicographer checking a proposed merge of two dictionary senses.
+You will see one word with a part of speech and two definitions of it: definition A from WordNet \
+and definition B from Wiktionary (B may show its parent sense for context). An earlier check said \
+they might be the same sense. Your job is to catch near misses.
+
+Answer "same" only if A and B denote exactly the same meaning: every ordinary use of the word in \
+sense A is also a use in sense B, and every use in sense B is also a use in sense A. Different \
+wording, level of detail, examples, style or usage labels (dated, informal, ...) do not matter.
+
+Answer "different" if any of these holds:
+- one sense is broader or more general than the other: it covers more cases (any building vs a \
+house; a whole family of things vs one kind of it);
+- one is a specific kind, use, application or technical domain of the other;
+- one is an object and the other its contents, quantity, material, product, food or flesh, flower or \
+fruit, or the plant or animal it comes from;
+- one is a thing and the other a person, place, event, sign or document associated with it;
+- one is an act or process and the other its result, state, quality, agent or instrument;
+- one is a group or class and the other a member of it;
+- one is literal and the other figurative or extended;
+- they are simply unrelated.
+If you are unsure, answer "different".
+
+Examples:
+Word: doctor (NOUN)
+A (WordNet): a licensed medical practitioner
+B (Wiktionary): A physician; a member of the medical profession.
+-> {"label": "same", "relation": "paraphrase", "confidence": 0.95}
+Word: cup (NOUN)
+A (WordNet): the quantity a cup will hold
+B (Wiktionary): A small open container, usually with a handle, used for drinking.
+-> {"label": "different", "relation": "object_contents", "confidence": 0.95}
+Word: vehicle (NOUN)
+A (WordNet): a conveyance that transports people or objects
+B (Wiktionary): A motor car.
+-> {"label": "different", "relation": "broader_narrower", "confidence": 0.9}
+Word: big (ADJ)
+A (WordNet): above average in size or number or quantity or magnitude or extent
+B (Wiktionary): Of great size; large.
+-> {"label": "same", "relation": "paraphrase", "confidence": 0.9}
+Word: salmon (NOUN)
+A (WordNet): flesh of any of various marine or freshwater fish of the family Salmonidae
+B (Wiktionary): Any of several fish of the family Salmonidae that spawn in fresh water.
+-> {"label": "different", "relation": "object_contents", "confidence": 0.95}
+Word: blindness (NOUN)
+A (WordNet): the state of being blind or lacking sight
+B (Wiktionary): Unwillingness or inability to perceive or understand something.
+-> {"label": "different", "relation": "figurative", "confidence": 0.9}
+
+Answer with one JSON object: {"label": "same" | "different", "relation": "paraphrase" | \
+"broader_narrower" | "object_contents" | "associated" | "process_result" | "group_member" | \
+"figurative" | "unrelated", "confidence": a number between 0 and 1}. No other text."""
+VERIFY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "label": {"type": "string", "enum": ["same", "different"]},
+        "relation": {
+            "type": "string",
+            "enum": [
+                "paraphrase",
+                "broader_narrower",
+                "object_contents",
+                "associated",
+                "process_result",
+                "group_member",
+                "figurative",
+                "unrelated",
+            ],
+        },
+        "confidence": {"type": "number"},
+    },
+    "required": ["label", "relation", "confidence"],
+    "additionalProperties": False,
+}
+TASKS: dict[str, dict[str, Any]] = {
+    "judge": {
+        "system": LOCAL_SYSTEM_PROMPT,
+        "schema": OUTPUT_SCHEMA,
+        "labels": LABELS,
+        "suffix": "",
+    },
+    "verify": {
+        "system": VERIFY_SYSTEM_PROMPT,
+        "schema": VERIFY_SCHEMA,
+        "labels": ("same", "different"),
+        "suffix": "__verify",
+    },
+}
+for _t in TASKS.values():
+    _t["version"] = hashlib.blake2b(_t["system"].encode(), digest_size=6).hexdigest()
+
 THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
 JSON_RE = re.compile(r"\{[^{}]*\}", re.DOTALL)
 LABEL_RE = re.compile(r"\b(same|related|different)\b", re.IGNORECASE)
@@ -89,7 +182,7 @@ def job_id(oewn_id: str, wikt_id: str) -> str:
     return hashlib.blake2b(f"{oewn_id}|{wikt_id}".encode(), digest_size=10).hexdigest()
 
 
-def parse_verdict(text: str) -> tuple[str | None, float | None]:
+def parse_verdict(text: str, labels: tuple[str, ...] = LABELS) -> tuple[str | None, float | None]:
     """Extract (label, confidence) from a model reply; tolerant of chatter and think blocks."""
     text = THINK_RE.sub("", text or "").strip()
     for m in reversed(JSON_RE.findall(text)):  # the answer is usually the last object
@@ -98,13 +191,13 @@ def parse_verdict(text: str) -> tuple[str | None, float | None]:
         except json.JSONDecodeError:
             continue
         label = str(obj.get("label", "")).strip().lower()
-        if label in LABELS:
+        if label in labels:
             try:
                 conf = float(obj.get("confidence"))
             except (TypeError, ValueError):
                 conf = None
             return label, conf
-    m = LABEL_RE.findall(text)  # last resort: a bare label word
+    m = [x for x in LABEL_RE.findall(text) if x.lower() in labels]  # last resort: a bare label word
     return (m[-1].lower(), None) if m else (None, None)
 
 
@@ -135,6 +228,9 @@ class LocalLLM:
             if local or cfg.get("no_proxy")
             else urllib.request.ProxyHandler()
         )
+        task = TASKS[cfg.get("task", "judge")]
+        self.system_prompt, self.schema = task["system"], task["schema"]
+        self.labels, self.prompt_version = task["labels"], task["version"]
         self.max_tokens = int(cfg.get("max_tokens", 256))
         self.seed = cfg.get("seed", 0)
         self.retries = int(cfg.get("retries", 3))
@@ -154,7 +250,7 @@ class LocalLLM:
         if mode == "json_schema":
             return {
                 "type": "json_schema",
-                "json_schema": {"name": "verdict", "schema": OUTPUT_SCHEMA, "strict": True},
+                "json_schema": {"name": "verdict", "schema": self.schema, "strict": True},
             }
         if mode == "json_object":
             return {"type": "json_object"}
@@ -165,7 +261,7 @@ class LocalLLM:
         body: dict[str, Any] = {
             "model": self.model,
             "messages": [
-                {"role": "system", "content": LOCAL_SYSTEM_PROMPT},
+                {"role": "system", "content": self.system_prompt},
                 {"role": "user", "content": user},
             ],
             "temperature": 0,
@@ -205,7 +301,7 @@ class LocalLLM:
             except RuntimeError as e:
                 LOG.info("structured output %s not usable: %s", mode, e)
                 continue
-            if parse_verdict(r["text"])[0] is not None:
+            if parse_verdict(r["text"], self.labels)[0] is not None:
                 return mode
         raise RuntimeError("the server answered no request with a parseable verdict")
 
@@ -285,12 +381,45 @@ def export(cfg: dict[str, Any]) -> Path:
     return out
 
 
+def export_verify(cfg: dict[str, Any], first_pass_model: str) -> Path:
+    """Job for the second pass: every band pair the first pass called "same" (kind "band"), plus
+    the labelled pairs it called "same" as test rows (kind "gold"): the Phase-1 gold pairs and the
+    fresh band gold set, with their hand labels. Job ids are the first pass's, so verdicts join."""
+    job = pl.read_parquet(resolve(cfg["job_path"]))
+    first = load_verdicts(resolve(cfg["verdicts_dir"]) / model_slug(first_pass_model))
+    same = first.filter(pl.col("verdict") == "same").select("job_id")
+    band = job.filter(pl.col("kind") == "band").join(same, on="job_id")
+    gold1 = job.filter(pl.col("kind") == "gold").join(same, on="job_id")
+    fresh = pl.read_csv(resolve(cfg["band_gold_path"]), infer_schema_length=0).select(
+        "job_id", pl.col("label").alias("_label")
+    )
+    gold2 = (
+        band.join(fresh, on="job_id")
+        .with_columns(pl.lit("gold").alias("kind"), pl.col("_label").alias("gold_label"))
+        .drop("_label")
+    )
+    out = pl.concat([gold1, gold2.select(gold1.columns), band], how="vertical")
+    path = resolve(cfg["verify_job_path"])
+    out.write_parquet(path, compression="zstd")
+    summary = {
+        "first_pass_model": first_pass_model,
+        "band": band.height,
+        "gold_phase1": gold1.height,
+        "gold_fresh": gold2.height,
+    }
+    dump_json(summary, path.with_suffix(".json"))
+    LOG.info("verify job: %s -> %s", summary, path)
+    return path
+
+
 def model_slug(model: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", model).strip("_")
 
 
 def verdict_dir(cfg: dict[str, Any], model: str) -> Path:
-    return resolve(cfg["verdicts_dir"]) / model_slug(model)
+    return resolve(cfg["verdicts_dir"]) / (
+        model_slug(model) + TASKS[cfg.get("task", "judge")]["suffix"]
+    )
 
 
 def load_verdicts(directory: Path) -> pl.DataFrame:
@@ -457,7 +586,7 @@ def judge_rows(
 
     def one(r: dict[str, Any]) -> dict[str, Any]:
         res = client.chat(r["message"], mode)
-        label, conf = parse_verdict(res["text"])
+        label, conf = parse_verdict(res["text"], client.labels)
         return {
             "job_id": r["job_id"],
             "verdict": label,
@@ -469,7 +598,7 @@ def judge_rows(
             "completion_tokens": res["completion_tokens"],
             "model": client.model,
             "served_model": res["served_model"],
-            "prompt_version": PROMPT_VERSION,
+            "prompt_version": client.prompt_version,
             "structured_output": mode,
         }
 
@@ -559,7 +688,16 @@ def pilot_report(cfg: dict[str, Any], model: str) -> dict[str, Any]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Local-LLM judge for uncertain alignment pairs")
-    ap.add_argument("command", choices=["export", "probe", "pilot", "run", "evaluate", "import"])
+    ap.add_argument(
+        "command",
+        choices=["export", "export-verify", "probe", "pilot", "run", "evaluate", "import"],
+    )
+    ap.add_argument(
+        "--task",
+        choices=sorted(TASKS),
+        default="judge",
+        help="judge = first pass over the band; verify = second pass over its 'same' verdicts",
+    )
     ap.add_argument("--config", required=True, type=Path)
     ap.add_argument("--model", default=None, help="override the configured model name")
     ap.add_argument(
@@ -605,6 +743,14 @@ def main() -> None:
         cfg["concurrency"] = args.concurrency
     if args.max_hours:
         cfg["max_hours"] = args.max_hours
+    if args.command == "export-verify":
+        if not cfg.get("model"):
+            raise SystemExit("set --model to the first-pass model")
+        export_verify(cfg, cfg["model"])
+        return
+    cfg["task"] = args.task
+    if args.task == "verify":
+        cfg["job_path"] = cfg["verify_job_path"]
     if args.command == "export":
         export(cfg)
         return
@@ -676,7 +822,8 @@ def main() -> None:
     print(json.dumps(summary, indent=2))
     if args.command == "pilot":
         rep = pilot_report(cfg, model)
-        out = resolve(cfg["pilot_dir"]) / f"judge_pilot_{model_slug(model)}.json"
+        prefix = "judge_verify_pilot" if args.task == "verify" else "judge_pilot"
+        out = resolve(cfg["pilot_dir"]) / f"{prefix}_{model_slug(model)}.json"
         dump_json({**rep, "throughput": summary, "prompt_version": PROMPT_VERSION}, out)
         print(json.dumps(rep, indent=2))
 

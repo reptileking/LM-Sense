@@ -8,6 +8,7 @@ stage: inventory.judge_local
 align_config: configs/align.yaml
 gold_path: eval/alignment_gold.csv
 job_path: judge/job_v0_1.parquet              # git-tracked: the judging host needs only the repo
+verify_job_path: judge/job_verify_v0_1.parquet  # second pass (--task verify) over first-pass "same"
 verdicts_dir: judge/verdicts                  # git-tracked shards written by pilot / run
 cache_path: data/interim/judge_cache.parquet  # import target, joined by align (judge_verdicts.use)
 pilot_dir: eval
