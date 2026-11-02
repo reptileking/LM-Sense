@@ -260,7 +260,11 @@ when labelling (on the 162 unambiguous pairs: 0.92). No rule meets the bar, so *
 imported** and v1.0's ids stay as built. The verdicts stay in the repository
 (`judge/verdicts/qwen2.5-32b-judge/`, evaluation in `eval/judge_band_eval_qwen2.5-32b-judge.json`):
 they can serve as a *soft* near-duplicate table (pairs of token ids judged "same", ~79% precise)
-for evaluation and for sharing embeddings later, without merging any ids.
+for evaluation and for sharing embeddings later, without merging any ids. Cheap structural checks
+over all 17,751 band "same" verdicts do not separate the errors: keeping only mutual best cosine
+matches gives 0.79, dropping senses judged "same" with two partners 0.83, both 0.80 (on the 48
+labelled verdicts); the errors are broader / narrower judgements that only a semantic check
+(a model or a person) can catch.
 
 **D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
 User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`
