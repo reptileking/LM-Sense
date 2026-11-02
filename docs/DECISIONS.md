@@ -264,7 +264,12 @@ for evaluation and for sharing embeddings later, without merging any ids. Cheap 
 over all 17,751 band "same" verdicts do not separate the errors: keeping only mutual best cosine
 matches gives 0.79, dropping senses judged "same" with two partners 0.83, both 0.80 (on the 48
 labelled verdicts); the errors are broader / narrower judgements that only a semantic check
-(a model or a person) can catch.
+(a model or a person) can catch. A focused second pass (`--task verify`: the 32B asked only
+whether a first-pass "same" is exactly the same meaning or a near miss — broader / narrower,
+object / contents, literal / figurative ...; invented examples) was tested on the 171 labelled
+first-pass "same" verdicts: it confirmed 163 and, on the 67 band pairs, moved precision from
+0.776 (52 / 67) to 0.790 (49 / 62) while dropping 3 true matches, i.e. it barely discriminates
+(0.82 req/s). Not pursued; the owner reviews the first-pass "same" pairs by hand instead.
 
 **D-031 HTTP User-Agent.** Wikimedia and geneontology.org return 403 to Python's default
 User-Agent. The downloader sends `SenseLM-research/0.1 (+https://github.com/reptileking/LM-Sense)`
