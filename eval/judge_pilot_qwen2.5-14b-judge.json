@@ -1,0 +1,44 @@
+{
+  "accuracy_3way": 0.747,
+  "confusion": {
+    "different->different": 105,
+    "different->related": 33,
+    "different->same": 2,
+    "related->different": 4,
+    "related->related": 17,
+    "related->same": 10,
+    "same->related": 27,
+    "same->same": 102
+  },
+  "model": "qwen2.5-14b-judge",
+  "n": 300,
+  "note": "In the band the cosine aligner merges nothing (recall 0 there); judge merges are worth having when their precision is at least the aligner's (~0.9).",
+  "prompt_version": "ae6cc226f808",
+  "same_vs_rest_all": {
+    "fn": 27,
+    "fp": 12,
+    "n": 300,
+    "precision": 0.895,
+    "recall": 0.791,
+    "tp": 102
+  },
+  "same_vs_rest_in_band": {
+    "fn": 7,
+    "fp": 5,
+    "n": 78,
+    "precision": 0.643,
+    "recall": 0.562,
+    "tp": 9
+  },
+  "throughput": {
+    "judged": 300,
+    "req_per_s": 0.258,
+    "seconds": 1161.8,
+    "stats": {
+      "different": 109,
+      "related": 77,
+      "same": 114
+    }
+  },
+  "unparsed": 0
+}
