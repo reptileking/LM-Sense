@@ -1,0 +1,13 @@
+# Canonical sense inventory v1.1 = v1.0 + Wikidata items (Gate 2, decision 2). Ids continue the
+# registry append-only: every v1.0 id is kept. Run (after attach_v1_1):
+#   uv run python -m senselm.inventory.build --config configs/inventory_v1_1.yaml
+extends: configs/inventory_v1.yaml
+build_id: v1.1
+inputs:
+  senses: data/interim/senses_norm_v1_1.parquet
+  pairs: data/interim/align_pairs.parquet
+  dedupe_map: data/interim/dedupe_map_v1_1.parquet
+  attachments: data/interim/attachments_v1_1.parquet
+outputs:
+  inventory: data/processed/inventory_v1_1.parquet
+  stats: data/processed/inventory_v1_1.stats.json

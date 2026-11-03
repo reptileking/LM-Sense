@@ -1,0 +1,14 @@
+# Union of all per-source raw sense files for inventory v1.1 = v1.0 + Wikidata items (Gate 2,
+# decision 2; D-046). Run after `wikidata_items stream` and `select`:
+#   uv run python -m senselm.ingest.combine --config configs/ingest_v1_1.yaml
+extends: configs/ingest_v1.yaml
+inputs:
+  - data/interim/senses_raw_wiktionary.parquet
+  - data/interim/senses_raw_oewn.parquet
+  - data/interim/senses_raw_wikidata_lexemes.parquet
+  - data/interim/senses_raw_wikidata_items.parquet
+  - data/interim/senses_raw_mesh.parquet
+  - data/interim/senses_raw_gene_ontology.parquet
+  - data/interim/senses_raw_chebi.parquet
+  - data/interim/senses_raw_ncbi_taxonomy.parquet
+output: data/interim/senses_raw_v1_1.parquet

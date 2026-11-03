@@ -1,0 +1,13 @@
+# Statistics of inventory v1.1. Run after the v1.1 build:
+#   uv run python -m senselm.inventory.stats_v1 --config configs/stats_v1_1.yaml
+extends: configs/stats_v1.yaml
+build_id: v1.1
+inventory: data/processed/inventory_v1_1.parquet
+attachments: data/interim/attachments_v1_1.parquet
+senses_norm: data/interim/senses_norm_v1_1.parquet
+storage:
+  inventory v1.1: ["data/processed/inventory_v1_1.parquet"]
+  ID registry (local, with glosses): ["data/processed/id_registry.parquet", "data/processed/lemma_registry.parquet"]
+  committed ledger (registry/): ["registry/*.parquet"]
+output_json: docs/v1_1_stats.json
+output_md: docs/v1_1_stats.md

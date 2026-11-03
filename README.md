@@ -4,10 +4,11 @@ Research system for **sense-level tokenization**: every distinct meaning of ever
 (plus domain terms) is one token. A translator converts English to and from this sense-token
 language; a core language model is trained and runs entirely on sense tokens.
 
-Status: **Phase 2 — inventory v1.0 (2,557,970 sense tokens) + 393 structural tokens**, at Gate 2
-(Wiktionary, Open English WordNet, Wikidata lexemes, MeSH, Gene Ontology, ChEBI, NCBI Taxonomy;
-Wikidata items and SNOMED CT UK prepared for a later build).
-See [`docs/phase2_report.md`](docs/phase2_report.md) and, for v0.1,
+Status: **Phase 3 — codec**, at Gate 3: a deterministic decoder and a spaCy baseline encoder
+(most frequent sense) that round-trips all 4,500 held-out FineWeb-Edu documents exactly, gives
+98.4% of words a sense token and is 1.18x as long as GPT-2's BPE. Inventory v1.0 (2,557,970 sense
+tokens) + 396 structural tokens. See [`docs/phase3_report.md`](docs/phase3_report.md), and for
+the inventory [`docs/phase2_report.md`](docs/phase2_report.md) and
 [`docs/phase1_report.md`](docs/phase1_report.md).
 
 ## Setup

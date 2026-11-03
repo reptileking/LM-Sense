@@ -1,0 +1,5 @@
+# Stage-2 alignment for inventory v1.1 (adds the Wikidata items; thresholds as in v1.0). Run:
+#   uv run python -m senselm.inventory.attach --config configs/attach_v1_1.yaml
+extends: configs/attach.yaml
+senses: data/interim/senses_norm_v1_1.parquet
+output: data/interim/attachments_v1_1.parquet
