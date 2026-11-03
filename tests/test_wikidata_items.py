@@ -9,6 +9,7 @@ from pathlib import Path
 
 import polars as pl
 import pyarrow as pa
+import pytest
 
 from senselm.ingest import wikidata_items as wi
 
@@ -133,3 +134,55 @@ def test_select_concepts(tmp_path: Path) -> None:
     assert st["selected"] == 2 and st["linked"] == 1
     q1 = got.filter(pl.col("source_id") == "Q1").row(0, named=True)
     assert q1["lemma"] == "red dwarf" and q1["gloss"] == "type of star" and q1["pos"] == "item"
+
+
+def test_resumable_stream_survives_a_crash(tmp_path: Path) -> None:
+    """A checkpointed pass killed after its first checkpoint resumes in a new call and produces
+    the same superset as an uninterrupted pass."""
+    import gzip
+    import json
+
+    lines = []
+    for i in range(1, 3001):
+        item = {
+            "type": "item",
+            "id": f"Q{i}",
+            "labels": {"en": {"language": "en", "value": f"thing {i}"}},
+            "descriptions": {"en": {"language": "en", "value": f"a thing number {i}"}},
+            "claims": {"P279": [{"mainsnak": {"datavalue": {"value": {"id": "Q35120"}}}}]}
+            if i % 3 == 0
+            else {},
+            "sitelinks": {},
+        }
+        lines.append(json.dumps(item, separators=(",", ":")).encode() + b",\n")
+    data = b"[\n" + b"".join(lines) + b"]\n"
+    cut = data.index(b"\n", len(data) // 2) + 1
+    dump = tmp_path / "dump.json.gz"
+    dump.write_bytes(gzip.compress(data[:cut]) + gzip.compress(data[cut:]))  # two members
+    pl.DataFrame({"qid": ["Q1"]}).write_parquet(tmp_path / "linked.parquet")
+
+    def cfg(name: str) -> dict:
+        return {
+            "url": f"file://{dump}",
+            "version": "test",
+            "linked_items": str(tmp_path / "linked.parquet"),
+            "superset_output": str(tmp_path / f"{name}.parquet"),
+            "resumable": True,
+            "checkpoint_gb": 20_000 / 1e9,  # every ~20 kB of compressed input
+            "index_spacing_mb": 0.0625,
+            "read_mb": 0.0078125,  # 8 KiB reads
+            "segment_mb": 0.015625,
+            "workers": 1,
+        }
+
+    base = wi.stream_resumable(cfg("base"))
+    with pytest.raises(RuntimeError, match="simulated crash"):
+        wi.stream_resumable(cfg("resumed"), crash_after=1)
+    res = wi.stream_resumable(cfg("resumed"))
+    assert res["resumed"] == 1 and base["resumed"] == 0
+    a = pl.read_parquet(tmp_path / "base.parquet")
+    b = pl.read_parquet(tmp_path / "resumed.parquet")
+    assert a.height == 1001 and a["qid"].to_list() == b["qid"].to_list()  # Q1 linked + every 3rd
+    # the whole-file md5 exists only where one process read the file contiguously from byte 0
+    assert base["md5"] is not None and res["md5"] in (None, base["md5"])
+    assert not (tmp_path / "resumed.parquet.work").exists()

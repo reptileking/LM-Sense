@@ -1,0 +1,444 @@
+{
+  "chars": 21666600,
+  "conventions": {
+    "auto_cap": true,
+    "max_mwe_tokens": 8
+  },
+  "coverage": {
+    "byte_word_classes": {
+      "all caps (acronym)": {
+        "codec_tokens": 25637,
+        "tokens_in_text": 3785,
+        "types": 1933
+      },
+      "capitalised (mostly names)": {
+        "codec_tokens": 206027,
+        "tokens_in_text": 21650,
+        "types": 12707
+      },
+      "contains digits": {
+        "codec_tokens": 75748,
+        "tokens_in_text": 7949,
+        "types": 5779
+      },
+      "lower case (rare word, typo, foreign)": {
+        "codec_tokens": 123549,
+        "tokens_in_text": 11397,
+        "types": 7895
+      },
+      "mixed case (CamelCase, unit)": {
+        "codec_tokens": 42153,
+        "tokens_in_text": 3575,
+        "types": 2202
+      },
+      "non-ASCII letters": {
+        "codec_tokens": 34133,
+        "tokens_in_text": 3223,
+        "types": 2042
+      },
+      "symbols": {
+        "codec_tokens": 61,
+        "tokens_in_text": 15,
+        "types": 4
+      },
+      "url / email / path": {
+        "codec_tokens": 70866,
+        "tokens_in_text": 2892,
+        "types": 2180
+      }
+    },
+    "items": {
+      "bytes_form": 1886,
+      "bytes_oov": 52600,
+      "clitic": 6453,
+      "mwe": 229918,
+      "mwe_split": 11730,
+      "number": 71848,
+      "number_suffix": 1060,
+      "odd_whitespace": 9,
+      "punct": 559899,
+      "sense": 2899763,
+      "variant": 3178
+    },
+    "sense_rate": 0.9839,
+    "top_byte_words": [
+      [
+        "email@example.com",
+        94
+      ],
+      [
+        "firstname.lastname@example.org",
+        89
+      ],
+      [
+        "MiG-21",
+        84
+      ],
+      [
+        "MiG-21s",
+        72
+      ],
+      [
+        "Loliondo",
+        69
+      ],
+      [
+        "Mudejars",
+        68
+      ],
+      [
+        "Seiwert",
+        61
+      ],
+      [
+        "Zephirah",
+        54
+      ],
+      [
+        "SuCAST",
+        49
+      ],
+      [
+        "von",
+        48
+      ],
+      [
+        "Onegin",
+        46
+      ],
+      [
+        "NECTA",
+        44
+      ],
+      [
+        "Niepold",
+        44
+      ],
+      [
+        "T-64",
+        43
+      ],
+      [
+        "Heb",
+        41
+      ],
+      [
+        "PythonWin",
+        41
+      ],
+      [
+        "EurekAlert",
+        39
+      ],
+      [
+        "PLoS",
+        38
+      ],
+      [
+        "Grassi",
+        36
+      ],
+      [
+        "Azmet",
+        36
+      ],
+      [
+        "gyri",
+        36
+      ],
+      [
+        "Deut",
+        35
+      ],
+      [
+        "Elsevier",
+        35
+      ],
+      [
+        "Hazrat",
+        34
+      ],
+      [
+        "|This",
+        34
+      ],
+      [
+        "MySQL",
+        33
+      ],
+      [
+        "Zo\u00f6l",
+        33
+      ],
+      [
+        "Czernowitz",
+        33
+      ],
+      [
+        "/dev",
+        32
+      ],
+      [
+        "Morsi",
+        32
+      ],
+      [
+        "abronius",
+        31
+      ],
+      [
+        "MACV",
+        31
+      ],
+      [
+        "SIECUS",
+        30
+      ],
+      [
+        "Xi3",
+        30
+      ],
+      [
+        "Croffut",
+        30
+      ],
+      [
+        "kWh",
+        29
+      ],
+      [
+        "Rio+20",
+        29
+      ],
+      [
+        "vnd.openxmlformats",
+        29
+      ],
+      [
+        "Jesus'",
+        28
+      ],
+      [
+        "Clin",
+        28
+      ],
+      [
+        "/usr",
+        28
+      ],
+      [
+        "plumulosus",
+        28
+      ],
+      [
+        "AIED",
+        28
+      ],
+      [
+        "|The",
+        27
+      ],
+      [
+        "SELinux",
+        27
+      ],
+      [
+        "\u03b1",
+        27
+      ],
+      [
+        "stored_type",
+        27
+      ],
+      [
+        "km2",
+        26
+      ],
+      [
+        "morer\u00eda",
+        26
+      ],
+      [
+        "NF\u03baB",
+        26
+      ],
+      [
+        "Razumihin",
+        26
+      ],
+      [
+        "Kamrul",
+        25
+      ],
+      [
+        "|(RIB",
+        25
+      ],
+      [
+        "PSoC",
+        24
+      ],
+      [
+        "automator",
+        24
+      ],
+      [
+        "Mahomat",
+        24
+      ],
+      [
+        "Jur\u00e9ia",
+        24
+      ],
+      [
+        "Dealey",
+        24
+      ],
+      [
+        "taxa",
+        23
+      ],
+      [
+        "Mudejars'",
+        23
+      ],
+      [
+        "Abrahim",
+        23
+      ],
+      [
+        "Haga",
+        23
+      ],
+      [
+        "/tmp",
+        23
+      ],
+      [
+        "|De",
+        23
+      ],
+      [
+        "ContentType=",
+        23
+      ],
+      [
+        "NCAR",
+        22
+      ],
+      [
+        "Romanovna",
+        22
+      ],
+      [
+        "Dept",
+        21
+      ],
+      [
+        "Grassi's",
+        21
+      ],
+      [
+        "||This",
+        21
+      ],
+      [
+        "estuarius",
+        21
+      ],
+      [
+        "abdita",
+        21
+      ],
+      [
+        "km\u00b2",
+        21
+      ],
+      [
+        "B12",
+        21
+      ],
+      [
+        "in\u017fignia",
+        21
+      ],
+      [
+        "Kolleru",
+        21
+      ],
+      [
+        "PCIT",
+        21
+      ],
+      [
+        "Avdotya",
+        21
+      ],
+      [
+        "AGCC",
+        21
+      ],
+      [
+        "InSAR",
+        21
+      ]
+    ],
+    "words_bytes": 55546,
+    "words_sense": 3399009
+  },
+  "docs": 4500,
+  "length": {
+    "chars_per_token": 3.91,
+    "gpt2_tokens": 4715046,
+    "gpt2_tokens_per_word": 1.3451,
+    "qwen25_tokens": 4740518,
+    "qwen25_tokens_per_word": 1.3523,
+    "ratio_vs_gpt2": 1.1753,
+    "ratio_vs_qwen25": 1.169,
+    "sense_codec_tokens": 5541640,
+    "tokens_by_category": {
+      "byte": 583581,
+      "case": 136429,
+      "digit": 205731,
+      "morph": 738745,
+      "orth": 2233,
+      "punct": 574873,
+      "sense": 3139312,
+      "space": 157558,
+      "variant": 3178
+    },
+    "tokens_by_kind": {
+      "bytes": 582594,
+      "bytes_char": 950,
+      "bytes_ws": 37,
+      "digit": 205731,
+      "orth": 2233,
+      "punct": 574873,
+      "sense": 4024117,
+      "space": 151105
+    },
+    "tokens_per_word": 1.5809
+  },
+  "provenance": {
+    "code": {
+      "dirty": true,
+      "git_commit": "8f56652abf9a0aa17e5d45b76faad1fece314fa2"
+    },
+    "config_sha256": "29950bc72aa37ec972b65099d79583339fd5f6407cdb8f9c6c43e48a7f98e73f"
+  },
+  "roundtrip": {
+    "edit_chars": 0,
+    "edit_per_1k_chars": 0.0,
+    "exact_docs": 4500,
+    "exact_rate": 1.0,
+    "examples": []
+  },
+  "seconds": {
+    "encode_decode": 548.4,
+    "load": 12.7,
+    "words_per_s": 6392
+  },
+  "spacy_words": 3454555,
+  "split": "eval",
+  "whitespace_words": 3505433
+}

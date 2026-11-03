@@ -66,6 +66,18 @@ uv run python -m senselm.inventory.judge_local pilot --config configs/judge_loca
 uv run python -m senselm.inventory.judge_local run   --config configs/judge_local.yaml --model <model>
 ```
 
+## Phase 3 pipeline (codec)
+
+```bash
+uv run python -m senselm.inventory.structural --config configs/structural.yaml  # + codec-v1 tokens
+uv run python -m senselm.codec.build          --config configs/codec.yaml       # paradigm / variant tables
+uv run python -m senselm.codec --config configs/codec.yaml roundtrip "It's the dogs' bones."
+uv run python -m senselm.ingest.download      --config configs/download.yaml --only gpt2_tokenizer qwen25_tokenizer wsd_framework
+uv run python -m senselm.eval.corpus_sample   --config configs/corpus_sample.yaml   # FineWeb-Edu sample
+uv run python -m senselm.eval.codec_eval      --config configs/codec_eval.yaml --split eval
+uv run python -m senselm.eval.wsd_eval        --config configs/wsd_eval.yaml        # needs the WSD framework
+```
+
 One-off experiments (also reproducible):
 
 ```bash

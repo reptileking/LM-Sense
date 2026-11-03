@@ -146,6 +146,8 @@ class Decoder:
             if cat == "morph":
                 if word is not None:
                     word.feats.append(name)
+                elif name == "GEN" and out:  # genitive after digits: the 1990's
+                    out[-1] += apos + "s"
                 continue
             flush()
             if cat == "case":

@@ -27,6 +27,10 @@ select:
     - Q4167836    # Wikimedia category
     - Q4167410    # Wikimedia disambiguation page
     - Q11266439   # Wikimedia template
+resumable: true         # checkpointed pass (D-050): rerun the same command to resume; --fresh to restart
+checkpoint_gb: 8        # compressed input between checkpoints (~14 min at ~10 MB/s)
+index_spacing_mb: 768   # gzip seek points (~2,000 points / ~64 MB for this dump)
+read_mb: 64
 connections: 2          # parallel range requests (Wikimedia caps ~5 MB/s per connection; be polite)
 segment_mb: 64
 workers: 2              # line-filter processes

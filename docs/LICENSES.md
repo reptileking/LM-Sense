@@ -121,3 +121,28 @@ docs/phase2_stats.md ("Licence scenarios").
 |---|---|---|
 | lemminflect 0.2.3 | MIT | singularising MeSH headings (dictionary lookups) |
 | lxml | BSD | streaming MeSH XML |
+
+## Phase 3 (codec)
+
+### Data
+
+| Source | Version used | Licence | Where it is used |
+|---|---|---|---|
+| FineWeb-Edu (HuggingFaceFW/fineweb-edu) | `sample/10BT/000_00000.parquet` at repo commit `87f0914`, first 5,000 documents read by HTTP range requests (`configs/corpus_sample.yaml`) | ODC-By 1.0; the underlying web text is also subject to the Common Crawl terms of use | codec metrics only (coverage, round-trip, length); not redistributed (`data/` is git-ignored) |
+| WSD Evaluation Framework (Raganato, Camacho-Collados and Navigli, EACL 2017): SemCor + Senseval-2, Senseval-3, SemEval-2007 | **not yet downloaded**: `lcl.uniroma1.it` times out from the cloud environment (D-047) | research use; per-dataset terms will be checked in the archive before use. SemCor is distributed under the Princeton WordNet licence | sense accuracy of the baseline encoder |
+| SemEval-2013 / SemEval-2015 (in the same framework) | **not used** | — | their WordNet keys were mapped from BabelNet annotations; excluded under the "no BabelNet in any form" rule unless the owner decides otherwise (D-049) |
+
+### Tools and models (not redistributed)
+
+| Tool / model | Version | Licence | Use |
+|---|---|---|---|
+| spaCy | 3.8.x (pinned in `uv.lock`) | MIT | tokenisation, lemmas, POS, morphology for the baseline encoder |
+| en_core_web_sm | 3.8.0 (GitHub release wheel, pinned in `pyproject.toml`) | MIT | the spaCy English pipeline (trained on OntoNotes 5 and other corpora; the released model is MIT) |
+| lemminflect | 0.2.3 | MIT | inflection rules of the codec (head-word inflection, lemma candidates) |
+| GPT-2 tokenizer (`openai-community/gpt2` `tokenizer.json` @ 607a30d) | sha256 pinned in `configs/download.yaml` | MIT | sequence-length comparison only |
+| Qwen2.5 tokenizer (`Qwen/Qwen2.5-7B-Instruct` `tokenizer.json` @ a09a354) | sha256 pinned in `configs/download.yaml` | Apache-2.0 | sequence-length comparison only |
+| rapidfuzz | 3.x (pinned in `uv.lock`) | MIT | character edit distance in the round-trip metric |
+
+The codec tables (`data/processed/codec/`) derive from Wiktionary forms and variants (CC BY-SA 4.0
+/ GFDL) and Wikidata lexeme forms (CC0), so they carry Wiktionary's share-alike terms like the
+inventory.

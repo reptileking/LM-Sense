@@ -57,6 +57,7 @@ NEG_TEXT = {"n't", "n’t"}
 CLITIC_LEMMA = {"'s": "be", "'re": "be", "'m": "be", "'ve": "have", "'ll": "will", "'d": "would"}
 CLITIC_ALT = {"'s": ["be", "have"], "'d": ["would", "have"], "'ll": ["will", "shall"]}
 NUMBER = re.compile(r"\d+(?:[.,:/]\d+)*")  # 3.14, 1,000, 10:30, 1/5
+NUMBER_PUNCT = re.compile(r"(\d+(?:[.,:/]\d+)*)([^\w\s]+)")  # 8), 3,
 NUMBER_SUFFIX = re.compile(r"(\d+(?:[.,:/]\d+)*)([^\W\d_]+)")
 CURLY = "’"
 
@@ -166,8 +167,46 @@ class Encoder:
                     out.append(Item("clitic", start, end, t.text, [t]))
                     i += 1
                     continue
+                if low == "'s" and prev.kind == "word" and not prev.gen:
+                    # spaCy sometimes tags a curly 's as a noun: genitive after a noun-like host
+                    # (Maui's dolphin), contraction after anything else (Here's why)
+                    host = prev.toks[prev.head] if prev.toks else None
+                    if host is not None and host.pos_ in ("NOUN", "PROPN", "NUM", "X", "SYM"):
+                        prev.gen, prev.end = t.text, end
+                    else:
+                        out.append(Item("clitic", start, end, t.text, [t]))
+                    i += 1
+                    continue
+            if (
+                glued
+                and prev is not None
+                and prev.kind == "number"
+                and not prev.gen
+                and _norm_apos(t.text.lower()) == "'s"
+            ):  # the 1990's
+                prev.gen, prev.end = t.text, end
+                i += 1
+                continue
             if NUMBER.fullmatch(t.text):
                 out.append(Item("number", start, end, t.text, [t]))
+                i += 1
+                continue
+            m = NUMBER_PUNCT.fullmatch(t.text)
+            if m is not None:  # 8) -> number + punctuation
+                cut = start + len(m.group(1))
+                out.append(Item("number", start, cut, m.group(1), [t]))
+                out.append(Item("punct", cut, end, m.group(2), [t]))
+                i += 1
+                continue
+            if (
+                len(t.text) > 1
+                and t.text.endswith(".")
+                and t.text[:-1].isalpha()
+                and not self.lex.spellings(t.text)
+                and self.lex.spellings(t.text[:-1])
+            ):  # H. -> H + full stop (the letter is a lemma, "H." is not)
+                out.append(Item("word", start, end - 1, t.text[:-1], [t]))
+                out.append(Item("punct", end - 1, end, ".", [t]))
                 i += 1
                 continue
             if len(t.text) > 1 and t.text.endswith("-") and t.text[:-1].replace("-", "").isalpha():
@@ -201,6 +240,10 @@ class Encoder:
         first = toks[i]
         start = first.idx
         verbal = first.pos_ in ("VERB", "AUX")
+        if verbal and i + 1 < len(toks) and toks[i + 1].tag_ == "IN":
+            # verb + preposition (sat on the bank) is read word by word; verb + particle
+            # (gave up, tagged RP) can still be a phrasal-verb lemma
+            return best
         for n in range(2, min(self.max_mwe, len(toks) - i) + 1):
             last = toks[i + n - 1]
             if _attaches(last):  # weren't, it's, dog's: contraction lemmas would hide be + NEG
@@ -208,6 +251,8 @@ class Encoder:
             span = text[start : last.idx + len(last.text)]
             if "\n" in span:
                 break
+            if last.pos_ == "DET" or (n == 2 and last.pos_ == "PRON"):
+                continue  # "on the", "on it": fragments, not multi-word senses, in running text
             if span.lower() in self.lex.mwe:
                 best = (n, span, 0 if verbal else n - 1)
                 continue
@@ -479,6 +524,13 @@ class Encoder:
                         unit(
                             it.start + k, it.start + k + 1, "punct", ch, [self.s.punct[ch]], "punct"
                         )
+                if it.gen:
+                    need = CURLY if CURLY in it.gen else "'"
+                    if need != apos_state:
+                        put([self.APOS[need]], "orth")
+                        apos_state = need
+                    put([self.GEN], "sense")
+                    pos = it.end
                 tr.items["number"] += 1
                 continue
             if it.kind == "punct":

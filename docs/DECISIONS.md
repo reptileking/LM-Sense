@@ -450,3 +450,68 @@ resource (no bulk entity imports). (5) Long-tail domain senses keep their ids; e
 decides which senses get an embedding row. (6) Named entities stay out; Phase 3 measures how much
 real text falls back to bytes. (7) The ledger stays in git until the repository nears ~1 GB.
 (8) The current NLM terms are re-read before any public release that includes MeSH.
+
+**D-047 Phase 3 inputs.** (1) General text: the first 5,000 documents of one FineWeb-Edu
+`sample/10BT` shard, pinned to repo commit `87f0914` and read with HTTP range requests (the 2 GB
+shard is never stored; `configs/corpus_sample.yaml`). Documents 0–499 (355k words) are for
+developing codec rules, 500–4,999 (3.5M words) are held out for the metrics. (2) Reference
+tokenizers, for sequence length only: GPT-2 (the ~50k BPE the spec's Phase 5 baseline names) and
+Qwen2.5 (the owner's local model family), both pinned by revision and sha256. (3) spaCy 3.8 with
+`en_core_web_sm` 3.8.0, `ner` and `parser` disabled (the encoder needs tokens, lemmas, POS and
+morphology; a sentencizer replaces the parser). (4) The Raganato WSD framework at
+`lcl.uniroma1.it` times out from the cloud environment (proxy: "upstream connect error … connection
+timeout", 2026-11-03); per the network rule the owner was given the URL and target path, and the
+evaluation code is written and tested on a toy corpus until the file arrives. (5) The Wikidata
+items pass was restarted at the start of Phase 3 (D-046) as a detached process while the session
+works; it still cannot resume after a container recycle.
+
+**D-048 Codec conventions (codec-v1).** A word is `[case] [variant] SENSE [morph…]`, a contraction
+clitic is `<space:clitic>` + word, anything the decoder cannot spell is a byte span; digits and
+punctuation are one token each. Choices: (a) *Minimal morphology*: only the features needed to
+pick the spelling are emitted, with the present tense implied and **singular unmarked** — `runs`
+= run `3`, `ran` = run `PST`, `run` (participle) = run `PST V.PTCP`, `running` = run `V.PTCP`,
+`were` = be `PST PL`; spaCy's morphology chooses between bundles that spell the same word (so
+`had walked` gets the participle). (b) *Paradigms*: closed-class tables (be, have, do, personal
+pronouns, this/that), then a table of the 41,910 Wiktionary / Wikidata-lexeme forms that
+lemminflect gets wrong (it agrees on 92% of 557k listed forms), then lemminflect on the head word
+(first word of a verb, last of a noun); UK/US forms (`travelled`) via `<variant:uk|us>`
+(1,621), a second standard form (`mediums` beside `media`) via `<variant:other>` (11,333).
+(c) *Contractions are decomposed*: `n't` is `NEG` on its host (`can't`, `won't` irregular), `'s 're
+'m 've 'll 'd` are clitic be / have / will / would / us; the inventory's contraction lemmas
+(`it's`, `weren't`) are not matched, because one token for `it's` would hide *is* vs *has*.
+(d) *Genitive* `'s` is `GEN` (bare apostrophe after a plural in -s). (e) *Apostrophe style* is a
+stateful switch, `<orth:apos_curly>` / `<orth:apos_straight>`, because 36% of the sample's
+documents use ’. (f) *Case*: `<case:cap|allcaps|lower|title>`; `title` was added for headings
+("Physical Therapy" stays one multi-word sense), and **sentence starts are capitalised by
+default** (`auto_cap`, after `.` `!` `?`, a line break or at the start), which saves 2.3% of
+tokens on the development split; `<case:lower>` keeps a sentence-initial word lower-case.
+(g) *Spacing*: one space between words by default, none before closing marks or after opening
+ones, none around `-` and `/`, none inside numbers, straight quotes alternate open / close;
+`<space:*>` tokens give the exact separator wherever the text differs. (h) *Multi-word lemmas*:
+longest match of up to 8 spaCy tokens, on the exact span or with its first / last word
+lemmatised (`carried the can`); a match that cannot be spelled (inventory `The Gulf`, text "the
+Gulf") is re-encoded word by word. (i) *Sense choice*: the lowest sense index for spaCy's lemma
+and POS, then other POS, then the surface form as its own lemma, then lemminflect's lemma
+(title-case plurals spaCy leaves alone). The encoder realises every word and every gap with the
+decoder's own functions, so `decode(encode(text)) == text` by construction; the cost of anything
+unspellable shows up as byte fallback, not as loss. Three structural tokens were appended (build
+`codec-v1`): `<case:title>`, `<orth:apos_curly>`, `<orth:apos_straight>`; no existing id changed.
+
+**D-049 SemEval-2013 and SemEval-2015 are not used.** Raganato et al.'s framework distributes
+WordNet keys for these two sets that were mapped from BabelNet annotations (the tasks were
+BabelNet-based), and its "ALL" set contains them. Under "no BabelNet in any form" the Phase 3
+sense accuracy uses SemCor, Senseval-2, Senseval-3 and SemEval-2007 only (WordNet-native
+annotation) until the owner rules otherwise.
+
+**D-050 Resumable dump streaming.** The Wikidata items pass now checkpoints (`resumable: true` in
+`configs/ingest_wikidata_items.yaml`): the remote dump is a seekable file over HTTP range requests
+(`senselm/ingest/remote_gzip.py`, same verified, retried 64 MB segments as D-032), wrapped in
+`indexed_gzip`, which records a seek point (32 KiB window) every 768 MiB of output; every 8 GB of
+compressed input the pass drains its workers, closes a Parquet part, exports the seek points and
+records the offset of the next unread line, so rerunning the command resumes there (a test kills a
+pass after its first checkpoint and checks the resumed result is identical). Costs: inflation is
+~3× slower than plain zlib (~170 MB/s per core, still above the ~110 MB/s the network delivers)
+and the whole-file md5 is only verifiable by a pass that never resumed (gzip member CRCs are
+always checked). `indexed_gzip` 1.10 dies with SIGFPE when the spacing is a multiple of 1 GiB (a
+32-bit `4 × spacing` wraps to zero); `open_gzip` avoids such values. The pass started this
+session predates the change and is not resumable; it is left to finish while the session works.

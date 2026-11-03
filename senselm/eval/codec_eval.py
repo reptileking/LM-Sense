@@ -31,6 +31,26 @@ from senselm.common import Provenance, dump_json, load_config, resolve, setup_lo
 LOG = logging.getLogger("senselm.eval.codec_eval")
 
 
+def byte_word_class(w: str) -> str:
+    """Rough class of a byte-spelled word (for the named-entity decision)."""
+    if any(c in w for c in "@/\\:") or w.startswith(("http", "www.")):
+        return "url / email / path"
+    if any(c.isdigit() for c in w):
+        return "contains digits"
+    letters = [c for c in w if c.isalpha()]
+    if not letters:
+        return "symbols"
+    if not all(c.isascii() for c in letters):
+        return "non-ASCII letters"
+    if len(letters) > 1 and all(c.isupper() for c in letters):
+        return "all caps (acronym)"
+    if w[:1].isupper() and any(c.isupper() for c in w[1:]):
+        return "mixed case (CamelCase, unit)"
+    if w[:1].isupper():
+        return "capitalised (mostly names)"
+    return "lower case (rare word, typo, foreign)"
+
+
 def run(cfg: dict[str, Any], split: str, limit: int | None = None) -> dict[str, Any]:
     ccfg = load_config(resolve(cfg["codec_config"]))
     if "conventions" in cfg:
@@ -48,6 +68,8 @@ def run(cfg: dict[str, Any], split: str, limit: int | None = None) -> dict[str, 
     bpe = {name: Tokenizer.from_file(str(resolve(path))) for name, path in cfg["bpe"].items()}
 
     total = Trace()
+    cat_counts: Counter[str] = Counter()
+    info = codec.tables["structural"].info
     exact = 0
     mismatch: list[dict[str, Any]] = []
     edit_chars = 0
@@ -60,6 +82,9 @@ def run(cfg: dict[str, Any], split: str, limit: int | None = None) -> dict[str, 
         text = texts[k]
         back = codec.decode(ids)
         n_ids += len(ids)
+        for t in ids:
+            c = info.get(t)
+            cat_counts["sense" if c is None else c[0]] += 1
         total.merge(tr)
         if back == text:
             exact += 1
@@ -92,6 +117,13 @@ def run(cfg: dict[str, Any], split: str, limit: int | None = None) -> dict[str, 
     chars = int(docs["chars"].sum())
     ws_words = int(docs["words"].sum())
     oov = total.oov.most_common(int(cfg.get("top_oov", 60)))
+    classes: dict[str, list[int]] = {}
+    for w, n in total.oov.items():
+        c = byte_word_class(w)
+        v = classes.setdefault(c, [0, 0, 0])
+        v[0] += 1
+        v[1] += n
+        v[2] += n * (len(w.encode("utf-8")) + 2)
     res: dict[str, Any] = {
         "split": split,
         "docs": len(texts),
@@ -112,10 +144,15 @@ def run(cfg: dict[str, Any], split: str, limit: int | None = None) -> dict[str, 
             "sense_rate": round(total.words_sense / max(total.words, 1), 4),
             "items": dict(total.items.most_common()),
             "top_byte_words": oov,
+            "byte_word_classes": {
+                c: {"types": v[0], "tokens_in_text": v[1], "codec_tokens": v[2]}
+                for c, v in sorted(classes.items(), key=lambda kv: -kv[1][2])
+            },
         },
         "length": {
             "sense_codec_tokens": n_ids,
             "tokens_by_kind": dict(total.tokens.most_common()),
+            "tokens_by_category": dict(cat_counts.most_common()),
             "tokens_per_word": round(n_ids / max(ws_words, 1), 4),
             "chars_per_token": round(chars / max(n_ids, 1), 3),
             **{f"{name}_tokens": n for name, n in bpe_tokens.items()},

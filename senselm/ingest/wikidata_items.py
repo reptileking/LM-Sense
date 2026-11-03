@@ -337,6 +337,209 @@ def stream(cfg: dict[str, Any]) -> dict[str, Any]:
     return st
 
 
+# --------------------------------------------------------------------------- resumable pass
+
+
+def _atomic_json(obj: Any, path: Any) -> None:
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(orjson.dumps(obj, option=orjson.OPT_INDENT_2).decode(), encoding="utf-8")
+    tmp.replace(path)
+
+
+def stream_resumable(
+    cfg: dict[str, Any], *, resume: bool = True, crash_after: int | None = None
+) -> dict[str, Any]:
+    """The same pass as :func:`stream`, checkpointed (D-050).
+
+    Every ``checkpoint_gb`` of compressed input the pass drains its workers, closes a Parquet part,
+    exports the gzip seek points and records the uncompressed offset of the next unread line; a
+    new process started with ``resume`` imports the seek points, seeks there and carries on. At
+    the end the parts are concatenated into ``superset_output``. The whole-file md5 can only be
+    checked by a pass that never resumed (gzip member CRCs are checked either way).
+    """
+    import multiprocessing as mp
+    from collections import deque
+
+    import pyarrow.parquet as pq
+
+    from senselm.ingest.remote_gzip import FileRange, HttpRange, open_gzip
+
+    out = resolve(cfg["superset_output"])
+    work = out.with_name(out.name + ".work")
+    ck_path, idx_path = work / "checkpoint.json", work / "seek_points.gzidx"
+    url = cfg["url"]
+    src: Any = (
+        FileRange(url[len("file://") :])
+        if url.startswith("file://")
+        else HttpRange(url, user_agent=cfg.get("user_agent", DEFAULT_USER_AGENT))
+    )
+    # spawned (not forked) workers: polars and the download threads are already running
+    linked = set(pl.read_parquet(resolve(cfg["linked_items"]))["qid"].to_list())
+    workers = int(cfg.get("workers", 2))
+    pool = mp.get_context("spawn").Pool(workers, initializer=_init_worker, initargs=(linked,))
+    gz, raw = open_gzip(
+        src,
+        spacing=int(float(cfg.get("index_spacing_mb", 768)) * (1 << 20)),
+        segment=int(float(cfg.get("segment_mb", 64)) * (1 << 20)),
+        connections=int(cfg.get("connections", 2)),
+    )
+    ck: dict[str, Any] | None = None
+    if resume and ck_path.exists():
+        ck = orjson.loads(ck_path.read_bytes())
+        if ck.get("url") != url:
+            raise RuntimeError(f"checkpoint is for {ck.get('url')}, config says {url}")
+    if ck is None:
+        if work.exists():
+            for f in work.iterdir():
+                f.unlink()
+        work.mkdir(parents=True, exist_ok=True)
+        ck = {"url": url, "offset": 0, "parts": [], "stats": {}, "resumed": 0}
+    else:
+        gz.raw.import_index(str(idx_path))
+        gz.seek(int(ck["offset"]))
+        ck["resumed"] = int(ck.get("resumed", 0)) + 1
+        for f in work.glob("part-*.parquet"):  # a part written after the last checkpoint
+            if f.name not in ck["parts"]:
+                f.unlink()
+        LOG.info(
+            "resuming at %.1f GB inflated (%d parts so far)", ck["offset"] / 1e9, len(ck["parts"])
+        )
+    stats: Counter[str] = Counter(ck["stats"])
+    inflight: deque[Any] = deque()
+    every = int(float(cfg.get("checkpoint_gb", 8)) * 1e9)
+    limit = cfg.get("max_compressed_bytes")
+    chunk = int(float(cfg.get("read_mb", 64)) * (1 << 20))
+    writer: Any = None
+    part_name = ""
+    buffer: list[dict[str, Any]] = []
+    t0 = last_log = time.time()
+    start_raw = last_ck = raw.tell()
+    checkpoints = 0
+
+    def flush_rows() -> None:
+        nonlocal writer, part_name
+        if not buffer:
+            return
+        if writer is None:
+            part_name = f"part-{len(ck['parts']):05d}.parquet"
+            writer = pq.ParquetWriter(work / part_name, SUPERSET_SCHEMA, compression="zstd")
+        writer.write_table(pa.Table.from_pylist(buffer, schema=SUPERSET_SCHEMA))
+        buffer.clear()
+
+    def collect(res: Any) -> None:
+        recs, st = res.get()
+        stats.update(st)
+        for rec in recs:
+            stats["kept"] += 1
+            stats["kept_linked"] += rec["linked"]
+            stats["kept_p279"] += bool(rec["p279"])
+            stats["kept_xref"] += rec["xrefs"] != "{}"
+            buffer.append(rec)
+        if len(buffer) >= 50_000:
+            flush_rows()
+
+    def checkpoint(offset: int) -> None:
+        nonlocal writer, checkpoints
+        while inflight:
+            collect(inflight.popleft())
+        flush_rows()
+        if writer is not None:
+            writer.close()
+            writer = None
+            ck["parts"].append(part_name)
+        gz.raw.export_index(str(idx_path) + ".tmp")
+        (work / "seek_points.gzidx.tmp").replace(idx_path)
+        ck.update(
+            offset=offset,
+            stats=dict(stats),
+            compressed_pos=raw.tell(),
+            updated=time.strftime("%Y-%m-%dT%H:%M:%S"),
+        )
+        _atomic_json(ck, ck_path)
+        checkpoints += 1
+        LOG.info(
+            "checkpoint %d at %.1f%% (%.0f GB inflated, %d kept)",
+            checkpoints,
+            100 * raw.tell() / src.total,
+            offset / 1e9,
+            stats["kept"],
+        )
+        if crash_after is not None and checkpoints >= crash_after:
+            raise RuntimeError("simulated crash after checkpoint")
+
+    rest = b""
+    try:
+        while True:
+            data = gz.read(chunk)
+            if not data:
+                break
+            lines = (rest + data).split(b"\n")
+            rest = lines.pop()
+            if lines:
+                inflight.append(pool.apply_async(filter_lines, (lines,)))
+            while len(inflight) > workers * 3:  # backpressure
+                collect(inflight.popleft())
+            if raw.tell() - last_ck >= every:
+                checkpoint(gz.tell() - len(rest))
+                last_ck = raw.tell()
+            now = time.time()
+            if now - last_log > 300:
+                last_log = now
+                frac = raw.tell() / src.total
+                rate = (raw.tell() - start_raw) / max(now - t0, 1e-9)
+                LOG.info(
+                    "%.1f%% (%.1f MB/s compressed), %d items, %d kept, ETA %.1f h",
+                    100 * frac,
+                    rate / 1e6,
+                    stats["items"],
+                    stats["kept"],
+                    (src.total - raw.tell()) / max(rate, 1) / 3600,
+                )
+            if limit and raw.tell() >= int(limit):
+                break
+        if rest.strip():
+            inflight.append(pool.apply_async(filter_lines, ([rest],)))
+        checkpoint(gz.tell())
+    except BaseException:
+        pool.terminate()
+        if writer is not None:
+            writer.close()
+        raise
+    pool.close()
+    pool.join()
+    prov = Provenance(
+        stage="ingest.wikidata_items.stream", config=cfg, source_versions={SOURCE: cfg["version"]}
+    )
+    prov.add_input(cfg["linked_items"])
+    complete = raw.tell() >= src.total
+    st = {
+        **dict(stats),
+        "compressed_bytes": raw.tell(),
+        "complete": complete,
+        "resumed": ck["resumed"],
+        "segments_retried": getattr(src, "retried", 0),
+        "seconds_last_run": round(time.time() - t0),
+        "md5": raw.md5.hexdigest() if raw.hashes_valid and complete else None,
+        "sha256": raw.sha256.hexdigest() if raw.hashes_valid and complete else None,
+    }
+    if st["md5"] and cfg.get("md5") and st["md5"] != cfg["md5"]:
+        raise RuntimeError(f"md5 mismatch for the streamed dump: {st['md5']} != {cfg['md5']}")
+    prov.extra["stream"] = st
+    out.parent.mkdir(parents=True, exist_ok=True)
+    tmp = out.with_name(out.name + ".tmp")
+    schema = SUPERSET_SCHEMA.with_metadata(prov.parquet_metadata())
+    with pq.ParquetWriter(tmp, schema, compression="zstd") as w:
+        for name in ck["parts"]:
+            w.write_table(pq.read_table(work / name).cast(schema))
+    tmp.replace(out)
+    prov.write_sidecar(out, stats=st)
+    for f in work.iterdir():
+        f.unlink()
+    work.rmdir()
+    LOG.info("stream done: %s", st)
+    return st
+
+
 # --------------------------------------------------------------------------- selection
 
 
@@ -414,10 +617,18 @@ def main() -> None:
     ap.add_argument("command", choices=["stream", "select"])
     ap.add_argument("--config", required=True)
     ap.add_argument("--log-level", default="INFO")
+    ap.add_argument(
+        "--fresh", action="store_true", help="stream: ignore an existing checkpoint and start over"
+    )
     args = ap.parse_args()
     setup_logging(args.log_level)
     cfg = load_config(args.config)
-    (stream if args.command == "stream" else select)(cfg)
+    if args.command == "select":
+        select(cfg)
+    elif cfg.get("resumable", False):
+        stream_resumable(cfg, resume=not args.fresh)
+    else:
+        stream(cfg)
 
 
 if __name__ == "__main__":
