@@ -436,3 +436,17 @@ keep their v1.0 ids through member overlap. Lesson for long jobs in this environ
 work only survives while a session turn is active, so a multi-hour job must either keep the
 session busy or be resumable (for this dump: the bz2 multistream variant, whose streams can be
 restarted independently, or a gzip index with seek points).
+
+## Gate 2 and Phase 3
+
+**D-046 Gate 2 approved (2026-11-03) with the recommendations of `docs/phase2_report.md`
+section 4.** (1) No ids are merged from the local-LLM judge; its first-pass "same" verdicts are
+kept as a soft near-duplicate table, and the owner's manual review (D-030) continues alongside;
+confirmed pairs are merged only with the owner's approval. (2) Wikidata items are streamed again
+at the start of Phase 3 and added as v1.1 (append-only). (3) SNOMED CT UK waits for the owner's
+TRUD files; when they arrive it becomes a local, restricted extension whose senses stay out of
+training data for any released model. (4) The 22 + 10 id layout stays; lemma slots are the scarce
+resource (no bulk entity imports). (5) Long-tail domain senses keep their ids; each training run
+decides which senses get an embedding row. (6) Named entities stay out; Phase 3 measures how much
+real text falls back to bytes. (7) The ledger stays in git until the repository nears ~1 GB.
+(8) The current NLM terms are re-read before any public release that includes MeSH.

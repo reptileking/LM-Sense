@@ -242,6 +242,8 @@ in v1.0.
 
 ## 4. Open decisions that need you
 
+*Gate 2 approved on 2026-11-03 with these recommendations (D-046).*
+
 1. **Local LLM judge (56,565 uncertain OEWN–Wiktionary pairs).** It runs directly on your PC
    (Remote Control cannot use Windows folders). Pilots on the 300 gold pairs (4k context window;
    Ollama's 32k window had pushed the 14B onto the CPU), then a full run with the best model,
