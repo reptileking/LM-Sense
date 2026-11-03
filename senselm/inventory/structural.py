@@ -85,7 +85,7 @@ def build(
                     "token": f"<{name}>" if cat["name"] == "special" else f"<{cat['name']}:{name}>",
                     "description": desc,
                     "status": "active",
-                    "created_in": cfg["build_id"],
+                    "created_in": cat.get("created_in", cfg["build_id"]),
                 }
             )
             if fixed is None:

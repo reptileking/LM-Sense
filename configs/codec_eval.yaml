@@ -1,0 +1,11 @@
+# Phase 3 codec metrics on the FineWeb-Edu sample (spec 3.3).
+#   uv run python -m senselm.eval.codec_eval --config configs/codec_eval.yaml --split eval
+stage: eval.codec_eval
+codec_config: configs/codec.yaml
+corpus: data/raw/corpus/fineweb_edu_sample.parquet
+bpe:                                     # reference tokenizers, length comparison only
+  gpt2: data/raw/tokenizers/gpt2/tokenizer.json
+  qwen25: data/raw/tokenizers/qwen2.5/tokenizer.json
+batch_size: 32
+top_oov: 80
+output_dir: eval

@@ -68,3 +68,24 @@ sources:
     version: "MeSH 2026 supplementary concept records (file of 2026-08-12)"
     licence: "NLM MeSH terms and conditions (free of charge; attribution; no misrepresentation)"
     sha256: 8ec0efa76e050813ffefad4f6cff280cd85e2a26110119949e987aba564824ca
+  # ---------------------------------------------------------------- Phase 3 (codec evaluation)
+  # Reference BPE tokenizers, only to compare sequence lengths with the sense codec (D-047).
+  - name: gpt2_tokenizer
+    url: https://huggingface.co/openai-community/gpt2/resolve/607a30d783dfa663caf39e06633721c8d4cfcd7e/tokenizer.json
+    path: data/raw/tokenizers/gpt2/tokenizer.json
+    version: "openai-community/gpt2 @ 607a30d (50,257-token byte-level BPE)"
+    licence: "MIT (model card)"
+    sha256: 8414cab924d8b9b33013f0d221c5862f365ee9be39c5c2bfae8a5a9e970478a6
+  - name: qwen25_tokenizer
+    url: https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer.json
+    path: data/raw/tokenizers/qwen2.5/tokenizer.json
+    version: "Qwen/Qwen2.5-7B-Instruct @ a09a354 (151,643-token byte-level BPE)"
+    licence: "Apache-2.0"
+    sha256: c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539
+  # Raganato et al. (2017) unified WSD evaluation framework: SemCor + Senseval-2/3, SemEval-07/13/15,
+  # WordNet 3.0 sense keys. Host unreachable from the cloud environment on 2026-11-03 (D-047).
+  - name: wsd_framework
+    url: http://lcl.uniroma1.it/wsdeval/data/WSD_Evaluation_Framework.zip
+    path: data/raw/wsd/WSD_Evaluation_Framework.zip
+    version: "WSD Evaluation Framework (Raganato, Camacho-Collados and Navigli, EACL 2017)"
+    licence: "research use; per-dataset terms in the archive (checked before use)"

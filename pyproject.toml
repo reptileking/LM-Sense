@@ -23,6 +23,9 @@ dependencies = [
     "matplotlib>=3.9",
     "psutil>=6.0",
     "lemminflect>=0.2.3",
+    "spacy>=3.8,<3.9",
+    "en-core-web-sm",
+    "rapidfuzz>=3.9",
 ]
 
 [project.optional-dependencies]
@@ -42,6 +45,7 @@ packages = ["senselm"]
 # On a GPU machine, delete this source mapping (or point it at a CUDA index).
 [tool.uv.sources]
 torch = { index = "pytorch-cpu" }
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
 
 [[tool.uv.index]]
 name = "pytorch-cpu"

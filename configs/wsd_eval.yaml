@@ -1,0 +1,16 @@
+# Phase 3 sense accuracy of the baseline encoder (spec 3.3).
+#   uv run python -m senselm.eval.wsd_eval --config configs/wsd_eval.yaml
+# Needs data/raw/wsd/WSD_Evaluation_Framework.zip unpacked into data/raw/wsd/ (see download.yaml).
+stage: eval.wsd_eval
+inventory: data/processed/inventory_v1_0.parquet
+codec_config: configs/codec.yaml
+framework_dir: data/raw/wsd/WSD_Evaluation_Framework
+datasets:                      # name: path stem under framework_dir
+  semcor: Training_Corpora/SemCor/semcor
+  senseval2: Evaluation_Datasets/senseval2/senseval2
+  senseval3: Evaluation_Datasets/senseval3/senseval3
+  semeval2007: Evaluation_Datasets/semeval2007/semeval2007
+  # semeval2013, semeval2015 and ALL are left out: their WordNet keys were mapped from BabelNet
+  # annotations (D-049); add them here only if the owner rules that acceptable.
+max_sentences: null
+output: eval/wsd_baseline.json

@@ -1,0 +1,15 @@
+# Phase 3 codec (encode text -> ids, decode ids -> text).
+#   uv run python -m senselm.codec.build --config configs/codec.yaml          # tables (~1 min)
+#   uv run python -m senselm.codec --config configs/codec.yaml encode "Some text."
+stage: codec
+version: codec-v1
+inventory: data/processed/inventory_v1_0.parquet
+structural_registry: registry/structural_registry.parquet
+forms: data/interim/forms_v1.parquet
+variants: data/interim/variants_v1.parquet
+paradigm_exceptions: data/processed/codec/paradigm_exceptions.parquet
+variant_table: data/processed/codec/variants.parquet
+spacy_model: en_core_web_sm
+conventions:
+  auto_cap: true           # capitalise sentence starts by default; <case:lower> keeps a word lower-case (D-048)
+  max_mwe_tokens: 8        # longest multi-word lemma the encoder looks for, in spaCy tokens

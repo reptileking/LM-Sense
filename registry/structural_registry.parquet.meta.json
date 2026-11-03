@@ -1,10 +1,10 @@
 {
   "code": {
     "dirty": true,
-    "git_commit": "5267260894cae09cd82773f1bcbce20a03ba685b"
+    "git_commit": "c19ad3da952883f9a1e2af816dec71f3590babe3"
   },
   "config": {
-    "build_id": "v1.0",
+    "build_id": "codec-v1",
     "categories": [
       {
         "description": "Sequence control and segmentation.",
@@ -230,6 +230,10 @@
           [
             "mixed",
             "irregular casing: spell the word with byte fallback"
+          ],
+          [
+            "title",
+            "first letter of every word upper-case (headings: Physical Therapy, One-Legged); added in codec-v1"
           ]
         ],
         "name": "case",
@@ -577,6 +581,22 @@
         ],
         "name": "variant",
         "slot": 8
+      },
+      {
+        "created_in": "codec-v1",
+        "description": "Orthographic style switches (D-048). Stateful: a switch holds until the next switch or the end of the sequence. The apostrophe style applies to contractions (n't, 's, 're, 'm, 've, 'll, 'd) and to the genitive realised from <morph:GEN>; the default is the straight apostrophe.",
+        "items": [
+          [
+            "apos_curly",
+            "realise contractions and genitives with the typographic apostrophe (\u2019) from here on"
+          ],
+          [
+            "apos_straight",
+            "realise contractions and genitives with the straight apostrophe (') from here on (the default)"
+          ]
+        ],
+        "name": "orth",
+        "slot": 9
       }
     ],
     "doc_output": "docs/STRUCTURAL_TOKENS.md",
@@ -585,13 +605,13 @@
     "stage": "inventory.structural"
   },
   "config_path": "configs/structural.yaml",
-  "config_sha256": "a44867fcbb266c854b00ace1ae01415d1f8deacb477cd509d7ff078d944cce10",
-  "created_at": "2026-11-01T12:53:28+00:00",
+  "config_sha256": "6535a3da86f5e0a187b03acc9c871354c2e217c2942e2c02281b0499d7c19f42",
+  "created_at": "2026-11-03T11:33:30+00:00",
   "inputs": [],
   "output": {
-    "bytes": 25712,
+    "bytes": 27585,
     "path": "registry/structural_registry.parquet",
-    "sha256": "335fa89c7be0250f7065e05d61ca1beb662359792c9d4c40f0aede8ade12e853"
+    "sha256": "c44f4caadb2166157f87d3373358d8c06175df0679e33e465d7bdc4ee29d799a"
   },
   "packages": {
     "duckdb": "2.0.0",
@@ -609,12 +629,13 @@
   "source_versions": {},
   "stage": "inventory.structural",
   "stats": {
-    "active": 393,
+    "active": 396,
     "by_category": {
       "byte": 258,
-      "case": 4,
+      "case": 5,
       "digit": 10,
       "morph": 32,
+      "orth": 2,
       "prag": 8,
       "punct": 56,
       "space": 7,

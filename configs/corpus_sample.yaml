@@ -1,0 +1,9 @@
+# General-text sample for the Phase 3 codec metrics (coverage, round-trip, sequence length).
+#   uv run python -m senselm.eval.corpus_sample --config configs/corpus_sample.yaml
+stage: eval.corpus_sample
+url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu/resolve/87f09149ef4734204d70ed1d046ddc9ca3f2b8f9/sample/10BT/000_00000.parquet
+version: "FineWeb-Edu sample-10BT shard 000_00000 @ 87f0914 (etag 75e3d053)"
+licence: "ODC-By 1.0; also subject to the Common Crawl terms of use"
+rows: 5000           # first documents of the shard (~3.7M words)
+dev_docs: 500        # documents 0-499 for developing codec rules; the rest are held out
+output: data/raw/corpus/fineweb_edu_sample.parquet
